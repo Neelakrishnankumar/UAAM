@@ -5,8 +5,7 @@
 /.pnp
 .pnp.js
 /0text File
-/package-lock.json
-/package.json
+
 
 # testing
 /coverage
