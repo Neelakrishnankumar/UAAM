@@ -93,898 +93,898 @@ import SourceOutlinedIcon from "@mui/icons-material/SourceOutlined";
 import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
 const child = {
   data: [
-    {
-      name: "Masters",
-      id: 1,
-      Tooltipname: "Maters",
-      icon: (
-        <Tooltip title="Maters">
-          <FactCheckOutlinedIcon sx={{ color: "#651fff" }} />
-        </Tooltip>
-      ),
-      MenuID: "MA100",
-      children: [
-        {
-          name: "Company",
-          url: "./TR014/Company",
-          id: 11,
-          icon: (
-            <Tooltip title="Company">
-              <BusinessIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR014",
-        },
-        {
-          name: "Bank",
-          id: 12,
-          url: "./TR022/Bank",
-          icon: (
-            <Tooltip title="Bank">
-              <AccountBalanceIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR022",
-        },
-        {
-          name: "UOM",
-          id: 13,
-          url: "./TR049/UOM Type",
-          icon: (
-            <Tooltip title="UOM">
-              <UomIcon style={{ width: "1.5em", height: " 1.5em" }} />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR049",
-        },
-        {
-          name: "Country",
-          url: "./TR025/Country",
-          id: 14,
-          icon: (
-            <Tooltip title="Country">
-              <LanguageIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR025",
-        },
-        // {
-        //   name: "Currency",
-        //   url: "./TR023/Currency",
-        //   id: 15,
-        //   icon: (
-        //     <Tooltip title="Currency">
-        //       <CurrencyRupeeIcon color="info" />
-        //     </Tooltip>
-        //   ),
-        //   UGA_ADD: true,
-        //   UGA_DEL: true,
-        //   UGA_MOD: true,
-        //   UGA_PRINT: true,
-        //   UGA_PROCESS: true,
-        //   UGA_VIEW: true,
-        //   UGA_ACCESSIDS: "TR023",
-        // },
-        {
-          name: "Airlines",
-          url: "./TR036/Airlines",
-          id: 16,
-          icon: (
-            <Tooltip title="Airlines">
-              <AirlinesIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR036",
-        },
+    // {
+    //   name: "Masters",
+    //   id: 1,
+    //   Tooltipname: "Maters",
+    //   icon: (
+    //     <Tooltip title="Maters">
+    //       <FactCheckOutlinedIcon sx={{ color: "#651fff" }} />
+    //     </Tooltip>
+    //   ),
+    //   MenuID: "MA100",
+    //   children: [
+    //     {
+    //       name: "Company",
+    //       url: "./TR014/Company",
+    //       id: 11,
+    //       icon: (
+    //         <Tooltip title="Company">
+    //           <BusinessIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR014",
+    //     },
+    //     {
+    //       name: "Bank",
+    //       id: 12,
+    //       url: "./TR022/Bank",
+    //       icon: (
+    //         <Tooltip title="Bank">
+    //           <AccountBalanceIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR022",
+    //     },
+    //     {
+    //       name: "UOM",
+    //       id: 13,
+    //       url: "./TR049/UOM Type",
+    //       icon: (
+    //         <Tooltip title="UOM">
+    //           <UomIcon style={{ width: "1.5em", height: " 1.5em" }} />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR049",
+    //     },
+    //     {
+    //       name: "Country",
+    //       url: "./TR025/Country",
+    //       id: 14,
+    //       icon: (
+    //         <Tooltip title="Country">
+    //           <LanguageIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR025",
+    //     },
+    //     // {
+    //     //   name: "Currency",
+    //     //   url: "./TR023/Currency",
+    //     //   id: 15,
+    //     //   icon: (
+    //     //     <Tooltip title="Currency">
+    //     //       <CurrencyRupeeIcon color="info" />
+    //     //     </Tooltip>
+    //     //   ),
+    //     //   UGA_ADD: true,
+    //     //   UGA_DEL: true,
+    //     //   UGA_MOD: true,
+    //     //   UGA_PRINT: true,
+    //     //   UGA_PROCESS: true,
+    //     //   UGA_VIEW: true,
+    //     //   UGA_ACCESSIDS: "TR023",
+    //     // },
+    //     {
+    //       name: "Airlines",
+    //       url: "./TR036/Airlines",
+    //       id: 16,
+    //       icon: (
+    //         <Tooltip title="Airlines">
+    //           <AirlinesIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR036",
+    //     },
 
-        {
-          name: "Process Stage",
-          url: "./TR072/Process Stage",
-          id: 111,
-          icon: (
-            <Tooltip title="Process Stage">
-              <DeveloperBoardIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR072",
-        },
+    //     {
+    //       name: "Process Stage",
+    //       url: "./TR072/Process Stage",
+    //       id: 111,
+    //       icon: (
+    //         <Tooltip title="Process Stage">
+    //           <DeveloperBoardIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR072",
+    //     },
 
-        {
-          name: "Design Pattern",
-          url: "./TR045/Design Pattern",
-          id: 113,
-          icon: (
-            <Tooltip title="Colors">
-              <StyleOutlinedIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR045",
-        },
-        {
-          name: "Remarks",
-          url: "./TR058/Remarks Type",
-          id: 114,
-          icon: (
-            <Tooltip title="Remarks">
-              <InfoRoundedIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR058",
-        },
+    //     {
+    //       name: "Design Pattern",
+    //       url: "./TR045/Design Pattern",
+    //       id: 113,
+    //       icon: (
+    //         <Tooltip title="Colors">
+    //           <StyleOutlinedIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR045",
+    //     },
+    //     {
+    //       name: "Remarks",
+    //       url: "./TR058/Remarks Type",
+    //       id: 114,
+    //       icon: (
+    //         <Tooltip title="Remarks">
+    //           <InfoRoundedIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR058",
+    //     },
 
-        {
-          name: "Grade",
-          url: "./TR061/Grade",
-          id: 115,
-          icon: (
-            <Tooltip title="Grade">
-              <GradeIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR061",
-        },
+    //     {
+    //       name: "Grade",
+    //       url: "./TR061/Grade",
+    //       id: 115,
+    //       icon: (
+    //         <Tooltip title="Grade">
+    //           <GradeIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR061",
+    //     },
         
-        {
-          name: "Purchase Order Parameter",
-          url: "./TR157/Paurchase Order Parameter",
-          id: 115,
-          icon: (
-            <Tooltip title="Purchase Order Parameter">
-              <GradeIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR061",
-        },
-        {
-          name: "Substance",
-          url: "./TR062/Substance",
-          id: 116,
-          icon: (
-            <Tooltip title="Substance">
-              <SubstanceIcon style={{ width: "2em", height: " 2em" }} />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR062",
-        },
-        {
-          name: "HSN",
-          url: "./TR096/HSN",
-          id: 117,
-          icon: (
-            <Tooltip title="HSN">
-              <FeaturedPlayListIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR096",
-        },
-      ],
-    },
-    {
-      name: "Configurations",
-      Tooltipname: "Configurations",
-      id: 67,
-      icon: (
-        <Tooltip title="Configurations">
-          <ManageAccountsIcon sx={{ color: "#651fff" }} />
-        </Tooltip>
-      ),
-      MenuID: "CN100",
-      children: [
-        {
-          name: "Customers",
-          url: "./TR010/Customers",
-          id: 18,
-          icon: (
-            <Tooltip title="Customers">
-              <CustomerIcon style={{ width: "2em", height: " 2em" }} />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR010",
-        },
-        {
-          name: "Suppliers",
-          url: "./TR009/Suppliers",
-          id: 19,
-          icon: (
-            <Tooltip title="Suppliers">
-              <SupplierIcon style={{ width: "1.5em", height: " 1.5em" }} />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR009",
-        },
-        {
-          name: "Colors",
-          url: "./TR083/Colors - Material type",
-          id: 112,
-          icon: (
-            <Tooltip title="Colors">
-              <ColorLensIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR083",
-        },
-      ],
-    },
-    {
-      name: "IM",
-      Tooltipname: "Inventory Management",
-      id: 2,
-      icon: (
-        <Tooltip title="Inventory Management">
-          <LocalGroceryStoreOutlinedIcon sx={{ color: "#651fff" }} />
-        </Tooltip>
-      ),
-      MenuID: "IM200",
-      children: [
-        {
-          name: "Products",
-          url: "./TR002/Categories",
-          id: 21,
-          icon: (
-            <Tooltip title="Categories">
-              <ProductIcon style={{ width: "2em", height: "2em" }} />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR002",
-        },
+    //     {
+    //       name: "Purchase Order Parameter",
+    //       url: "./TR157/Paurchase Order Parameter",
+    //       id: 115,
+    //       icon: (
+    //         <Tooltip title="Purchase Order Parameter">
+    //           <GradeIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR061",
+    //     },
+    //     {
+    //       name: "Substance",
+    //       url: "./TR062/Substance",
+    //       id: 116,
+    //       icon: (
+    //         <Tooltip title="Substance">
+    //           <SubstanceIcon style={{ width: "2em", height: " 2em" }} />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR062",
+    //     },
+    //     {
+    //       name: "HSN",
+    //       url: "./TR096/HSN",
+    //       id: 117,
+    //       icon: (
+    //         <Tooltip title="HSN">
+    //           <FeaturedPlayListIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR096",
+    //     },
+    //   ],
+    // },
+    // {
+    //   name: "Configurations",
+    //   Tooltipname: "Configurations",
+    //   id: 67,
+    //   icon: (
+    //     <Tooltip title="Configurations">
+    //       <ManageAccountsIcon sx={{ color: "#651fff" }} />
+    //     </Tooltip>
+    //   ),
+    //   MenuID: "CN100",
+    //   children: [
+    //     {
+    //       name: "Customers",
+    //       url: "./TR010/Customers",
+    //       id: 18,
+    //       icon: (
+    //         <Tooltip title="Customers">
+    //           <CustomerIcon style={{ width: "2em", height: " 2em" }} />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR010",
+    //     },
+    //     {
+    //       name: "Suppliers",
+    //       url: "./TR009/Suppliers",
+    //       id: 19,
+    //       icon: (
+    //         <Tooltip title="Suppliers">
+    //           <SupplierIcon style={{ width: "1.5em", height: " 1.5em" }} />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR009",
+    //     },
+    //     {
+    //       name: "Colors",
+    //       url: "./TR083/Colors - Material type",
+    //       id: 112,
+    //       icon: (
+    //         <Tooltip title="Colors">
+    //           <ColorLensIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR083",
+    //     },
+    //   ],
+    // },
+    // {
+    //   name: "IM",
+    //   Tooltipname: "Inventory Management",
+    //   id: 2,
+    //   icon: (
+    //     <Tooltip title="Inventory Management">
+    //       <LocalGroceryStoreOutlinedIcon sx={{ color: "#651fff" }} />
+    //     </Tooltip>
+    //   ),
+    //   MenuID: "IM200",
+    //   children: [
+    //     {
+    //       name: "Products",
+    //       url: "./TR002/Categories",
+    //       id: 21,
+    //       icon: (
+    //         <Tooltip title="Categories">
+    //           <ProductIcon style={{ width: "2em", height: "2em" }} />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR002",
+    //     },
         
-        {
-          name: "Job-Work Component",
-          url: "./TR148/Job-Work",
-          id: 255,
-          icon: (
-            <Tooltip title="Job-Work">
-              <ProductIcon style={{ width: "2em", height: "2em" }} />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR002",
-        },
+    //     {
+    //       name: "Job-Work Component",
+    //       url: "./TR148/Job-Work",
+    //       id: 255,
+    //       icon: (
+    //         <Tooltip title="Job-Work">
+    //           <ProductIcon style={{ width: "2em", height: "2em" }} />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR002",
+    //     },
 
-        {
-          name: "Materials",
-          url: "./TR044/Materials Type",
-          id: 22,
-          icon: (
-            <Tooltip title="Materials">
-              {/* <DescriptionOutlinedIcon color="info" /> */}
-              <MaterialIcon style={{ width: "1.8em", height: " 1.8em" }} />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR044",
-        },
-      ],
-    },
-    {
-      name: "Stock",
-      Tooltipname: "Stock",
-      id: 9,
-      MenuID: "SK300",
-      icon: (
-        <Tooltip title="Stock">
-          <Inventory2OutlinedIcon sx={{ color: "#651fff" }} />
-        </Tooltip>
-      ),
-      children: [
-        {
-          name: "Opening Stock",
-          url: "./TR064/Opening Stock",
-          id: 96,
-          icon: (
-            <Tooltip title="Opening Stock">
-              <InventoryIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR064",
-        },
-        {
-          name: "Delivery Challan",
-          url: "./TR059/Delivery Type",
-          id: 94,
-          icon: (
-            <Tooltip title="Delivery Challan">
-              <LocalShippingIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR059",
-        },
-        {
-          name: "Indent Purchase Order",
-          id: 998,
-          url: "./TR152/Indent Purchase Order",
-          icon: (
-            <Tooltip title="Indent Purchase Order">
-              <ShoppingCartIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR085",
-        },
-        {
-          name: " Open Purchase Order",
-          id: 998,
-          url: "./TR155/Open Purchase Order ",
-          icon: (
-            <Tooltip title="Open Purchase Order ">
-              <ShoppingCartIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR085",
-        },
-        {
-          name: "Stock Enquiry",
-          url: "./TR078/Stock Enquiry",
-          id: 98,
-          icon: (
-            <Tooltip title="Stock Enquiry">
-              <ProductionQuantityLimitsIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR078",
-        },
-      ],
-    },
-    {
-      name: "MM",
-      Tooltipname: "Manufacturing Module",
-      id: 7,
-      MenuID: "MM400",
-      icon: (
-        <Tooltip title="Manufacturing Module">
-          <FactoryIcon sx={{ color: "#651fff" }} />
-        </Tooltip>
-      ),
-      children: [
-        {
-          name: "Production Card",
-          url: "./TR047/Production Card",
-          id: 73,
-          icon: (
-            <Tooltip title="Production Card">
-              <SubtitlesOutlinedIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR047",
-        },
-        {
-          name: "Batch",
-          url: "./TR076/Batches",
-          id: 75,
-          icon: (
-            <Tooltip title="Batches">
-              <BatchIcon style={{ width: "2em", height: " 2em" }} />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR076",
-        },
-        {
-          name: "Packing List",
-          id: 32,
-          url: "./TR116/Packing List",
-          icon: (
-            <Tooltip title="Packing">
-              <DescriptionOutlinedIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR116",
-        },
-        {
-          name: "Leather Packing List",
-          id: 32,
-          url: "./TR109/Leather Packing List ",
-          icon: (
-            <Tooltip title="Leather Packing List ">
-              <DescriptionOutlinedIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR109",
-        },
-      ],
-    },
-    {
-      name: "OM",
-      Tooltipname: "Order Management",
-      id: 3,
-      MenuID: "OM500",
-      icon: (
-        <Tooltip title="Order Management">
-          <PaymentOutlinedIcon sx={{ color: "#651fff" }} />
-        </Tooltip>
-      ),
-      children: [
-        {
-          name: "Invoice",
-          id: 31,
-          url: "./TR043/Invoice Types",
-          icon: (
-            <Tooltip title="Invoice">
-              <DescriptionOutlinedIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR043",
-        },
+    //     {
+    //       name: "Materials",
+    //       url: "./TR044/Materials Type",
+    //       id: 22,
+    //       icon: (
+    //         <Tooltip title="Materials">
+    //           {/* <DescriptionOutlinedIcon color="info" /> */}
+    //           <MaterialIcon style={{ width: "1.8em", height: " 1.8em" }} />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR044",
+    //     },
+    //   ],
+    // },
+    // {
+    //   name: "Stock",
+    //   Tooltipname: "Stock",
+    //   id: 9,
+    //   MenuID: "SK300",
+    //   icon: (
+    //     <Tooltip title="Stock">
+    //       <Inventory2OutlinedIcon sx={{ color: "#651fff" }} />
+    //     </Tooltip>
+    //   ),
+    //   children: [
+    //     {
+    //       name: "Opening Stock",
+    //       url: "./TR064/Opening Stock",
+    //       id: 96,
+    //       icon: (
+    //         <Tooltip title="Opening Stock">
+    //           <InventoryIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR064",
+    //     },
+    //     {
+    //       name: "Delivery Challan",
+    //       url: "./TR059/Delivery Type",
+    //       id: 94,
+    //       icon: (
+    //         <Tooltip title="Delivery Challan">
+    //           <LocalShippingIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR059",
+    //     },
+    //     {
+    //       name: "Indent Purchase Order",
+    //       id: 998,
+    //       url: "./TR152/Indent Purchase Order",
+    //       icon: (
+    //         <Tooltip title="Indent Purchase Order">
+    //           <ShoppingCartIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR085",
+    //     },
+    //     {
+    //       name: " Open Purchase Order",
+    //       id: 998,
+    //       url: "./TR155/Open Purchase Order ",
+    //       icon: (
+    //         <Tooltip title="Open Purchase Order ">
+    //           <ShoppingCartIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR085",
+    //     },
+    //     {
+    //       name: "Stock Enquiry",
+    //       url: "./TR078/Stock Enquiry",
+    //       id: 98,
+    //       icon: (
+    //         <Tooltip title="Stock Enquiry">
+    //           <ProductionQuantityLimitsIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR078",
+    //     },
+    //   ],
+    // },
+    // {
+    //   name: "MM",
+    //   Tooltipname: "Manufacturing Module",
+    //   id: 7,
+    //   MenuID: "MM400",
+    //   icon: (
+    //     <Tooltip title="Manufacturing Module">
+    //       <FactoryIcon sx={{ color: "#651fff" }} />
+    //     </Tooltip>
+    //   ),
+    //   children: [
+    //     {
+    //       name: "Production Card",
+    //       url: "./TR047/Production Card",
+    //       id: 73,
+    //       icon: (
+    //         <Tooltip title="Production Card">
+    //           <SubtitlesOutlinedIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR047",
+    //     },
+    //     {
+    //       name: "Batch",
+    //       url: "./TR076/Batches",
+    //       id: 75,
+    //       icon: (
+    //         <Tooltip title="Batches">
+    //           <BatchIcon style={{ width: "2em", height: " 2em" }} />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR076",
+    //     },
+    //     {
+    //       name: "Packing List",
+    //       id: 32,
+    //       url: "./TR116/Packing List",
+    //       icon: (
+    //         <Tooltip title="Packing">
+    //           <DescriptionOutlinedIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR116",
+    //     },
+    //     {
+    //       name: "Leather Packing List",
+    //       id: 32,
+    //       url: "./TR109/Leather Packing List ",
+    //       icon: (
+    //         <Tooltip title="Leather Packing List ">
+    //           <DescriptionOutlinedIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR109",
+    //     },
+    //   ],
+    // },
+    // {
+    //   name: "OM",
+    //   Tooltipname: "Order Management",
+    //   id: 3,
+    //   MenuID: "OM500",
+    //   icon: (
+    //     <Tooltip title="Order Management">
+    //       <PaymentOutlinedIcon sx={{ color: "#651fff" }} />
+    //     </Tooltip>
+    //   ),
+    //   children: [
+    //     {
+    //       name: "Invoice",
+    //       id: 31,
+    //       url: "./TR043/Invoice Types",
+    //       icon: (
+    //         <Tooltip title="Invoice">
+    //           <DescriptionOutlinedIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR043",
+    //     },
 
-        {
-          name: "Order Enquiry",
-          id: 7678,
-          url: "./TR101/Order Enquiry",
-          icon: (
-            <Tooltip title="Packing ">
-              <DescriptionOutlinedIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR101",
-        },
-      ],
-    },
-    {
-      name: "HR",
-      id: 4,
-      MenuID: "HR600",
-      Tooltipname: "Human Resource",
-      icon: (
-        <Tooltip title="Human Resource">
-          <GroupsOutlinedIcon sx={{ color: "#651fff" }} />
-        </Tooltip>
-      ),
-      children: [
-        {
-          name: "Functions",
-          id: 43,
-          url: "./TR121/Functions",
-          icon: (
-            <Tooltip title="Functions">
-              <Diversity3Icon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR121",
-        },
-        {
-          name: "Designation",
-          id: 44,
-          url: "./TR122/Designation",
-          icon: (
-            <Tooltip title="Designation">
-              <Diversity3Icon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR122",
-        },
-        {
-          name: "Project",
-          id: 44,
-          url: "./TR133/Project",
-          icon: (
-            <Tooltip title="Project">
-              <SourceOutlinedIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR133",
-        },
-        {
-          name: "Department",
-          id: 41,
-          url: "./TR026/Department",
-          icon: (
-            <Tooltip title="Department">
-              <DeveloperBoardIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR026",
-        },
+    //     {
+    //       name: "Order Enquiry",
+    //       id: 7678,
+    //       url: "./TR101/Order Enquiry",
+    //       icon: (
+    //         <Tooltip title="Packing ">
+    //           <DescriptionOutlinedIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR101",
+    //     },
+    //   ],
+    // },
+    // {
+    //   name: "HR",
+    //   id: 4,
+    //   MenuID: "HR600",
+    //   Tooltipname: "Human Resource",
+    //   icon: (
+    //     <Tooltip title="Human Resource">
+    //       <GroupsOutlinedIcon sx={{ color: "#651fff" }} />
+    //     </Tooltip>
+    //   ),
+    //   children: [
+    //     {
+    //       name: "Functions",
+    //       id: 43,
+    //       url: "./TR121/Functions",
+    //       icon: (
+    //         <Tooltip title="Functions">
+    //           <Diversity3Icon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR121",
+    //     },
+    //     {
+    //       name: "Designation",
+    //       id: 44,
+    //       url: "./TR122/Designation",
+    //       icon: (
+    //         <Tooltip title="Designation">
+    //           <Diversity3Icon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR122",
+    //     },
+    //     {
+    //       name: "Project",
+    //       id: 44,
+    //       url: "./TR133/Project",
+    //       icon: (
+    //         <Tooltip title="Project">
+    //           <SourceOutlinedIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR133",
+    //     },
+    //     {
+    //       name: "Department",
+    //       id: 41,
+    //       url: "./TR026/Department",
+    //       icon: (
+    //         <Tooltip title="Department">
+    //           <DeveloperBoardIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR026",
+    //     },
 
-        {
-          name: "Employees",
-          url: "./TR027/Employees",
-          id: 42,
-          icon: (
-            <Tooltip title="Employees">
-              <PeopleAltIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR027",
-        },
-      ],
-    },
-    {
-      name: "Payroll",
-      id: 10,
-      MenuID: "EM900",
-      Tooltipname: "Employees",
-      icon: (
-        <Tooltip title="Employees">
-          <GroupsOutlinedIcon sx={{ color: "#651fff" }} />
-        </Tooltip>
-      ),
-      children: [
-        {
-          name: "Employees",
-          id: 46,
-          url: "./TR027/EmployeePayroll",
-          icon: (
-            <Tooltip title="Employees">
-                <PeopleAltIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR027",
-        },
-        {
-          name: "Salary Component",
-          id: 57,
-          url: "./TR205/Salary Component",
-          icon: (
-            <Tooltip title="Salary Component">
-              <Diversity3Icon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR026",
-        },
-        // {
-        //   name: "Employee Allowance",
-        //   // id: 45,
-        //   url: "./TR152/Employee Allowance",
-        //   icon: (
-        //     <Tooltip title="Employee Allowance">
-        //       <Diversity3Icon color="info" />
-        //     </Tooltip>
-        //   ),
-        //   UGA_ADD: true,
-        //   UGA_DEL: true,
-        //   UGA_MOD: true,
-        //   UGA_PRINT: true,
-        //   UGA_PROCESS: true,
-        //   UGA_VIEW: true,
-        //   UGA_ACCESSIDS: "TR026",
-        // },
-        {
-          name: "Satuary Component",
-          id: 59,
-          url: "./TR207/Satuary Component",
-          icon: (
-            <Tooltip title="Satuary Component">
-              <Diversity3Icon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR026",
-        },
-        {
-          name: "Check In",
-          id: 45,
-          url: "./TR123/Check In",
-          icon: (
-            <Tooltip title="Check In">
-              <Diversity3Icon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR123",
-        },
-        {
-          name: "Check Out",
-          id: 46,
-          url: "./TR124/Check Out",
-          icon: (
-            <Tooltip title="Check Out">
-              <Diversity3Icon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR124",
-        },
+    //     {
+    //       name: "Employees",
+    //       url: "./TR027/Employees",
+    //       id: 42,
+    //       icon: (
+    //         <Tooltip title="Employees">
+    //           <PeopleAltIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR027",
+    //     },
+    //   ],
+    // },
+    // {
+    //   name: "Payroll",
+    //   id: 10,
+    //   MenuID: "EM900",
+    //   Tooltipname: "Employees",
+    //   icon: (
+    //     <Tooltip title="Employees">
+    //       <GroupsOutlinedIcon sx={{ color: "#651fff" }} />
+    //     </Tooltip>
+    //   ),
+    //   children: [
+    //     {
+    //       name: "Employees",
+    //       id: 46,
+    //       url: "./TR027/EmployeePayroll",
+    //       icon: (
+    //         <Tooltip title="Employees">
+    //             <PeopleAltIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR027",
+    //     },
+    //     {
+    //       name: "Salary Component",
+    //       id: 57,
+    //       url: "./TR205/Salary Component",
+    //       icon: (
+    //         <Tooltip title="Salary Component">
+    //           <Diversity3Icon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR026",
+    //     },
+    //     // {
+    //     //   name: "Employee Allowance",
+    //     //   // id: 45,
+    //     //   url: "./TR152/Employee Allowance",
+    //     //   icon: (
+    //     //     <Tooltip title="Employee Allowance">
+    //     //       <Diversity3Icon color="info" />
+    //     //     </Tooltip>
+    //     //   ),
+    //     //   UGA_ADD: true,
+    //     //   UGA_DEL: true,
+    //     //   UGA_MOD: true,
+    //     //   UGA_PRINT: true,
+    //     //   UGA_PROCESS: true,
+    //     //   UGA_VIEW: true,
+    //     //   UGA_ACCESSIDS: "TR026",
+    //     // },
+    //     {
+    //       name: "Satuary Component",
+    //       id: 59,
+    //       url: "./TR207/Satuary Component",
+    //       icon: (
+    //         <Tooltip title="Satuary Component">
+    //           <Diversity3Icon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR026",
+    //     },
+    //     {
+    //       name: "Check In",
+    //       id: 45,
+    //       url: "./TR123/Check In",
+    //       icon: (
+    //         <Tooltip title="Check In">
+    //           <Diversity3Icon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR123",
+    //     },
+    //     {
+    //       name: "Check Out",
+    //       id: 46,
+    //       url: "./TR124/Check Out",
+    //       icon: (
+    //         <Tooltip title="Check Out">
+    //           <Diversity3Icon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR124",
+    //     },
         
-      ],
-    },
-    {
-      name: "FM",
-      id: 5,
-      MenuID: "FM700",
-      Tooltipname: "Finance Module",
-      icon: (
-        <Tooltip title="Finance Module">
-          <GroupsOutlinedIcon sx={{ color: "#651fff" }} />
-        </Tooltip>
-      ),
-      children: [
-        {
-          name: "Over Head",
-          id: 41,
-          url: "./TR085/Over Head",
-          icon: (
-            <Tooltip title="Over Head">
-              <RequestQuoteOutlinedIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR085",
-        },
-        {
-          name: "Fixed Asset Type",
-          id: 48,
-          url: "./TR135/Fixed Asset Type",
-          icon: (
-            <Tooltip title="Fixed Asset Type">
-              <Diversity3Icon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR135",
-        },
-        {
-          name: "Finance Category",
-          id: 453,
-          url: "./TR136/Finance Category",
-          icon: (
-            <Tooltip title="Finance Category">
-              <MonetizationOnIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR136",
-        },
-        {
-          name: "Costing",
-          id: 234,
-          url: "./TR140/Customer-Product",
-          icon: (
-            <Tooltip title="Costing">
-              <MonetizationOnIcon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR091",
-        },
-      ],
-    },
+    //   ],
+    // },
+    // {
+    //   name: "FM",
+    //   id: 5,
+    //   MenuID: "FM700",
+    //   Tooltipname: "Finance Module",
+    //   icon: (
+    //     <Tooltip title="Finance Module">
+    //       <GroupsOutlinedIcon sx={{ color: "#651fff" }} />
+    //     </Tooltip>
+    //   ),
+    //   children: [
+    //     {
+    //       name: "Over Head",
+    //       id: 41,
+    //       url: "./TR085/Over Head",
+    //       icon: (
+    //         <Tooltip title="Over Head">
+    //           <RequestQuoteOutlinedIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR085",
+    //     },
+    //     {
+    //       name: "Fixed Asset Type",
+    //       id: 48,
+    //       url: "./TR135/Fixed Asset Type",
+    //       icon: (
+    //         <Tooltip title="Fixed Asset Type">
+    //           <Diversity3Icon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR135",
+    //     },
+    //     {
+    //       name: "Finance Category",
+    //       id: 453,
+    //       url: "./TR136/Finance Category",
+    //       icon: (
+    //         <Tooltip title="Finance Category">
+    //           <MonetizationOnIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR136",
+    //     },
+    //     {
+    //       name: "Costing",
+    //       id: 234,
+    //       url: "./TR140/Customer-Product",
+    //       icon: (
+    //         <Tooltip title="Costing">
+    //           <MonetizationOnIcon color="info" />
+    //         </Tooltip>
+    //       ),
+    //       UGA_ADD: true,
+    //       UGA_DEL: true,
+    //       UGA_MOD: true,
+    //       UGA_PRINT: true,
+    //       UGA_PROCESS: true,
+    //       UGA_VIEW: true,
+    //       UGA_ACCESSIDS: "TR091",
+    //     },
+    //   ],
+    // },
     {
       name: "Security",
       id: 8,
@@ -996,23 +996,7 @@ const child = {
         </Tooltip>
       ),
       children: [
-        {
-          name: "User",
-          id: 235,
-          url: "./TR094/User",
-          icon: (
-            <Tooltip title="User">
-              <Diversity3Icon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR094",
-        },
+
         {
           name: "User Group",
           id: 236,
@@ -1029,6 +1013,23 @@ const child = {
           UGA_PROCESS: true,
           UGA_VIEW: true,
           UGA_ACCESSIDS: "TR099",
+        },
+        {
+          name: "User",
+          id: 235,
+          url: "./TR094/User",
+          icon: (
+            <Tooltip title="User">
+              <Diversity3Icon color="info" />
+            </Tooltip>
+          ),
+          UGA_ADD: true,
+          UGA_DEL: true,
+          UGA_MOD: true,
+          UGA_PRINT: true,
+          UGA_PROCESS: true,
+          UGA_VIEW: true,
+          UGA_ACCESSIDS: "TR094",
         },
       ],
     },
@@ -1242,14 +1243,15 @@ const Sidebars = () => {
                 alignItems="center"
                 ml="15px"
               >
-                <Avatar
+                {/* <Avatar
                   variant="rounded"
                   src={LgemsLogo}
                   sx={{ width: "100px" }}
                   onClick={() => {
                     navigate("./Chart");
                   }}
-                ></Avatar>
+                ></Avatar> */}
+                <Typography  variant="h2">UAAM</Typography>
 
                 <IconButton
                   onClick={
@@ -1301,7 +1303,7 @@ const Sidebars = () => {
               </ListItemButton>
             </Tooltip>
 
-            <Tooltip title="Logout">
+            {/* <Tooltip title="Logout">
               <ListItemButton
                 onClick={() => {
                   navigate("/Apps/changepassword");
@@ -1310,7 +1312,7 @@ const Sidebars = () => {
 
                 {!collapsed && <ListItemText primary="Change Password" />}
               </ListItemButton>
-            </Tooltip>
+            </Tooltip> */}
             <Divider sx={{ mt: 1 }} variant="middle" />
             <Grid mt={1} p={1} container direction={"column"} spacing={2}>
               <Grid item>

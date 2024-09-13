@@ -5,7 +5,7 @@ import VisibilityOffIcon  from '@mui/icons-material/VisibilityOff';
 import { useNavigate } from "react-router-dom";
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import Tabss from '../../ui-components/tabs';
-import LgemsLogo from '../../assets/img/LgemsLogo.png'
+import LgemsLogo from '../../assets/img/LOGO.jpg'
 import '../../index.css';
 import { useFormik } from "formik";
 import basicSchema from "./validation";
@@ -202,11 +202,11 @@ const Login=()=>{
     <Stack  
        
         sx={{
-        width: {sm:'100%',md:'100%',lg:'100%'},
+        width: {sm:'100%',md:'100%',lg:'100%', fontSize:'50px',fontWeight:'semibold'},
         alignContent:'center',
         justifyContent:'center',
         alignItems:'center',
-        backgroundImage: `url(${background})`,
+        // backgroundImage: `url(${background})`,
         backgroundSize:'cover',
         padding:1,
         borderRadius:'5px'
@@ -214,7 +214,8 @@ const Login=()=>{
     }}
     >
       
-    <Avatar variant='rounded' src={LgemsLogo} sx={{width:'227px',height:'100px'}}></Avatar>
+    <Avatar variant='rounded' src={LgemsLogo} sx={{width:'100%',height:'100%'}}></Avatar>
+           {/* UAAM */}
         </Stack>
       
 
