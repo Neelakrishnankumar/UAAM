@@ -5,7 +5,7 @@ import VisibilityOffIcon  from '@mui/icons-material/VisibilityOff';
 import { useNavigate } from "react-router-dom";
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import Tabss from '../../ui-components/tabs';
-import LgemsLogo from '../../assets/img/LOGO.jpg'
+import LgemsLogo from '../../assets/img/LOGO.jpg9.png'
 import '../../index.css';
 import { useFormik } from "formik";
 import basicSchema from "./validation";
