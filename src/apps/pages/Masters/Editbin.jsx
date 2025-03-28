@@ -220,15 +220,15 @@ const Editbin = () => {
       Mode === "A" && !del
         ? "insert"
         : Mode === "E" && del
-        ? "harddelete"
-        : "update";
+          ? "harddelete"
+          : "update";
     const idata = {
       RecordID: shelvesdata.RecordID,
       Code: values.shelvescode,
       Name: values.shelvesname,
       SortOrder: values.sortorder,
       BinsRecordID: recID,
-      Disable:"N"
+      Disable: "N"
     };
     // console.log("save" + JSON.stringify(saveData));
 
@@ -478,24 +478,18 @@ const Editbin = () => {
                   </FormControl>
                 </Box>
                 <Box display="flex" justifyContent="end" mt="20px" gap="20px">
-                  {YearFlag == "true" ? (
-                    <LoadingButton
-                      color="secondary"
-                      variant="contained"
-                      type="submit"
-                      loading={isLoading}
-                    >
-                      Save
-                    </LoadingButton>
-                  ) : (
-                    <Button
-                      color="secondary"
-                      variant="contained"
-                      disabled={true}
-                    >
-                      Save
-                    </Button>
-                  )}
+
+                  <LoadingButton
+                    color="secondary"
+                    variant="contained"
+                    type="submit"
+                    loading={isLoading}
+                    disabled={isLoading} // Ensure it is disabled while loading
+                  >
+                    Save
+                  </LoadingButton>
+
+
                   <Button
                     color="error"
                     variant="contained"
@@ -750,7 +744,7 @@ const Editbin = () => {
                       Delete
                     </Button>
                   )}
-                  <Button onClick={() =>  setScreen(0)} type="reset" color="warning" variant="contained">
+                  <Button onClick={() => setScreen(0)} type="reset" color="warning" variant="contained">
                     Cancel
                   </Button>
                 </Box>

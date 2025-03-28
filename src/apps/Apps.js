@@ -106,6 +106,7 @@ import EditPurchaseOrderParameter from "./pages/Masters/EditrPurchaseOrderParame
  import EditSalaryComponent from "./pages/Empolyee/EditSalaryComponent";
  import EditSatuaryComponent from "./pages/Empolyee/EditSatuaryComponent";
  import EditemployeePayroll from "./pages/Empolyee/EditemployeePayroll";
+import Logopage from "../assets/logopage";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -180,7 +181,8 @@ function App() {
                     path="/Secondarylistview/:accessID/:screenName/:parentID/:parentName/imageupload/:id"
                     element={<Imageupload />}
                   />
-                  <Route path="/Chart" element={<Chartboard />} />
+                  {/* <Route path="/Chart" element={<Chartboard />} /> */}
+                  <Route path="/AAM" element={<Logopage />} />
                   <Route
                     path="/:accessID/Editproductstock/:id/:Code/:Desc/:Mode"
                     element={<Editproductstock />}
@@ -415,7 +417,7 @@ function App() {
                     element={<Editpriceofothercustomer />}
                   />
                   <Route
-                    path="/:accessID/:screenName/EditUser/:id/:Mode"
+                    path="/Secondarylistview/:accessID/:screenName/:companyRecID/EditUsers/:id/:Mode"
                     element={<Edituser />}
                   />
                   <Route

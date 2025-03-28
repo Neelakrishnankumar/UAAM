@@ -5,7 +5,8 @@ import VisibilityOffIcon  from '@mui/icons-material/VisibilityOff';
 import { useNavigate } from "react-router-dom";
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import Tabss from '../../ui-components/tabs';
-import LgemsLogo from '../../assets/img/LOGO.jpg9.png'
+import LgemsLogo from '../../assets/img/LOGO.jpg9.png';
+import Newlogoimg from '../../assets/img/Newlogo.png';
 import '../../index.css';
 import { useFormik } from "formik";
 import basicSchema from "./validation";
@@ -90,11 +91,11 @@ const Login=()=>{
       // setLoading(true);
 
 
-      if ((values.company == "")||(values.company == undefined)) {
-        toast.error("Please select company");
-        setLoading(false);
-        return;
-      }
+      // if ((values.company == "")||(values.company == undefined)) {
+      //   toast.error("Please select company");
+      //   setLoading(false);
+      //   return;
+      // }
       if (values.username == "") {
         toast.error("UserName should not be empty");
         setLoading(false);
@@ -105,36 +106,42 @@ const Login=()=>{
         setLoading(false);
         return;
       }
-      if ((values.year == "")||(values.year == undefined)) {
-        toast.error("Please select year");
-        setLoading(false);
-        return;
-      }
+      // if ((values.year == "")||(values.year == undefined)) {
+      //   toast.error("Please select year");
+      //   setLoading(false);
+      //   return;
+      // }
     //  const data = await dispatch(fetchApidata(values.username,values.password,values.company,values.year));  
-     const idata = {"username":values.username,"password":values.password,"yearrecordid":values.year,"companyrecordid":values.company}
-     const data = await dispatch(authentication({idata}));
+     const idata = {"username":values.username,"password":values.password,
+      "yearrecordid":values.year,"companyrecordid":values.company}
+     const data = await dispatch(fetchApidata(values.username,values.password,
+      //values.company,values.year
+    ));
      console.log("🚀 ~ file: Login.jsx:126 ~ Login ~ data:", data)
+     var loginrecordID = data.payload.apiResponse.Recordid
+     //  var UserName = data.payload.apiResponse.Name
+     
+       sessionStorage.setItem("loginRecid", loginrecordID);
      
      
-     
-     if(data.payload.status == 200)
+     if(data.payload.Status=="Y")
      {  
-       var loginrecordID = data.payload.Data.Recordid
-      var company = data.payload.Data.Company
-      var year = data.payload.Data.Year
-      var YearFlag = data.payload.Data.YearFlag
-      var CompanyRecordid = data.payload.Data.CompanyRecordid
-      var stockflag = data.payload.Data.Process
-      var Cifbysea = data.payload.Data.Cifbysea
-      var Cifbyair = data.payload.Data.Cifbyair
-      var Fob = data.payload.Data.Fob
-      var Overhead = data.payload.Data.Overhead
-      var YearRecorid = data.payload.Data.YearRecorid
-      var Groupaccess = data.payload.Data.Groupaccess
-      var UserName = data.payload.Data.Name
-      var labourCharge = data.payload.Data.Labourcharges
+      //  var loginrecordID = data.payload.apiResponse.Recordid
+      var company = data.payload.apiResponse.Company
+      var year = data.payload.apiResponse.Year
+      var YearFlag = data.payload.apiResponse.YearFlag
+      var CompanyRecordid = data.payload.apiResponse.CompanyRecordid
+      var stockflag = data.payload.apiResponse.Process
+      var Cifbysea = data.payload.apiResponse.Cifbysea
+      var Cifbyair = data.payload.apiResponse.Cifbyair
+      var Fob = data.payload.apiResponse.Fob
+      var Overhead = data.payload.apiResponse.Overhead
+      var YearRecorid = data.payload.apiResponse.YearRecorid
+      var Groupaccess = data.payload.apiResponse.Groupaccess
+      var UserName = data.payload.apiResponse.Name
+      var labourCharge = data.payload.apiResponse.Labourcharges
       
-      var Modules = data.payload.Data.Modules
+      var Modules = data.payload.apiResponse.Modules
       
       sessionStorage.setItem("loginRecid", loginrecordID);
       sessionStorage.setItem("UserName",UserName);
@@ -153,7 +160,8 @@ const Login=()=>{
       sessionStorage.setItem("YearRecorid",YearRecorid)
       sessionStorage.setItem("Groupaccess",JSON.stringify(Groupaccess))
       sessionStorage.setItem("Modules",JSON.stringify(Modules))
-      navigate("/Apps/Chart");
+      //navigate("/Apps/TR014/Company");
+      navigate("/Apps/AAM");
      }
      else {
       setLoading(false);
@@ -214,7 +222,7 @@ const Login=()=>{
     }}
     >
       
-    <Avatar variant='rounded' src={LgemsLogo} sx={{width:'100%',height:'100%'}}></Avatar>
+    <Avatar variant='rounded' src={Newlogoimg} sx={{width:'100%',height:'100%'}}></Avatar>
            {/* UAAM */}
         </Stack>
       
@@ -228,7 +236,7 @@ const Login=()=>{
           
           >
             
-     <FormControl fullWidth>
+     {/* <FormControl fullWidth>
         
            <Field as="select"  label="Company" onBlur={handleBlur}
                 onChange={handleChange}
@@ -242,26 +250,13 @@ const Login=()=>{
              }
               
            </Field> 
-           {/* <Autocomplete
-        value={valuessss}
-        onChange={(event, newValue) => {
-          setValue(newValue);
-        }}
-        inputValue={values.company}
-        onInputChange={(event, newInputValue) => {
-          setInputValue(newInputValue);
-        }}
-        id="company"  name="company"
-        options={comboCompany}
-        sx={{ width: 300 }}
-        renderInput={(params) => <TextField focused {...params} label="Controllable" />}
-      />*/}
           
-      </FormControl> 
+          
+      </FormControl>  */}
 
      
  
- <FormControl  >
+        <FormControl sx={{marginTop:"80px"}} >
                <TextField margin='normal' 
                focused label='Username' 
                id='username' value={values.username}   
@@ -304,7 +299,7 @@ const Login=()=>{
            <FormControl fullWidth>
        
       
-         <Field as="select"  label="Year" onBlur={handleBlur}
+         {/* <Field as="select"  label="Year" onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.year}
                 id="year"
@@ -314,30 +309,9 @@ const Login=()=>{
                 <option value={year.RecordID}>{year.Id}</option>
               ))
              }
-           </Field>
-           <ErrorMessage name="year" /> 
-           {/* <TextField
-           onBlur={handleBlur} 
-          id="year"
-          name="year"
-          select
-          fullWidth
-          error={!!touched.year && !!errors.year}
-          helperText={touched.year && errors.year}
-          SelectProps={{
-            native: true,
-          }}
-          focused
-          label="Select year"
-          
-          onChange={e=>setYearcombo(e.target.value)}
-        >
-          <option value=''></option>
-          { YearCombo.map((year, index) => (
-                <option value={year.Recordid}>{year.Id}</option>
-              ))
-             }
-        </TextField> */}
+           </Field> */}
+           {/* <ErrorMessage name="year" />  */}
+           
     </FormControl>
       <Stack direction={'row'} justifyContent='end' gap={'10px'} >
       {/* <Button variant="contained" color={"success"} onClick={() => {fnLogin(values)}}>Ok</Button> */}

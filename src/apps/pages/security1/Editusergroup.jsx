@@ -433,8 +433,8 @@ const Editusergroup = () => {
       Groupaccess: rowData,
       // YearID:,
       // Company:,
-      Finyear,
-      CompanyID,
+      //Finyear,
+      //CompanyID,
     };
 
     const response = await dispatch(postData({ accessID, action, idata }));

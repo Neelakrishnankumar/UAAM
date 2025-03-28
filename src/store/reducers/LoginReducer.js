@@ -130,7 +130,7 @@ export function fetchApidata(emailID, password, company, year) {
       };
       dispatch(pending());
       idata = JSON.stringify(idata);
-      // console.log("🚀 ~ file: LoginReducer.js:94 ~ r eturn ~ idata:", idata)
+      console.log("🚀 ~ file: LoginReducer.js:94 ~ r eturn ~ idata:", idata)
       const success = await axios.get(url, {
         params: {
           data: idata,

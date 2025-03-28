@@ -2015,7 +2015,7 @@ const ListviewSecondary = () => {
                 </IconButton>
               </Tooltip>
             </Box>
-          ) : YearFlag == "true" ? (
+          ) : 
             <Tooltip arrow title="Add">
               <IconButton>
                 <AddOutlinedIcon
@@ -2031,9 +2031,7 @@ const ListviewSecondary = () => {
                 />
               </IconButton>
             </Tooltip>
-          ) : (
-            false
-          )}
+          }
           {accessID == "TR048" && !doesArrayContainNegative() ? (
             <Tooltip arrow title="Production Card Issue">
               <PendingActionsIcon

@@ -54,7 +54,7 @@ const Editcompany = () => {
 
 
   useEffect(() => {
-    dispatch(screenRightsData(accessID));
+    //dispatch(screenRightsData(accessID));
 
     dispatch(getFetchData({ accessID, get: "get", recID }));
   }, [location.key]);
@@ -83,6 +83,7 @@ const Editcompany = () => {
     gst: Data.Gst,
     Lut: Data.Lut,
     sortOrder: Data.SortOrder,
+    license:Data.License,
     disable: Data.Disable  === "Y" ? true : false ,
     stockClose: Data.Process === "Y" ? true : false ,
     useregular:Data.Regularslno === "Y" ? true : false ,
@@ -143,6 +144,7 @@ const Editcompany = () => {
       Gst: values.gst,
       Lut: values.Lut,
       SortOrder: values.sortOrder,
+      License:values.license,
       YearID: Year,
       Disable:values.disable === true ? "Y" : "N",
       Process: values.stockClose === true ? "Y" : "N",
@@ -150,6 +152,7 @@ const Editcompany = () => {
       Finyear,
       CompanyID,
     };
+    console.log(idata,"savedata");
     let action = mode === "A" ? "insert" : "update";
     const data = await dispatch(postData({ accessID, action, idata }));
     if (data.payload.Status == "Y") {
@@ -262,17 +265,18 @@ const Editcompany = () => {
                       onChange={handleChange}
                       value={values.code}
                       name="code"
-                      error={!!touched.code && !!errors.code}
-                      helperText={touched.code && errors.code}
+                      // error={!!touched.code && !!errors.code}
+                      // helperText={touched.code && errors.code}
                       focused
                       autoFocus
+                     
                       inputProps={{ readOnly: true }}
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The Code");
-                      }}
-                      onInput={(e) => {
-                        e.target.setCustomValidity("");
-                      }}
+                      // onInvalid={(e) => {
+                      //   e.target.setCustomValidity("Please Fill The Code");
+                      // }}
+                      // onInput={(e) => {
+                      //   e.target.setCustomValidity("");
+                      // }}
                     />
 
                     <TextField
@@ -398,22 +402,22 @@ const Editcompany = () => {
                       type="number"
                       label="Phone"
                       required
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The Phone");
-                      }}
+                      // onInvalid={(e) => {
+                      //   e.target.setCustomValidity("Please Fill The Phone");
+                      // }}
                       value={values.phone}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       name="phone"
                       sx={{ gridColumn: "span 2" }}
                       focused
-                      error={!!touched.phone && !!errors.phone}
-                      helperText={touched.phone && errors.phone}
+                      // error={!!touched.phone && !!errors.phone}
+                      // helperText={touched.phone && errors.phone}
                     // inputProps={{maxLength: 10}}
                       onInput={(e) => {
-                        // e.target.value = Math.max(0, parseInt(e.target.value))
-                        //   .toString()
-                        //   .slice(0, 11);
+                        e.target.value = Math.max(0, parseInt(e.target.value))
+                          .toString()
+                          .slice(0, 11);
 
                         e.target.setCustomValidity("");
                       }}
@@ -444,8 +448,7 @@ const Editcompany = () => {
                       onBlur={handleBlur}
                       onChange={handleChange}
                       name="web"
-                      error={!!touched.web && !!errors.web}
-                      helperText={touched.web && errors.web}
+                     
                       sx={{ gridColumn: "span 2" }}
                       focused
                       
@@ -457,12 +460,12 @@ const Editcompany = () => {
                       type="email"
                       label="Email Id"
                       required
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The Email Id");
-                      }}
-                      onInput={(e) => {
-                        e.target.setCustomValidity("");
-                      }}
+                      // onInvalid={(e) => {
+                      //   e.target.setCustomValidity("Please Fill The Email Id");
+                      // }}
+                      // onInput={(e) => {
+                      //   e.target.setCustomValidity("");
+                      // }}
                       value={values.email}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -502,8 +505,7 @@ const Editcompany = () => {
                       onBlur={handleBlur}
                       onChange={handleChange}
                       name="rbiCode"
-                      error={!!touched.rbiCode && !!errors.rbiCode}
-                      helperText={touched.rbiCode && errors.rbiCode}
+                      
                       focused
                       inputProps={{ maxLength: 5,}}
                     />
@@ -529,7 +531,29 @@ const Editcompany = () => {
                       inputProps={{ maxLength: 15,  }}
                     />
  
+                    
                     <TextField
+                      fullWidth
+                      variant="filled"
+                      type="text"
+                      label="Subscription Code"
+                      required
+                      onInvalid={(e) => {
+                        e.target.setCustomValidity("Please Fill The License Key");
+                      }}
+                      onInput={(e) => {
+                        e.target.setCustomValidity("");
+                      }}
+                      value={values.license}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="license"
+                      error={!!touched.license && !!errors.license}
+                      helperText={touched.license && errors.license}
+                      focused
+                      inputProps={{ maxLength: 15,  }}
+                    />
+                  <TextField
                       fullWidth
                       variant="filled"
                       type="number"
@@ -538,8 +562,7 @@ const Editcompany = () => {
                       onBlur={handleBlur}
                       onChange={handleChange}
                       name="sortOrder"
-                      error={!!touched.sortOrder && !!errors.sortOrder}
-                      helperText={touched.sortOrder && errors.sortOrder}
+                     
                       sx={{
                         gridColumn: "span 2",
                         background: "#fff6c3",
@@ -548,11 +571,11 @@ const Editcompany = () => {
                      
                       focused
                       onWheel={(e) => e.target.blur()} 
-                      onInput={(e) => {
-                        e.target.value = Math.max(0, parseInt(e.target.value))
-                          .toString()
-                          .slice(0, 11);
-                      }}
+                      // onInput={(e) => {
+                      //   e.target.value = Math.max(0, parseInt(e.target.value))
+                      //     .toString()
+                      //     .slice(0, 11);
+                      // }}
                     />
 
                     <Box>
@@ -594,7 +617,7 @@ const Editcompany = () => {
                   </FormControl>
                 </Box>
                 <Box display="flex" justifyContent="end" mt="20px" gap="20px">
-                  {YearFlag == "true" ? (
+                 
                     <LoadingButton
                       color="secondary"
                       variant="contained"
@@ -604,15 +627,8 @@ const Editcompany = () => {
                     >
                       Save
                     </LoadingButton>
-                  ) : (
-                    <Button
-                      color="secondary"
-                      variant="contained"
-                      disabled={true}
-                    >
-                      Save
-                    </Button>
-                  )}
+                   
+                
 
                   <Button
                     color="error"

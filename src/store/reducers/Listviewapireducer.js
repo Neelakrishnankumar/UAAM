@@ -451,7 +451,7 @@ export const fetchListview =
   (AccessID, screenName, filter, any, CompId) => async (dispatch, getState) => {
     // const navigate = useNavigate();;
     var url = store.getState().globalurl.listViewurl;
-    var compID = sessionStorage.getItem("compID");
+    var CompId = sessionStorage.getItem("compID");
     // alert(compID);
     const year = sessionStorage.getItem("year");
     const company = sessionStorage.getItem("company");
@@ -1850,6 +1850,7 @@ export const fetchListview =
                       false
                     )}
                     {AccessID == "TR099" ? (
+                      <>
                       <Link
                         to={`/Apps/Secondarylistview/${params.row.ChildID}/${params.row.ChildName}/${params.row.RecordID}`}
                       >
@@ -1859,6 +1860,16 @@ export const fetchListview =
                           </IconButton>
                         </Tooltip>
                       </Link>
+                      <Link
+                      to={`/Apps/Secondarylistview/${params.row.ChildID1}/${params.row.ChildName1}/${params.row.RecordID}`}
+                    >
+                      <Tooltip title="List of Users">
+                        <IconButton color="info" size="small">
+                          <ListAltOutlinedIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Link>
+                    </>
                     ) : (
                       false
                     )}

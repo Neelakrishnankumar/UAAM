@@ -37,6 +37,7 @@ const Edituser = () => {
   const recID = params.id;
   const mode = params.Mode;
   const location = useLocation();
+  const companyRecID = params.companyRecID;
   // const logincompanyRecID = sessionStorage.getItem("compID");
   // const YearRecorid = sessionStorage.getItem("YearRecorid");
   const data = useSelector((state) => state.formApi.Data);
@@ -82,8 +83,8 @@ const Edituser = () => {
       Sortorder: values.sortorder,
       // YearID: YearRecorid,
       // Company: logincompanyRecID,
-      YearID:Finyear,
-      Company:CompanyID,
+      //YearID:Finyear,
+      Company:companyRecID,
     };
     const data = await dispatch(postData({ accessID, action, idata }));
     // return
@@ -91,7 +92,7 @@ const Edituser = () => {
       toast.success(data.payload.Msg);
       // setIni(true)
       setLoading(false);
-      navigate(`/Apps/TR094/User`);
+      navigate(`/Apps/Secondarylistview/TR094/Users/${companyRecID}`);
     } else {
       toast.error(data.payload.Msg);
       setLoading(false);
@@ -153,7 +154,7 @@ const Edituser = () => {
           navigate("/");
         }
         if (props === "Close") {
-          navigate("/Apps/TR094/User");
+          navigate(`/Apps/Secondarylistview/TR094/Users/${companyRecID}`);
         }
       } else {
         return;
@@ -399,7 +400,7 @@ const Edituser = () => {
                     variant="contained"
                     color="error"
                     onClick={() => {
-                      navigate("/Apps/TR094/User");
+                      navigate(`/Apps/Secondarylistview/TR094/Users/${companyRecID}`);
                     }}
                   >
                     CANCEL
@@ -417,6 +418,8 @@ const Edituser = () => {
               accessID="2039"
               screenName="UserGroup"
               childToParent={childToParent}
+              filterName={"CompanyID"}
+              filterValue={companyRecID}
             />
           </Popup>
         </Box>

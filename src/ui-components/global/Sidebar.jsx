@@ -986,7 +986,7 @@ const child = {
     //   ],
     // },
     {
-      name: "Security",
+      name: "License",
       id: 8,
       Tooltipname: "Security",
       MenuID: "SE100",
@@ -996,9 +996,26 @@ const child = {
         </Tooltip>
       ),
       children: [
+        {
+                name: "Company",
+                url: "./TR014/Company",
+                id: 11,
+                icon: (
+                  <Tooltip title="Company">
+                    <BusinessIcon color="info" />
+                  </Tooltip>
+                ),
+                UGA_ADD: true,
+                UGA_DEL: true,
+                UGA_MOD: true,
+                UGA_PRINT: true,
+                UGA_PROCESS: true,
+                UGA_VIEW: true,
+                UGA_ACCESSIDS: "TR014",
+              },
 
         {
-          name: "User Group",
+          name: "User Rights",
           id: 236,
           url: "./TR099/Companies",
           icon: (
@@ -1014,23 +1031,23 @@ const child = {
           UGA_VIEW: true,
           UGA_ACCESSIDS: "TR099",
         },
-        {
-          name: "User",
-          id: 235,
-          url: "./TR094/User",
-          icon: (
-            <Tooltip title="User">
-              <Diversity3Icon color="info" />
-            </Tooltip>
-          ),
-          UGA_ADD: true,
-          UGA_DEL: true,
-          UGA_MOD: true,
-          UGA_PRINT: true,
-          UGA_PROCESS: true,
-          UGA_VIEW: true,
-          UGA_ACCESSIDS: "TR094",
-        },
+        // {
+        //   name: "User",
+        //   id: 235,
+        //   url: "./TR094/User",
+        //   icon: (
+        //     <Tooltip title="User">
+        //       <Diversity3Icon color="info" />
+        //     </Tooltip>
+        //   ),
+        //   UGA_ADD: true,
+        //   UGA_DEL: true,
+        //   UGA_MOD: true,
+        //   UGA_PRINT: true,
+        //   UGA_PROCESS: true,
+        //   UGA_VIEW: true,
+        //   UGA_ACCESSIDS: "TR094",
+        // },
       ],
     },
   ],
@@ -1251,7 +1268,7 @@ const Sidebars = () => {
                     navigate("./Chart");
                   }}
                 ></Avatar> */}
-                <Typography  variant="h2">UAAM</Typography>
+                <Typography  variant="h2">AAM</Typography>
 
                 <IconButton
                   onClick={
@@ -1263,7 +1280,7 @@ const Sidebars = () => {
               </Box>
             )}
           </MenuItem>
-          {!collapsed && (
+          {/* {!collapsed && (
             <Box
               display="flex"
               flexDirection={"column"}
@@ -1283,7 +1300,7 @@ const Sidebars = () => {
                 <Typography variant="subtitle2">{year}</Typography>
               </Box>
             </Box>
-          )}
+          )} */}
 
           <Box paddingBottom={3}>
             {handleMenu(child.data, Groupaccess)}

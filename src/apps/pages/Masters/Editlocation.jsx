@@ -45,6 +45,7 @@ const Editlocation = () => {
   const dispatch = useDispatch();
   var recID = params.id;
   var mode = params.Mode;
+  var CompID = params.filtertype;
   var accessID = params.accessID;
   var parentID = params.filtertype;
   const data = useSelector((state) => state.formApi.Data);
@@ -55,8 +56,8 @@ const Editlocation = () => {
   const YearFlag = sessionStorage.getItem("YearFlag");
   const Year = sessionStorage.getItem("year");
   const Finyear = sessionStorage.getItem("YearRecorid");
-  const CompanyID = sessionStorage.getItem("compID");
-
+ // const CompanyID = sessionStorage.getItem("compID");
+//console.log(CompanyID,"comppppid");
 
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const location = useLocation();
@@ -90,17 +91,17 @@ const Editlocation = () => {
       Disable: values.disable == true ? "Y" : "N",
       CompanyRecordID: parentID,
       ContactPerson: selectCPLookupData.CPlookupRecordid,
-      Finyear,
-      CompanyID,
+      //Finyear,
+      //CompanyID,
     };
 
     let action = mode === "A" ? "insert" : "update";
     const data = await dispatch(postData({ accessID, action, idata }));
     if (data.payload.Status == "Y") {
       toast.success(data.payload.Msg);
-     
-        navigate(`/Apps/Secondarylistview/TR128/Location/${parentID}`);
-      
+
+      navigate(`/Apps/Secondarylistview/TR128/Location/${parentID}`);
+
     } else {
       toast.error(data.payload.Msg);
     }
@@ -423,24 +424,18 @@ const Editlocation = () => {
                   </Box>
                 </Box>
                 <Box display="flex" justifyContent="end" mt="20px" gap="20px">
-                  {YearFlag == "true" ? (
-                    <LoadingButton
-                      color="secondary"
-                      variant="contained"
-                      type="submit"
-                      loading={isLoading}
-                    >
-                      Save
-                    </LoadingButton>
-                  ) : (
-                    <Button
-                      color="secondary"
-                      variant="contained"
-                      disabled={true}
-                    >
-                      Save
-                    </Button>
-                  )}
+
+                  <LoadingButton
+                    color="secondary"
+                    variant="contained"
+                    type="submit"
+                    loading={isLoading}
+                    disabled={isLoading} 
+                  >
+                    Save
+                  </LoadingButton>
+
+
                   <Button
                     color="error"
                     variant="contained"
@@ -465,6 +460,8 @@ const Editlocation = () => {
               accessID="2024"
               screenName="Employee"
               childToParent={childToParent}
+              filterName={"CompanyID"}
+              filterValue={CompID}
             />
           </Popup>
         </Box>
