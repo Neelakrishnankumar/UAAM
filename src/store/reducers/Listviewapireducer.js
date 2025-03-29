@@ -1874,15 +1874,27 @@ export const fetchListview =
                       false
                     )}
                     {AccessID == "TR014" ? (
-                      <Link
-                        to={`/Apps/Secondarylistview/${params.row.ChildID}/${params.row.ChildName}/${params.row.RecordID}`}
-                      >
-                        <Tooltip title="Locations">
-                          <IconButton color="info" size="small">
-                            <ListAltOutlinedIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </Link>
+                          <>
+                          <Link
+                            to={`/Apps/Secondarylistview/${params.row.ChildID}/${params.row.ChildName}/${params.row.RecordID}`}
+                          >
+                            <Tooltip title="Locations">
+                              <IconButton color="info" size="small">
+                                <ListAltOutlinedIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Link>
+                            <Link
+                              to={`/Apps/Secondarylistview/${params.row.ChildID1}/${params.row.ChildName1}/${params.row.RecordID}`}
+                            // to={`/Apps/${params.row.ChildID1}/${params.row.ChildName1}/Edit${params.row.ChildName1}/${params.row.RecordID}/E`}
+                        >
+                            <Tooltip title="Subscriptions">
+                              <IconButton color="info" size="small">
+                                <ListAltOutlinedIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Link>
+                          </>
                     ) : (
                       false
                     )}
