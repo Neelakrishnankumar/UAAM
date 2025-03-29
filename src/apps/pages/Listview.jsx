@@ -768,6 +768,26 @@ const [productFilter,setProductFilter] = useState();
               variant="outlined"
             />
           </Box>
+          ) : accessID == "TR014" ? (
+            <Box display="flex" flexDirection="row" padding="25px">
+              <Chip
+              icon={<EditIcon color="primary" />}
+              label="Edit"
+              variant="outlined"
+            />
+              <Chip
+                icon={<ListAltOutlinedIcon color="primary" />}
+                label="Location"
+                variant="outlined"
+                sx={{ marginLeft: "50px" }}
+              />
+              <Chip
+                icon={<ListAltOutlinedIcon color="primary" />}
+                label="Subscription"
+                variant="outlined"
+                sx={{ marginLeft: "50px" }}
+              />
+            </Box>
         ) : (
           <Box display="flex" flexDirection="row" padding="25px">
             <Chip
@@ -777,6 +797,7 @@ const [productFilter,setProductFilter] = useState();
             />
           </Box>
         )}
+        
       </Box>
       <MatxCustomizer
         open={open}

@@ -87,6 +87,8 @@ const Editcompany = () => {
     disable: Data.Disable  === "Y" ? true : false ,
     stockClose: Data.Process === "Y" ? true : false ,
     useregular:Data.Regularslno === "Y" ? true : false ,
+    noOfEmployees:Data.NumberOfEmployee,
+    noofusers:Data.NumberOfUsers,
   };
   /*************************LOOKUP DATA*********************/
   const [openCNpopup, setOpenCNpopup] = useState(false);
@@ -151,6 +153,8 @@ const Editcompany = () => {
       Regularslno: values.useregular === true ? "Y" : "N",
       Finyear,
       CompanyID,
+      NumberOfEmployee:values.noOfEmployees,
+      NumberOfUsers:values.noofusers
     };
     console.log(idata,"savedata");
     let action = mode === "A" ? "insert" : "update";
@@ -437,6 +441,25 @@ const Editcompany = () => {
                       focused
                      
                     />
+
+<TextField
+                      fullWidth
+                      variant="filled"
+                      type="number"
+                      label="No Of Users"
+                      value={values.noofusers}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="noofusers"
+                     
+                      sx={{
+                        gridColumn: "span 2",
+                        input: { textAlign: "right" },
+                      }}
+                     
+                      focused
+                      onWheel={(e) => e.target.blur()} 
+                  />
                   </FormControl>
                   <FormControl sx={{ gridColumn: "span 2", gap: "40px" }}>
                     <TextField
@@ -578,6 +601,27 @@ const Editcompany = () => {
                       // }}
                     />
 
+
+  
+
+                  <TextField
+                      fullWidth
+                      variant="filled"
+                      type="number"
+                      label="No Of Employees"
+                      value={values.noOfEmployees}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="noOfEmployees"
+                     
+                      sx={{
+                        gridColumn: "span 2",
+                        input: { textAlign: "right" },
+                      }}
+                     
+                      focused
+                      onWheel={(e) => e.target.blur()} 
+                  />
                     <Box>
                       <Field
                         //  size="small"

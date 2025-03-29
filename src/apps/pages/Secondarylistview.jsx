@@ -99,6 +99,7 @@ const ListviewSecondary = () => {
       screenName = "Assorted";
     }
   }
+
   if (accessID == "TR011") {
     filter = invoiceFilter;
   } else if (accessID == "TR074") {
@@ -153,7 +154,7 @@ const ListviewSecondary = () => {
     filter = `parentID=${params.bomID}`;
   } else if (accessID == "TR087") {
     filter = `${parentID}' AND CompID = '${compID}`;
-  } else {
+  }else {
     filter = parentID;
   }
   const listViewData = useSelector((state) => state.listviewApi.rowData);
@@ -2182,6 +2183,8 @@ const ListviewSecondary = () => {
               sx={{ marginLeft: "50px" }}
             />
           </Box>
+
+
         ) : accessID == "TR033" ? (
           <Box display="flex" flexDirection="row" padding="25px">
             <Chip
