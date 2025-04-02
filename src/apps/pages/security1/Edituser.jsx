@@ -94,7 +94,9 @@ const Edituser = () => {
       setLoading(false);
       navigate(`/Apps/Secondarylistview/TR094/Users/${companyRecID}`);
     } else {
-      toast.error(data.payload.Msg);
+      toast.error(data.payload.Message);
+      console.log(data.payload.Message, "--error data.payload.Message");
+      
       setLoading(false);
     }
   };

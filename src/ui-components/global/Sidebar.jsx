@@ -1013,6 +1013,23 @@ const child = {
                 UGA_VIEW: true,
                 UGA_ACCESSIDS: "TR014",
               },
+              {
+                name: "Products",
+                url: "./TR240/Products",
+                id: 237,
+                icon: (
+                  <Tooltip title="Products">
+                    <BusinessIcon color="info" />
+                  </Tooltip>
+                ),
+                UGA_ADD: true,
+                UGA_DEL: true,
+                UGA_MOD: true,
+                UGA_PRINT: true,
+                UGA_PROCESS: true,
+                UGA_VIEW: true,
+                UGA_ACCESSIDS: "TR014", //we didn't have UGA SO we can create a  ststic Menu 
+              },
 
         {
           name: "User Rights",

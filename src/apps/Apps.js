@@ -108,6 +108,7 @@ import EditPurchaseOrderParameter from "./pages/Masters/EditrPurchaseOrderParame
  import EditemployeePayroll from "./pages/Empolyee/EditemployeePayroll";
 import Logopage from "../assets/logopage";
 import Editsubscription from "./pages/Masters/Editsubscription";
+import EditProductSubScription from "./pages/Masters/EditProductSubScription";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -551,10 +552,14 @@ function App() {
                   {/* SUBSCRPTION SCREEN */}
 
                   <Route
-                    path="/Secondarylistview/:accessID/:screenName/:companyRecID/Editsubscription/:id/:Mode"
+                   path="/Secondarylistview/:accessID/:screenName/:filtertype/Editsubscription/:id/:Mode"
 
                     // path="/:accessID/:screenName/Editsubscription/:id/:Mode"
                     element={<Editsubscription />}
+                  />
+                   <Route
+                    path="/:accessID/:screenName/EditProducts/:id/:Mode"
+                    element={<EditProductSubScription />}
                   />
 
                 </Routes>

@@ -287,12 +287,15 @@ export const fetchExplorelitview =
     // const navigate = useNavigate();  
     var url = store.getState().globalurl.listViewurl;
 
-    if (filter != "" && AccessID !== "TR210" && AccessID !== "TR146" && AccessID !== "TR208" && AccessID !== "TR019" && AccessID !== "TR017"&& AccessID !== "TR088" && AccessID !== "TR016"&& AccessID !== "TR125" && AccessID !== "TR126"&& AccessID !== "TR130"&& AccessID !== "TR131"&& AccessID !=="TR139") {
+    if (filter != "" && AccessID !== "TR210" && AccessID !== "TR146" && AccessID !== "TR239" && AccessID !== "TR208" && AccessID !== "TR019" && AccessID !== "TR017"&& AccessID !== "TR088" && AccessID !== "TR016"&& AccessID !== "TR125" && AccessID !== "TR126"&& AccessID !== "TR130"&& AccessID !== "TR131"&& AccessID !=="TR139") {
       filter = "parentID=" + filter;
 
     }
     if((AccessID == "TR017")||(AccessID == "TR088") ){
       filter = filter
+    }
+    if(AccessID == "TR239"){
+      filter = "OurProductID=" + filter;
     }
     // if (AccessID == "TR019") { TR208
     //   filter = "MtlRecordID=" + filter;

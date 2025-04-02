@@ -523,6 +523,7 @@ export const fetchListview =
         AccessID !=  "TR010" &&
         AccessID !=  "TR091" &&
         AccessID !=  "TR140" &&
+        AccessID !=  "TR238" &&
          AccessID != "TR022"
       ) {
         filter = "parentID=" + `'${filter}'`;
@@ -1712,6 +1713,7 @@ export const fetchListview =
             AccessID !== "TR111" &&
             AccessID !== "TR112" &&
             AccessID !== "TR114" &&
+            AccessID !=  "TR238" &&
             AccessID !== "TR115"
           ) {
             obj = {

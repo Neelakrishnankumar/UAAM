@@ -6,6 +6,7 @@ import {
   Breadcrumbs,
   Tooltip,
   Chip,
+  Paper,
 } from "@mui/material";
 import OpenInBrowserOutlinedIcon from "@mui/icons-material/OpenInBrowserOutlined";
 import EmailIcon from "@mui/icons-material/Email";
@@ -24,6 +25,7 @@ import {
   GridToolbarContainer,
   GridToolbarExport,
 } from "@mui/x-data-grid";
+
 import { tokens, ColorModeContext } from "../../Theme";
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -49,6 +51,7 @@ import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore
 import axios from "axios";
 import toast from "react-hot-toast";
 import store from "../..";
+import { dataGridHeaderFooterHeight, dataGridHeight, dataGridPageSize, dataGridPageSizeOption, dataGridRowHeight } from "../../ui-components/utils";
 const ListviewSecondary = () => {
   const colorMode = useContext(ColorModeContext);
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -87,6 +90,7 @@ const ListviewSecondary = () => {
   var screenName = params.screenName;
   var Type = params.Type;
   var remarkDec = params.remarkDec;
+  var CompanyID = `${parentID}'`;
   const { toggleSidebar, broken, rtl } = useProSidebar();
 
   const rowData = location.state || {};
@@ -154,7 +158,9 @@ const ListviewSecondary = () => {
     filter = `parentID=${params.bomID}`;
   } else if (accessID == "TR087") {
     filter = `${parentID}' AND CompID = '${compID}`;
-  }else {
+  } else if (accessID == "TR238") {
+    filter = `CompanyID= '${parentID}'`;
+  } else {
     filter = parentID;
   }
   const listViewData = useSelector((state) => state.listviewApi.rowData);
@@ -171,22 +177,22 @@ const ListviewSecondary = () => {
     (state) => state.listviewApi.productionCardRecid
   );
 
-  const alternateColorsRecordID  = useSelector(
+  const alternateColorsRecordID = useSelector(
     (state) => state.listviewApi.colorsRecID
   );
   const childToParent = async (childdata, type) => {
-    console.log("🚀 ~ childToParent ~ childdata:",    {
+    console.log("🚀 ~ childToParent ~ childdata:", {
       FromMatrialID: childdata.parentID,
       ToMatrialID: childdata.RecordID,
       PrCardHeaderID: productionCardRecid,
-    })
+    });
     var url = store.getState().globalurl.alterNateMaterial;
 
     const response = await axios.post(
       url,
       {
-        FromMatrialID:childdata.RecordID ,
-        ToMatrialID:childdata.parentID ,
+        FromMatrialID: childdata.RecordID,
+        ToMatrialID: childdata.parentID,
         PrCardHeaderID: productionCardRecid,
       },
       {
@@ -206,7 +212,6 @@ const ListviewSecondary = () => {
       dispatch(productionlookupOpen({ materialRecID: 0, productionCardID: 0 }));
       dispatch(fetchListview(accessID, screenName, filter, "", compID));
     }
-    
   };
 
   function filterByID(item) {
@@ -1404,6 +1409,32 @@ const ListviewSecondary = () => {
               </Typography>
             </Breadcrumbs>
           </Box>
+        ) : accessID == "TR238" ? (
+          <Box display="flex" borderRadius="3px" alignItems="center">
+            <Breadcrumbs
+              maxItems={2}
+              aria-label="breadcrumb"
+              separator={<NavigateNextIcon sx={{ color: "#0000D1" }} />}
+            >
+              <Typography
+                variant="h5"
+                color="#0000D1"
+                sx={{ cursor: "default" }}
+                onClick={() => {
+                  navigate("/Apps/TR014/Company");
+                }}
+              >
+                Company
+              </Typography>
+              <Typography
+                variant="h5"
+                color="#0000D1"
+                sx={{ cursor: "default" }}
+              >
+                Subscription
+              </Typography>
+            </Breadcrumbs>
+          </Box>
         ) : accessID == "TR048" ? (
           <Breadcrumbs
             maxItems={2}
@@ -2016,7 +2047,7 @@ const ListviewSecondary = () => {
                 </IconButton>
               </Tooltip>
             </Box>
-          ) : 
+          ) : (
             <Tooltip arrow title="Add">
               <IconButton>
                 <AddOutlinedIcon
@@ -2032,7 +2063,7 @@ const ListviewSecondary = () => {
                 />
               </IconButton>
             </Tooltip>
-          }
+          )}
           {accessID == "TR048" && !doesArrayContainNegative() ? (
             <Tooltip arrow title="Production Card Issue">
               <PendingActionsIcon
@@ -2071,13 +2102,16 @@ const ListviewSecondary = () => {
     sessionStorage.setItem("secondaryCurrentPage", pageno);
   };
 
-
   return (
     <React.Fragment>
-      <Box m="5px">
+      {/* <Box m="5px"> */}
+      <Paper elevation={4} sx={{ margin: "30px 20px 0px 20px" }}>
         <Box
+          // m="5px 0 0 0"
+          // height="85vh"
           m="5px 0 0 0"
-          height="85vh"
+          padding={2}
+          height={dataGridHeight}
           sx={{
             "& .MuiDataGrid-root": {
               // border: "none",
@@ -2106,22 +2140,52 @@ const ListviewSecondary = () => {
               backgroundColor: "#f5cbae",
               color: "#1a3e72",
             },
+            
+            "& .odd-row": {
+              backgroundColor: "",
+              color: "", // Color for odd rows
+            },
+            "& .even-row": {
+              backgroundColor: "#D3D3D3",
+              color: "", // Color for even rows
+            },
+            
           }}
         >
           <DataGrid
+           sx={{
+            "& .MuiDataGrid-footerContainer": {
+              height: dataGridHeaderFooterHeight,
+              minHeight: dataGridHeaderFooterHeight,
+            },
+          }}
             key={accessID}
             rows={listViewData}
             columns={columns}
             page={page}
             disableSelectionOnClick
             getRowId={(row) => row.RecordID}
-            pageSize={pageSize}
+            // pageSize={pageSize}
+            pageSize={dataGridPageSize}
+            rowHeight={dataGridRowHeight}
+            headerHeight={dataGridHeaderFooterHeight}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={[5, 10, 20]}
+            // rowsPerPageOptions={[5, 10, 20]}
+            rowsPerPageOptions={dataGridPageSizeOption}
             onPageChange={(pageno) => handlePagechange(pageno)}
             components={{
               Toolbar: () => CustomToolbar(listViewData),
             }}
+            getRowClassName={(params) => {
+              let rowClass = params.indexRelativeToCurrentPage % 2 === 0 ? "odd-row" : "even-row";
+            
+              if (params.row.Rate > params.row.FixedRate || params.row.RemarkRecordID == "24" || params.row.Colourflag == "Y") {
+                rowClass += " gridcolor"; // Append gridcolor class
+              }
+            
+              return rowClass;
+            }}
+            
             loading={loading}
             componentsProps={{
               toolbar: {
@@ -2129,16 +2193,22 @@ const ListviewSecondary = () => {
                 quickFilterProps: { debounceMs: 500 },
               },
             }}
-            getRowClassName={(params) =>
-              params.row.Rate > params.row.FixedRate ||
-              params.row.RemarkRecordID == "24"||
-              params.row.Colourflag == "Y"
-                ? "gridcolor"
-                : ""
-            }
+            // getRowClassName={(params) =>
+            //   params.row.Rate > params.row.FixedRate ||
+            //   params.row.RemarkRecordID == "24" ||
+            //   params.row.Colourflag == "Y"
+            //     ? "gridcolor"
+            //     : ""
+            // }
+            
           />
+
+
         </Box>
-        {accessID == "TR001" ? (
+      </Paper>
+        {accessID == "TR238" ? (
+          false
+        ) : accessID == "TR001" ? (
           <Box
             display="flex"
             flexDirection="row"
@@ -2183,8 +2253,6 @@ const ListviewSecondary = () => {
               sx={{ marginLeft: "50px" }}
             />
           </Box>
-
-
         ) : accessID == "TR033" ? (
           <Box display="flex" flexDirection="row" padding="25px">
             <Chip
@@ -2333,7 +2401,7 @@ const ListviewSecondary = () => {
               label="Issue"
               variant="outlined"
             />
-                        <Chip
+            <Chip
               icon={<OpenInBrowserOutlinedIcon color="primary" />}
               label="Alternate Material"
               variant="outlined"
@@ -2520,7 +2588,7 @@ const ListviewSecondary = () => {
             />
           </Box>
         )}
-      </Box>
+      {/* </Box> */}
       <MatxCustomizer
         open={open}
         screenName={invoice}
@@ -2547,7 +2615,7 @@ const ListviewSecondary = () => {
         title="Colors"
         openPopup={isproductionColorPopupOpen}
         setOpenPopup={() =>
-          dispatch(productionColorlookupOpen({ materialRecID: ""}))
+          dispatch(productionColorlookupOpen({ materialRecID: "" }))
         }
       >
         <Listviewpopup

@@ -128,7 +128,9 @@ export const colorshadesSchema = yup.object().shape({
 
 /************************* UOM SCREEN *********************/
 export const uomSchema = yup.object().shape({
-  code: yup.string().matches(/^[-_ a-zA-Z]+$/, "Only  Alphabets"),
+  code: yup.string().matches(/^[a-zA-Z0-9\s'-.]+$/, "Only alphanumeric character"),
+
+  // code: yup.string().matches(/^[-_ a-zA-Z]+$/, "Only  Alphabets"),
   description: yup
     .string()
     .matches(/^[a-zA-Z0-9\s'-.]+$/, "Only alphanumeric character"),
