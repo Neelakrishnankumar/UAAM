@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   TextField,
   Box,
+  Paper,
+  Breadcrumbs,
   Typography,
   FormControl,
   FormLabel,
@@ -11,6 +13,7 @@ import {
   Checkbox,
   LinearProgress,
 } from "@mui/material";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { Formik, Field } from "formik";
@@ -30,6 +33,7 @@ import { useProSidebar } from "react-pro-sidebar";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import Listviewpopup from "../Lookup";
 import { UserSchema } from "../../Security/validation";
+import { formGap } from "../../../ui-components/utils";
 const Edituser = () => {
   const dispatch = useDispatch();
   const params = useParams();
@@ -41,7 +45,7 @@ const Edituser = () => {
   // const logincompanyRecID = sessionStorage.getItem("compID");
   // const YearRecorid = sessionStorage.getItem("YearRecorid");
   const data = useSelector((state) => state.formApi.Data);
-    const Finyear = sessionStorage.getItem("YearRecorid");
+  const Finyear = sessionStorage.getItem("YearRecorid");
   const CompanyID = sessionStorage.getItem("compID");
   const getLoading = useSelector((state) => state.formApi.getLoading);
   const [loading, setLoading] = useState(false);
@@ -56,7 +60,7 @@ const Edituser = () => {
     comfirmpassword: data.Password,
     email: data.Email,
     comments: data.Comm1,
-    disable: data.Disable=="Y"?true:false,
+    disable: data.Disable == "Y" ? true : false,
     sortorder: data.Sortorder,
   };
   const navigate = useNavigate();
@@ -79,12 +83,12 @@ const Edituser = () => {
       Password: values.password,
       Email: values.email,
       Comm1: values.comments,
-      Disable:  values.checkbox  == true ? "Y" : "N",
+      Disable: values.checkbox == true ? "Y" : "N",
       Sortorder: values.sortorder,
       // YearID: YearRecorid,
       // Company: logincompanyRecID,
       //YearID:Finyear,
-      Company:companyRecID,
+      Company: companyRecID,
     };
     const data = await dispatch(postData({ accessID, action, idata }));
     // return
@@ -96,7 +100,7 @@ const Edituser = () => {
     } else {
       toast.error(data.payload.Message);
       console.log(data.payload.Message, "--error data.payload.Message");
-      
+
       setLoading(false);
     }
   };
@@ -166,29 +170,64 @@ const Edituser = () => {
   return (
     <React.Fragment>
       {getLoading ? <LinearProgress /> : false}
-      <Box display="flex" justifyContent="space-between" p={2}>
-        <Box display="flex" borderRadius="3px" alignItems="center">
-          {broken && !rtl && (
-            <IconButton onClick={() => toggleSidebar()}>
-              <MenuOutlinedIcon />
+      <Paper elevation={3} sx={{ margin: "0px 10px", background: "#F2F0F0" }}>
+        <Box display="flex" justifyContent="space-between" p={2}>
+          <Box display="flex" borderRadius="3px" alignItems="center">
+            {broken && !rtl && (
+              <IconButton onClick={() => toggleSidebar()}>
+                <MenuOutlinedIcon />
+              </IconButton>
+            )}
+            <Box
+              display={isNonMobile ? "flex" : "none"}
+              borderRadius="3px"
+              alignItems="center"
+            >
+              <Breadcrumbs
+                maxItems={3}
+                aria-label="breadcrumb"
+                separator={<NavigateNextIcon sx={{ color: "#0000D1" }} />}
+              >
+                <Typography
+                  variant="h5"
+                  color="#0000D1"
+                  sx={{ cursor: "default" }}
+                  onClick={() => {
+                    navigate("/Apps/TR099/Companies");
+                  }}
+                >
+                  Companies
+                </Typography>
+                <Typography
+                  variant="h5"
+                  color="#0000D1"
+                  sx={{ cursor: "default" }}
+                  onClick={() => {
+                    navigate(
+                      `/Apps/Secondarylistview/TR094/Users/${companyRecID}`
+                    );
+                  }}
+                >
+                  Users
+                </Typography>
+              </Breadcrumbs>
+            </Box>
+          </Box>
+          <Box display="flex">
+            <Tooltip title="Close">
+              <IconButton onClick={() => fnLogOut("Close")} color="error">
+                <ResetTvIcon />
+              </IconButton>
+            </Tooltip>
+            <IconButton>
+              <LogoutOutlinedIcon color="error" />
             </IconButton>
-          )}
-          <Typography variant="h3">User</Typography>
+          </Box>
         </Box>
-        <Box display="flex">
-          <Tooltip title="Close">
-            <IconButton onClick={() => fnLogOut("Close")} color="error">
-              <ResetTvIcon />
-            </IconButton>
-          </Tooltip>
-          <IconButton>
-            <LogoutOutlinedIcon color="error" />
-          </IconButton>
-        </Box>
-      </Box>
-
+      </Paper>
       {!getLoading ? (
-        <Box m="20px">
+        <Paper elevation={3} sx={{ margin: "10px" }}>
+          {/* <Box m="20px"> */}
           <Formik
             initialValues={initialValue}
             onSubmit={(values, { resetForm }) => {
@@ -207,12 +246,14 @@ const Edituser = () => {
               isSubmitting,
               values,
               handleSubmit,
+              setFieldTouched,
             }) => (
               <form onSubmit={handleSubmit}>
                 <Box
                   display="grid"
                   gridTemplateColumns="repeat(4 , minMax(0,1fr))"
-                  gap="30px"
+                  gap={formGap}
+                  padding={1}
                   sx={{
                     "& > div": {
                       gridColumn: isNonMobile ? undefined : "span 4",
@@ -224,7 +265,7 @@ const Edituser = () => {
                     type="text"
                     id="code"
                     label="Code"
-                    variant="filled"
+                    variant="standard"
                     focused
                     sx={{ gridColumn: "span 2" }}
                     onBlur={handleBlur}
@@ -239,7 +280,7 @@ const Edituser = () => {
                     type="text"
                     id="name"
                     label="Name"
-                    variant="filled"
+                    variant="standard"
                     focused
                     sx={{ gridColumn: "span 2" }}
                     onBlur={handleBlur}
@@ -260,7 +301,7 @@ const Edituser = () => {
                       <TextField
                         id="outlined-basic"
                         label="ID"
-                        variant="filled"
+                        variant="standard"
                         value={selectUGLookupData.UGRecordID}
                         focused
                         sx={{ display: "none" }}
@@ -268,7 +309,7 @@ const Edituser = () => {
                       <TextField
                         id="outlined-basic"
                         label="User Group"
-                        variant="filled"
+                        variant="standard"
                         value={selectUGLookupData.UGlookupCode}
                         focused
                         required
@@ -285,7 +326,7 @@ const Edituser = () => {
                       <TextField
                         id="outlined-basic"
                         label=""
-                        variant="filled"
+                        variant="standard"
                         value={selectUGLookupData.UGlookupDesc}
                         fullWidth
                         inputProps={{ tabIndex: "-1" }}
@@ -293,47 +334,48 @@ const Edituser = () => {
                       />
                     </FormControl>
                   </FormControl>
-
                   <TextField
                     name="password"
                     type="password"
                     id="password"
                     label="Password"
-                    variant="filled"
+                    variant="standard"
                     focused
                     sx={{ gridColumn: "span 2" }}
+                    onFocus={() => setFieldTouched("password", true)}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.password}
-                    error={!!touched.password && !!errors.password}
-                    helperText={touched.password && errors.password}
-                    autoFocus
+                    error={touched.password && !!errors.password} // Show error only if touched
+                    helperText={touched.password ? errors.password : ""} // Show text only when touched
+                    inputProps={{ maxLength: 8 }}
                   />
+
                   <TextField
                     name="comfirmpassword"
                     type="password"
                     id="comfirmpassword"
                     label="Confirm Password"
-                    variant="filled"
+                    variant="standard"
                     focused
                     sx={{ gridColumn: "span 2" }}
+                    onFocus={() => setFieldTouched("comfirmpassword", true)}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.comfirmpassword}
-                    error={
-                      !!touched.comfirmpassword && !!errors.comfirmpassword
-                    }
+                    error={touched.comfirmpassword && !!errors.comfirmpassword} // Show error only if touched
                     helperText={
-                      touched.comfirmpassword && errors.comfirmpassword
-                    }
-                    autoFocus
+                      touched.comfirmpassword ? errors.comfirmpassword : ""
+                    } // Show text only when touched
+                    inputProps={{ maxLength: 8 }}
                   />
+
                   <TextField
                     name="email"
                     type="text"
                     id="email"
                     label="Email"
-                    variant="filled"
+                    variant="standard"
                     focused
                     sx={{ gridColumn: "span 2" }}
                     onBlur={handleBlur}
@@ -348,7 +390,7 @@ const Edituser = () => {
                     type="text"
                     id="comments"
                     label="Comments"
-                    variant="filled"
+                    variant="standard"
                     focused
                     sx={{ gridColumn: "span 2" }}
                     onBlur={handleBlur}
@@ -363,7 +405,7 @@ const Edituser = () => {
                     type="number"
                     id="sortorder"
                     label="Sort Order"
-                    variant="filled"
+                    variant="standard"
                     focused
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -371,8 +413,8 @@ const Edituser = () => {
                     error={!!touched.sortorder && !!errors.sortorder}
                     helperText={touched.sortorder && errors.sortorder}
                     autoFocus
-                    sx={{ gridColumn: "span 2", background: "#fff6c3" }}
-                    onWheel={(e) => e.target.blur()} 
+                    sx={{ gridColumn: "span 2", background: "" }}
+                    onWheel={(e) => e.target.blur()}
                     InputProps={{
                       inputProps: {
                         style: { textAlign: "right" },
@@ -394,7 +436,13 @@ const Edituser = () => {
                     <FormLabel focused={false}>Disable</FormLabel>
                   </Box>
                 </Box>
-                <Box display="flex" justifyContent="end" mt="20px" gap="20px">
+                <Box
+                  display="flex"
+                  padding={1}
+                  justifyContent="end"
+                  mt="20px"
+                  gap="20px"
+                >
                   <Button variant="contained" color="secondary" type="submit">
                     SAVE
                   </Button>
@@ -402,7 +450,9 @@ const Edituser = () => {
                     variant="contained"
                     color="error"
                     onClick={() => {
-                      navigate(`/Apps/Secondarylistview/TR094/Users/${companyRecID}`);
+                      navigate(
+                        `/Apps/Secondarylistview/TR094/Users/${companyRecID}`
+                      );
                     }}
                   >
                     CANCEL
@@ -424,7 +474,8 @@ const Edituser = () => {
               filterValue={companyRecID}
             />
           </Popup>
-        </Box>
+          {/* </Box> */}
+        </Paper>
       ) : (
         false
       )}

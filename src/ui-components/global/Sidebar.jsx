@@ -9,6 +9,7 @@ import {
   SubMenu,
 } from "react-pro-sidebar";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import DatasetLinkedIcon from '@mui/icons-material/DatasetLinked';
 import {
   Box,
   Avatar,
@@ -91,6 +92,8 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import HowToRegOutlinedIcon from "@mui/icons-material/HowToRegOutlined";
 import SourceOutlinedIcon from "@mui/icons-material/SourceOutlined";
 import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
+import { menuHeight } from "../utils";
+
 const child = {
   data: [
     // {
@@ -1019,7 +1022,7 @@ const child = {
                 id: 237,
                 icon: (
                   <Tooltip title="Products">
-                    <BusinessIcon color="info" />
+                    <DatasetLinkedIcon color="info" />
                   </Tooltip>
                 ),
                 UGA_ADD: true,
@@ -1127,30 +1130,22 @@ const Sidebars = () => {
         MenuID,
       }) => {
         if (!children) {
-          return accessRow.map(
-            ({
-              UGA_ADD,
-              UGA_DEL,
-              UGA_MOD,
-              UGA_PRINT,
-              UGA_PROCESS,
-              UGA_VIEW,
-              UGA_ACCESSID,
-            }) => {
-              if (
-                UGA_ACCESSID === UGA_ACCESSIDS &&
-                (UGA_ADD ||
-                  UGA_DEL ||
-                  UGA_MOD ||
-                  UGA_PRINT ||
-                  UGA_PROCESS ||
-                  UGA_VIEW)
-              ) {
+          // return accessRow.map(
+          //   ({
+          //     UGA_ADD,
+          //     UGA_DEL,
+          //     UGA_MOD,
+          //     UGA_PRINT,
+          //     UGA_PROCESS,
+          //     UGA_VIEW,
+          //     UGA_ACCESSID,
+          //   }) => {
+          //     if (true) {
                 return (
                   <List component="div" disablePadding key={id}>
                     <ListItem
                       disableGutters
-                      style={{ padding: "0px" }}
+                      style={{ padding: "0px",height:menuHeight }}
                       key={id}
                     >
                       <Item
@@ -1163,23 +1158,24 @@ const Sidebars = () => {
                     </ListItem>
                   </List>
                 );
-              }
-            }
-          );
+        //       }
+        //     }
+        //   );
         }
 
-        return Modules.map(({ PPD, SM_PMENU }) => {
-          if (PPD && SM_PMENU === MenuID) {
+        // return Modules.map(({ PPD, SM_PMENU }) => {
+        //   if (true) {
             return (
               <div key={id}>
                 <ListItem
                   disableGutters
                   key={id}
                   onClick={() => handleClicks(name)}
+                  style={{height:menuHeight}}
                 >
                   {!collapsed && (
                     <Tooltip title={Tooltipname}>
-                      <ListItemButton>
+                       <ListItemButton style={{height:menuHeight}} >
                         <ListItemIcon>{icon}</ListItemIcon>
                         <ListItemText primary={name} />
 
@@ -1192,7 +1188,7 @@ const Sidebars = () => {
                     </Tooltip>
                   )}
                   {collapsed && (
-                    <ListItemButton>
+                      <ListItemButton style={{height:menuHeight}} >
                       <ListItemIcon>
                         {icon}{" "}
                         {menu[name] ? (
@@ -1213,8 +1209,8 @@ const Sidebars = () => {
                 </Collapse>
               </div>
             );
-          }
-        });
+        //   }
+        // });
 
         //
         // }
@@ -1322,7 +1318,7 @@ const Sidebars = () => {
           <Box paddingBottom={3}>
             {handleMenu(child.data, Groupaccess)}
 
-         
+
             <Tooltip title="Logout">
               <ListItemButton
                 onClick={() => {

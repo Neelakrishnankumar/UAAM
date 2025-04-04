@@ -1,8 +1,9 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import {
   Typography,
   Box,
+  Paper,
   Button,
   TextField,
   FormLabel,
@@ -17,10 +18,7 @@ import * as Yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getFetchData,
-  postData,
-} from "../../../store/reducers/Formapireducer";
+import { getFetchData, postData } from "../../../store/reducers/Formapireducer";
 import { toast } from "react-hot-toast";
 import Listviewpopup from "../Lookup";
 import Popup from "../popup";
@@ -31,6 +29,10 @@ import { LoadingButton } from "@mui/lab";
 import { useProSidebar } from "react-pro-sidebar";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { screenRightsData } from "../../../store/reducers/screenRightsreducer";
+import { formGap } from "../../../ui-components/utils";
+import { SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
+import store from "../../..";
+
 // ***********************************************
 // Developer:Priya
 // Purpose: Create Company
@@ -52,7 +54,6 @@ const Editcompany = () => {
   let mode = params.Mode;
   let accessID = params.accessID;
 
-
   useEffect(() => {
     //dispatch(screenRightsData(accessID));
 
@@ -60,7 +61,7 @@ const Editcompany = () => {
   }, [location.key]);
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const Data = useSelector((state) => state.formApi.Data);
-  console.log("🚀 ~ Editcompany ~ Data:", Data)
+  console.log("🚀 ~ Editcompany ~ Data:", Data);
   const getLoading = useSelector((state) => state.formApi.getLoading);
   const isLoading = useSelector((state) => state.formApi.postLoading);
   // const { UGA_ADD, UGA_VIEW, UGA_MOD, UGA_DEL, UGA_PROCESS, UGA_PRIN } =
@@ -83,12 +84,12 @@ const Editcompany = () => {
     gst: Data.Gst,
     Lut: Data.Lut,
     sortOrder: Data.SortOrder,
-    license:Data.License,
-    disable: Data.Disable  === "Y" ? true : false ,
-    stockClose: Data.Process === "Y" ? true : false ,
-    useregular:Data.Regularslno === "Y" ? true : false ,
-    noOfEmployees:Data.NumberOfEmployee,
-    noofusers:Data.NumberOfUsers,
+    license: Data.License,
+    disable: Data.Disable === "Y" ? true : false,
+    stockClose: Data.Process === "Y" ? true : false,
+    useregular: Data.Regularslno === "Y" ? true : false,
+    noOfEmployees: Data.NumberOfEmployee,
+    noofusers: Data.NumberOfUsers,
   };
   /*************************LOOKUP DATA*********************/
   const [openCNpopup, setOpenCNpopup] = useState(false);
@@ -111,7 +112,6 @@ const Editcompany = () => {
     selectcnLookupData.CNlookupDesc = Data.CountryName;
   }
   const childToParent = (childdata, type) => {
-
     if (type == "Country") {
       setisPopupdata(true);
       setselectcnLookupData({
@@ -125,7 +125,6 @@ const Editcompany = () => {
   };
   /*************************SAVE FUCTION*********************/
   const fnSave = async (values) => {
-
     var idata = {
       RecordID: recID,
       CnRecordID: selectcnLookupData.CNlookupRecordid,
@@ -146,30 +145,31 @@ const Editcompany = () => {
       Gst: values.gst,
       Lut: values.Lut,
       SortOrder: values.sortOrder,
-      License:values.license,
-      YearID: Year,
-      Disable:values.disable === true ? "Y" : "N",
+      License: values.license,
+      // YearID: Year,
+      Disable: values.disable === true ? "Y" : "N",
       Process: values.stockClose === true ? "Y" : "N",
       Regularslno: values.useregular === true ? "Y" : "N",
-      Finyear,
-      CompanyID,
-      NumberOfEmployee:values.noOfEmployees,
-      NumberOfUsers:values.noofusers
+      // Finyear,
+      // CompanyID,
+      NumberOfEmployee: values.noOfEmployees,
+      NumberOfUsers: values.noofusers,
     };
-    console.log(idata,"savedata");
+    console.log(idata, "savedata");
     let action = mode === "A" ? "insert" : "update";
     const data = await dispatch(postData({ accessID, action, idata }));
     if (data.payload.Status == "Y") {
-      sessionStorage.setItem("stockflag",  values.stockClose === true ? "Y" : "N");
+      sessionStorage.setItem(
+        "stockflag",
+        values.stockClose === true ? "Y" : "N"
+      );
       toast.success(data.payload.Msg);
       navigate(`/Apps/TR014/Company`);
     } else {
       toast.error(data.payload.Msg);
     }
-
   };
   const fnLogOut = (props) => {
-
     Swal.fire({
       title: `Do you want ${props}?`,
       icon: "warning",
@@ -189,42 +189,43 @@ const Editcompany = () => {
         return;
       }
     });
-    
   };
   return (
     <Box>
       {getLoading ? <LinearProgress /> : false}
+      <Paper elevation={3} sx={{ margin: "0px 10px", background: "#F2F0F0" }}>
+        <Box display="flex" justifyContent="space-between" p={2}>
+          <Box
+            display="flex"
+            borderRadius="3px"
+            alignItems={"center"}
+            justifyContent="space-between"
+          >
+            {broken && !rtl && (
+              <IconButton onClick={() => toggleSidebar()}>
+                <MenuOutlinedIcon />
+              </IconButton>
+            )}
+            <Typography variant="h3">Company</Typography>
+          </Box>
 
-      <Box display="flex" justifyContent="space-between" p={2}>
-        <Box
-          display="flex"
-          borderRadius="3px"
-          alignItems={"center"}
-          justifyContent="space-between"
-        >
-          {broken && !rtl && (
-            <IconButton onClick={() => toggleSidebar()}>
-              <MenuOutlinedIcon />
-            </IconButton>
-          )}
-          <Typography variant="h3">Company</Typography>
+          <Box display="flex">
+            <Tooltip title="Close">
+              <IconButton onClick={() => fnLogOut("Close")} color="error">
+                <ResetTvIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Logout">
+              <IconButton onClick={() => fnLogOut("Logout")} color="error">
+                <LogoutOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Box>
-
-        <Box display="flex">
-          <Tooltip title="Close">
-            <IconButton onClick={() => fnLogOut("Close")} color="error">
-              <ResetTvIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Logout">
-            <IconButton onClick={() => fnLogOut("Logout")} color="error">
-              <LogoutOutlinedIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </Box>
+      </Paper>
       {!getLoading ? (
-        <Box m="20px">
+        <Paper elevation={3} sx={{ margin: "10px" }}>
+          {/* <Box m="20px"> */}
           <Formik
             initialValues={initialValues}
             onSubmit={(values, setSubmitting) => {
@@ -243,11 +244,13 @@ const Editcompany = () => {
               isSubmitting,
               values,
               handleSubmit,
+              setFieldValue,
             }) => (
               <form onSubmit={handleSubmit}>
                 <Box
                   display="grid"
-                  gap="30px"
+                  gap={formGap}
+                  padding={1}
                   gridTemplateColumns="repeat(4, minmax(0, 1fr))"
                   sx={{
                     "& > div": {
@@ -257,12 +260,13 @@ const Editcompany = () => {
                 >
                   <FormControl
                     fullWidth
-                    sx={{ gridColumn: "span 2", gap: "40px" }}
+                    sx={{ gridColumn: "span 2", gap: formGap }}
                   >
+                    {/* {JSON.stringify(errors)} */}
                     <TextField
                       fullWidth
                       placeholder="Auto"
-                      variant="filled"
+                      variant="standard"
                       type="text"
                       label="Code"
                       onBlur={handleBlur}
@@ -273,7 +277,6 @@ const Editcompany = () => {
                       // helperText={touched.code && errors.code}
                       focused
                       autoFocus
-                     
                       inputProps={{ readOnly: true }}
                       // onInvalid={(e) => {
                       //   e.target.setCustomValidity("Please Fill The Code");
@@ -281,11 +284,17 @@ const Editcompany = () => {
                       // onInput={(e) => {
                       //   e.target.setCustomValidity("");
                       // }}
+                      onInvalid={(e) => {
+                        e.target.setCustomValidity("Please Fill The Code");
+                      }}
+                      onInput={(e) => {
+                        e.target.setCustomValidity("");
+                      }}
                     />
 
                     <TextField
                       fullWidth
-                      variant="filled"
+                      variant="standard"
                       type="text"
                       label="Name"
                       onInvalid={(e) => {
@@ -303,12 +312,12 @@ const Editcompany = () => {
                       sx={{ gridColumn: "span 2" }}
                       focused
                       required
-                      inputProps={{ maxLength: 50,}}
+                      inputProps={{ maxLength: 50 }}
                     />
 
                     <TextField
                       fullWidth
-                      variant="filled"
+                      variant="standard"
                       type="text"
                       label="Address"
                       value={values.address}
@@ -326,12 +335,12 @@ const Editcompany = () => {
                       onInput={(e) => {
                         e.target.setCustomValidity("");
                       }}
-                      inputProps={{ maxLength: 500,  }}
+                      inputProps={{ maxLength: 500 }}
                       multiline
                     />
                     <TextField
                       label="ID"
-                      variant="filled"
+                      variant="standard"
                       value={selectcnLookupData.CNlookupRecordid}
                       focused
                       sx={{ display: "none" }}
@@ -349,9 +358,20 @@ const Editcompany = () => {
                           alignItems: "center",
                         }}
                       >
+                        {/* <SingleFormikOptimizedAutocomplete 
+                    label="Country"
+                    id="country"
+                    name="country"
+                    value={values.country}
+                    onChange={(e,newValue)=> {
+                      setFieldValue("country",newValue)
+                    }}
+                   url={`${store.getState.globalurl.listViewurl}?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
+                    /> */}
+
                         <TextField
                           label="Country"
-                          variant="filled"
+                          variant="standard"
                           value={selectcnLookupData.CNlookupCode}
                           focused
                           required
@@ -365,7 +385,7 @@ const Editcompany = () => {
                         </IconButton>
 
                         <TextField
-                          variant="filled"
+                          variant="standard"
                           value={selectcnLookupData.CNlookupDesc}
                           fullWidth
                           inputProps={{ tabIndex: "-1" }}
@@ -375,7 +395,7 @@ const Editcompany = () => {
                     </FormControl>
                     <TextField
                       fullWidth
-                      variant="filled"
+                      variant="standard"
                       type="number"
                       label="Pincode"
                       required
@@ -397,27 +417,26 @@ const Editcompany = () => {
 
                         e.target.setCustomValidity("");
                       }}
-                     
                     />
 
                     <TextField
                       fullWidth
-                      variant="filled"
+                      variant="standard"
                       type="number"
                       label="Phone"
                       required
-                      // onInvalid={(e) => {
-                      //   e.target.setCustomValidity("Please Fill The Phone");
-                      // }}
+                      onInvalid={(e) => {
+                        e.target.setCustomValidity("Please Fill The Phone");
+                      }}
                       value={values.phone}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       name="phone"
                       sx={{ gridColumn: "span 2" }}
                       focused
-                      // error={!!touched.phone && !!errors.phone}
-                      // helperText={touched.phone && errors.phone}
-                    // inputProps={{maxLength: 10}}
+                      error={!!touched.phone && !!errors.phone}
+                      helperText={touched.phone && errors.phone}
+                      // inputProps={{maxLength: 10}}
                       onInput={(e) => {
                         e.target.value = Math.max(0, parseInt(e.target.value))
                           .toString()
@@ -428,10 +447,9 @@ const Editcompany = () => {
                     />
                     <TextField
                       fullWidth
-                      variant="filled"
+                      variant="standard"
                       type="text"
                       label="LUT"
-                     
                       value={values.Lut}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -439,67 +457,62 @@ const Editcompany = () => {
                       // error={!!touched.gst && !!errors.gst}
                       // helperText={touched.gst && errors.gst}
                       focused
-                     
                     />
 
-<TextField
+                    <TextField
                       fullWidth
-                      variant="filled"
+                      variant="standard"
                       type="number"
                       label="No Of Users"
                       value={values.noofusers}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       name="noofusers"
-                     
                       sx={{
                         gridColumn: "span 2",
                         input: { textAlign: "right" },
                       }}
-                     
                       focused
-                      onWheel={(e) => e.target.blur()} 
-                  />
+                      onWheel={(e) => e.target.blur()}
+                    />
                   </FormControl>
-                  <FormControl sx={{ gridColumn: "span 2", gap: "40px" }}>
+                  <FormControl sx={{ gridColumn: "span 2", gap: formGap }}>
                     <TextField
                       fullWidth
-                      variant="filled"
+                      variant="standard"
                       type="text"
                       label="Web URL"
                       value={values.web}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       name="web"
-                     
                       sx={{ gridColumn: "span 2" }}
                       focused
-                      
                     />
 
                     <TextField
                       fullWidth
-                      variant="filled"
+                      variant="standard"
                       type="email"
                       label="Email Id"
                       required
-                      // onInvalid={(e) => {
-                      //   e.target.setCustomValidity("Please Fill The Email Id");
-                      // }}
-                      // onInput={(e) => {
-                      //   e.target.setCustomValidity("");
-                      // }}
+                      onInvalid={(e) => {
+                        e.target.setCustomValidity("Please Fill The Email Id");
+                      }}
+                      onInput={(e) => {
+                        e.target.setCustomValidity("");
+                      }}
                       value={values.email}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       name="email"
                       sx={{ gridColumn: "span 2" }}
                       focused
-                      inputProps={{ maxLength: 45, }}
+                      inputProps={{ maxLength: 45 }}
                     />
                     <TextField
                       fullWidth
-                      variant="filled"
+                      variant="standard"
                       type="text"
                       label="I.E.Code"
                       required
@@ -516,25 +529,26 @@ const Editcompany = () => {
                       error={!!touched.iECode && !!errors.iECode}
                       helperText={touched.iECode && errors.iECode}
                       focused
-                      inputProps={{ maxLength: 10, }}
+                      inputProps={{ maxLength: 10 }}
                     />
 
                     <TextField
                       fullWidth
-                      variant="filled"
+                      variant="standard"
                       type="text"
                       label="RBI Code"
                       value={values.rbiCode}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       name="rbiCode"
-                      
+                      // error={!!touched.rbiCode && !!errors.rbiCode}
+                      // helperText={touched.rbiCode && errors.rbiCode}
                       focused
-                      inputProps={{ maxLength: 5,}}
+                      inputProps={{ maxLength: 5 }}
                     />
                     <TextField
                       fullWidth
-                      variant="filled"
+                      variant="standard"
                       type="text"
                       label="GST"
                       required
@@ -551,22 +565,23 @@ const Editcompany = () => {
                       error={!!touched.gst && !!errors.gst}
                       helperText={touched.gst && errors.gst}
                       focused
-                      inputProps={{ maxLength: 15,  }}
+                      inputProps={{ maxLength: 15 }}
                     />
- 
-                    
+
                     <TextField
                       fullWidth
-                      variant="filled"
+                      variant="standard"
                       type="text"
                       label="Subscription Code"
                       required
                       onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The License Key");
+                        e.target.setCustomValidity(
+                          "Please Fill The License Key"
+                        );
                       }}
-                      onInput={(e) => {
-                        e.target.setCustomValidity("");
-                      }}
+                      // onInput={(e) => {
+                      //   e.target.setCustomValidity("");
+                      // }}
                       value={values.license}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -574,26 +589,43 @@ const Editcompany = () => {
                       error={!!touched.license && !!errors.license}
                       helperText={touched.license && errors.license}
                       focused
-                      inputProps={{ maxLength: 15,  }}
+                      onInput={(e) => {
+                        // Ensure only numeric input is allowed and trim to 4 digits
+                        // let value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+                        // if (value.length > 4) {
+                        //   value = value.slice(0, 4); // Limit to 4 digits
+                        // }
+                        // e.target.value = value;
+                        e.target.setCustomValidity(""); // Clear the custom error
+                      }}
+                      inputProps={{ maxLength: 4 }}
+                      //  onInput={(e) => {
+
+                      //   e.target.value = Math.max(0, parseInt(e.target.value))
+                      //     .toString()
+                      //     .slice(0, 4);
+                      //     e.target.setCustomValidity("");
+                      // }}
+                      // inputProps={{ maxLength: 4,  }}
                     />
-                  <TextField
+                    <TextField
                       fullWidth
-                      variant="filled"
+                      variant="standard"
                       type="number"
                       label="Sort Order"
                       value={values.sortOrder}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       name="sortOrder"
-                     
+                      error={!!touched.sortOrder && !!errors.sortOrder}
+                      helperText={touched.sortOrder && errors.sortOrder}
                       sx={{
                         gridColumn: "span 2",
-                        background: "#fff6c3",
+                        background: "",
                         input: { textAlign: "right" },
                       }}
-                     
                       focused
-                      onWheel={(e) => e.target.blur()} 
+                      onWheel={(e) => e.target.blur()}
                       // onInput={(e) => {
                       //   e.target.value = Math.max(0, parseInt(e.target.value))
                       //     .toString()
@@ -601,27 +633,22 @@ const Editcompany = () => {
                       // }}
                     />
 
-
-  
-
-                  <TextField
+                    <TextField
                       fullWidth
-                      variant="filled"
+                      variant="standard"
                       type="number"
                       label="No Of Employees"
                       value={values.noOfEmployees}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       name="noOfEmployees"
-                     
                       sx={{
                         gridColumn: "span 2",
                         input: { textAlign: "right" },
                       }}
-                     
                       focused
-                      onWheel={(e) => e.target.blur()} 
-                  />
+                      onWheel={(e) => e.target.blur()}
+                    />
                     <Box>
                       <Field
                         //  size="small"
@@ -660,19 +687,21 @@ const Editcompany = () => {
                     </Box>
                   </FormControl>
                 </Box>
-                <Box display="flex" justifyContent="end" mt="20px" gap="20px">
-                 
-                    <LoadingButton
-                      color="secondary"
-                      variant="contained"
-                      type="submit"
-                      loading={isLoading}
-                    
-                    >
-                      Save
-                    </LoadingButton>
-                   
-                
+                <Box
+                  display="flex"
+                  padding={1}
+                  justifyContent="end"
+                  mt="20px"
+                  gap="20px"
+                >
+                  <LoadingButton
+                    color="secondary"
+                    variant="contained"
+                    type="submit"
+                    loading={isLoading}
+                  >
+                    Save
+                  </LoadingButton>
 
                   <Button
                     color="error"
@@ -687,7 +716,8 @@ const Editcompany = () => {
               </form>
             )}
           </Formik>
-        </Box>
+          {/* </Box> */}
+        </Paper>
       ) : (
         false
       )}

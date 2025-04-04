@@ -1,6 +1,7 @@
 import {
   TextField,
   Box,
+  Paper,
   Typography,
   FormControl,
   FormLabel,
@@ -37,6 +38,7 @@ import Popup from "../popup";
 import Listviewpopup from "../Lookup";
 import { LocationSchema } from "../../Security/validation";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import { formGap } from "../../../ui-components/utils";
 // import CryptoJS from "crypto-js";
 const Editlocation = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -56,8 +58,8 @@ const Editlocation = () => {
   const YearFlag = sessionStorage.getItem("YearFlag");
   const Year = sessionStorage.getItem("year");
   const Finyear = sessionStorage.getItem("YearRecorid");
- // const CompanyID = sessionStorage.getItem("compID");
-//console.log(CompanyID,"comppppid");
+  // const CompanyID = sessionStorage.getItem("compID");
+  //console.log(CompanyID,"comppppid");
 
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const location = useLocation();
@@ -78,7 +80,6 @@ const Editlocation = () => {
   };
 
   const Fnsave = async (values) => {
-
     const idata = {
       RecordID: recID,
       Code: values.code,
@@ -101,7 +102,6 @@ const Editlocation = () => {
       toast.success(data.payload.Msg);
 
       navigate(`/Apps/Secondarylistview/TR128/Location/${parentID}`);
-
     } else {
       toast.error(data.payload.Msg);
     }
@@ -174,58 +174,61 @@ const Editlocation = () => {
   return (
     <React.Fragment>
       {getLoading ? <LinearProgress /> : false}
-      <Box display="flex" justifyContent="space-between" p={2}>
-        <Box display="flex" borderRadius="3px" alignItems="center">
-          {broken && !rtl && (
-            <IconButton onClick={() => toggleSidebar()}>
-              <MenuOutlinedIcon />
-            </IconButton>
-          )}
-          <Breadcrumbs
-            maxItems={3}
-            aria-label="breadcrumb"
-            separator={<NavigateNextIcon sx={{ color: "#0000D1" }} />}
-          >
-            <Typography
-              variant="h5"
-              color="#0000D1"
-              sx={{ cursor: "default" }}
-              onClick={() => {
-                navigate("/Apps/TR014/Company");
-              }}
-            >
-              Company
-            </Typography>
-            <Typography
-              variant="h5"
-              color="#0000D1"
-              sx={{ cursor: "default" }}
-              onClick={() => {
-                navigate("/Apps/Secondarylistview/TR128/Location/3");
-              }}
-            >
-              Location
-            </Typography>
 
-            {/* <Typography variant="h3">Location</Typography> */}
-          </Breadcrumbs>
-        </Box>
-        <Box display="flex">
-          <Tooltip title="Close">
-            <IconButton onClick={() => fnLogOut("Close")} color="error">
-              <ResetTvIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Logout">
-            <IconButton color="error" onClick={() => fnLogOut("Logout")}>
-              <LogoutOutlinedIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </Box>
+      <Paper elevation={3} sx={{ margin: "0px 10px", background: "#F2F0F0" }}>
+        <Box display="flex" justifyContent="space-between" p={2}>
+          <Box display="flex" borderRadius="3px" alignItems="center">
+            {broken && !rtl && (
+              <IconButton onClick={() => toggleSidebar()}>
+                <MenuOutlinedIcon />
+              </IconButton>
+            )}
+            <Breadcrumbs
+              maxItems={3}
+              aria-label="breadcrumb"
+              separator={<NavigateNextIcon sx={{ color: "#0000D1" }} />}
+            >
+              <Typography
+                variant="h5"
+                color="#0000D1"
+                sx={{ cursor: "default" }}
+                onClick={() => {
+                  navigate("/Apps/TR014/Company");
+                }}
+              >
+                Company
+              </Typography>
+              <Typography
+                variant="h5"
+                color="#0000D1"
+                sx={{ cursor: "default" }}
+                onClick={() => {
+                  navigate("/Apps/Secondarylistview/TR128/Location/3");
+                }}
+              >
+                Location
+              </Typography>
 
+              {/* <Typography variant="h3">Location</Typography> */}
+            </Breadcrumbs>
+          </Box>
+          <Box display="flex">
+            <Tooltip title="Close">
+              <IconButton onClick={() => fnLogOut("Close")} color="error">
+                <ResetTvIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Logout">
+              <IconButton color="error" onClick={() => fnLogOut("Logout")}>
+                <LogoutOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Box>
+      </Paper>
       {!getLoading ? (
-        <Box m="20px">
+        <Paper elevation={3} sx={{ margin: "10px" }}>
+          {/* <Box m="20px"> */}
           <Formik
             initialValues={InitialValue}
             onSubmit={(values, setSubmitting) => {
@@ -249,7 +252,8 @@ const Editlocation = () => {
                 <Box
                   display="grid"
                   gridTemplateColumns="repeat(4 , minMax(0,1fr))"
-                  gap="30px"
+                  gap={formGap}
+                  padding={1}
                   sx={{
                     "& > div": {
                       gridColumn: isNonMobile ? undefined : "span 4",
@@ -261,7 +265,7 @@ const Editlocation = () => {
                     type="text"
                     id="code"
                     label="Code"
-                    variant="filled"
+                    variant="standard"
                     focused
                     required
                     value={values.code}
@@ -277,7 +281,7 @@ const Editlocation = () => {
                     type="text"
                     id="name"
                     label="Name"
-                    variant="filled"
+                    variant="standard"
                     focused
                     value={values.name}
                     onBlur={handleBlur}
@@ -291,7 +295,7 @@ const Editlocation = () => {
                     type="text"
                     id="address"
                     label="Address"
-                    variant="filled"
+                    variant="standard"
                     focused
                     value={values.address}
                     onBlur={handleBlur}
@@ -305,21 +309,21 @@ const Editlocation = () => {
                     type="number"
                     id="locationnumber"
                     label="Location Number"
-                    variant="filled"
+                    variant="standard"
                     focused
                     value={values.locationnumber}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     error={!!touched.locationnumber && !!errors.locationnumber}
                     helperText={touched.locationnumber && errors.locationnumber}
-                    sx={{ gridColumn: "span 2", background: "#fff6c3" }}
+                    sx={{ gridColumn: "span 2", background: "" }}
                     InputProps={{
                       inputProps: {
                         style: { textAlign: "right" },
                       },
                     }}
                   />
-                  <FormControl sx={{ gridColumn: "span 2", gap: "30px" }}>
+                  <FormControl sx={{ gridColumn: "span 2", gap: formGap }}>
                     <Box
                       sx={{
                         display: "flex",
@@ -330,7 +334,7 @@ const Editlocation = () => {
                       <TextField
                         id="employee"
                         label="Contact Person"
-                        variant="filled"
+                        variant="standard"
                         focused
                         inputProps={{ tabIndex: "-1" }}
                         value={selectCPLookupData.CPlookupCode}
@@ -343,7 +347,7 @@ const Editlocation = () => {
                       </IconButton>
                       <TextField
                         id="employee"
-                        variant="filled"
+                        variant="standard"
                         fullWidth
                         inputProps={{ tabIndex: "-1" }}
                         focused
@@ -356,14 +360,14 @@ const Editlocation = () => {
                     type="number"
                     id="contactnumber"
                     label="Contact Number"
-                    variant="filled"
+                    variant="standard"
                     focused
                     value={values.contactnumber}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     error={!!touched.locationnumber && !!errors.locationnumber}
                     helperText={touched.locationnumber && errors.locationnumber}
-                    sx={{ gridColumn: "span 2", background: "#fff6c3" }}
+                    sx={{ gridColumn: "span 2", background: "" }}
                     InputProps={{
                       inputProps: {
                         style: { textAlign: "right" },
@@ -375,7 +379,7 @@ const Editlocation = () => {
                     type="text"
                     id="contactmail"
                     label="Contact Email ID"
-                    variant="filled"
+                    variant="standard"
                     focused
                     value={values.contactmail}
                     onBlur={handleBlur}
@@ -389,14 +393,14 @@ const Editlocation = () => {
                     type="number"
                     id="sortorder"
                     label="Sort Order"
-                    variant="filled"
+                    variant="standard"
                     focused
                     value={values.sortorder}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     error={!!touched.sortorder && !!errors.sortorder}
                     helperText={touched.sortorder && errors.sortorder}
-                    sx={{ gridColumn: "span 2", background: "#fff6c3" }}
+                    sx={{ gridColumn: "span 2", background: "" }}
                     InputProps={{
                       inputProps: {
                         style: { textAlign: "right" },
@@ -423,18 +427,22 @@ const Editlocation = () => {
                     <FormLabel focused={false}>Disable</FormLabel>
                   </Box>
                 </Box>
-                <Box display="flex" justifyContent="end" mt="20px" gap="20px">
-
+                <Box
+                  display="flex"
+                  padding={1}
+                  justifyContent="end"
+                  mt="20px"
+                  gap="20px"
+                >
                   <LoadingButton
                     color="secondary"
                     variant="contained"
                     type="submit"
                     loading={isLoading}
-                    disabled={isLoading} 
+                    disabled={isLoading}
                   >
                     Save
                   </LoadingButton>
-
 
                   <Button
                     color="error"
@@ -464,7 +472,8 @@ const Editlocation = () => {
               filterValue={CompID}
             />
           </Popup>
-        </Box>
+          {/* </Box> */}
+        </Paper>
       ) : (
         false
       )}
