@@ -88,24 +88,23 @@ import Editfixedassetcategory from "./pages/FinanceModule/Editfixedassetcategory
 import Editfixedasset from "./pages/FinanceModule/Editfixedasset";
 import EditEmpCheckin from "./pages/Empolyee/EditEmpCheckin";
 import EditEmpCheckout from "./pages/Empolyee/EditEmpCheckout";
-import Editstockcare from './pages/Inventory/Editstockcare';
+import Editstockcare from "./pages/Inventory/Editstockcare";
 import Editpriceofothercustomer from "./pages/FinanceModule/Editpriceofothercustomer";
 import EditEmpfinance from "./pages/Empolyee/EditEmpfinance";
 import Editpostshipment from "./pages/Trascation/Editpostshipment";
 import Editjobworkcategory from "./pages/Inventory/Editjobworkcategory";
 import EditJobwork from "./pages/Inventory/EditJobwork";
 
-
 import Editinspection from "./pages/Inventory/Editinspection";
 import Editpurchaseorder from "./pages/FinanceModule/Editpurchaseorder";
- import Editpurchaseorderopen from "./pages/FinanceModule/Editpurchaseorderopen";
+import Editpurchaseorderopen from "./pages/FinanceModule/Editpurchaseorderopen";
 import { PDFViewer } from "@react-pdf/renderer";
 import MyDocument from "./pages/pdf/pdf";
 import EditPurchaseOrderParameter from "./pages/Masters/EditrPurchaseOrderParameter";
 // import Editcostingnew from "./pages/FinanceModule/Editproductcosting";
- import EditSalaryComponent from "./pages/Empolyee/EditSalaryComponent";
- import EditSatuaryComponent from "./pages/Empolyee/EditSatuaryComponent";
- import EditemployeePayroll from "./pages/Empolyee/EditemployeePayroll";
+import EditSalaryComponent from "./pages/Empolyee/EditSalaryComponent";
+import EditSatuaryComponent from "./pages/Empolyee/EditSatuaryComponent";
+import EditemployeePayroll from "./pages/Empolyee/EditemployeePayroll";
 import Logopage from "../assets/logopage";
 import Editsubscription from "./pages/Masters/Editsubscription";
 import EditProductSubScription from "./pages/Masters/EditProductSubScription";
@@ -124,17 +123,20 @@ function App() {
                 {/* <Topbar Tittle={screenName} /> */}
 
                 <Routes>
-                <Route path="/:accessID/:screenName/EditEmployeePayroll/:id/:Mode" element={ <EditemployeePayroll/>}/>
-                <Route
-                    path="/:accessID/:screenName/EditSalary Component/:id/:Mode"
-                    element={<EditSalaryComponent/>}
+                  <Route
+                    path="/:accessID/:screenName/EditEmployeePayroll/:id/:Mode"
+                    element={<EditemployeePayroll />}
                   />
-                                   <Route
+                  <Route
+                    path="/:accessID/:screenName/EditSalary Component/:id/:Mode"
+                    element={<EditSalaryComponent />}
+                  />
+                  <Route
                     path="/:accessID/:screenName/EditSatuary Component/:id/:Mode"
                     element={<EditSatuaryComponent />}
                   />
                   <Route path="/:accessID/:screenName" element={<Listview />} />
-                  <Route path="/pdf" element={<MyDocument/> }/>
+                  <Route path="/pdf" element={<MyDocument />} />
                   <Route
                     path="/Secondarylistview/:accessID/:screenName/:filtertype/:Number/:Desc/all-bom/:bomproductid/EditList of BOM/:id/:mode"
                     element={<Editbom />}
@@ -150,11 +152,11 @@ function App() {
                     path="/:accessID/:screenName/EditCategories/:id/:Mode"
                     element={<Editproductcategory />}
                   />
-                   <Route
+                  <Route
                     path="/:accessID/:screenName/EditJobwork Category/:id/:Mode"
                     element={<Editjobworkcategory />}
                   />
-                   <Route
+                  <Route
                     path="/:accessID/:screenName/EditJob-Work/:id/:Mode"
                     element={<EditJobwork />}
                   />
@@ -221,9 +223,10 @@ function App() {
                     path="/:accessID/:screenName/EditEmployees/:id/:Mode"
                     element={<Editemployee />}
                   />
-                          <Route 
-                          path="/:accessID/:screenName/EditEmpfinance entry/E/:RecordID/:Name" 
-                          element={ <EditEmpfinance/>}/>
+                  <Route
+                    path="/:accessID/:screenName/EditEmpfinance entry/E/:RecordID/:Name"
+                    element={<EditEmpfinance />}
+                  />
                   <Route
                     path="/:accessID/:screenName/EditUOM/:id/:Mode"
                     element={<Edituom />}
@@ -276,7 +279,7 @@ function App() {
                     path="/:accessID/:screenName/EditGrade/:id/:Mode"
                     element={<Editgrade />}
                   />
-                    <Route
+                  <Route
                     path="/:accessID/:screenName/EditPaurchase Order Parameter/:id/:Mode"
                     element={<EditPurchaseOrderParameter />}
                   />
@@ -292,7 +295,7 @@ function App() {
                     path="/Secondarylistview/:accessID/:screenName/:filtertype/:invFilter/EditProforma Invoice/:id/:Mode"
                     element={<Editproformainvoice />}
                   />
-                   <Route
+                  <Route
                     path="/Secondarylistview/:accessID/:screenName/:filtertype/:invFilter/Editpostshipment/:id/:Mode"
                     element={<Editpostshipment />}
                   />
@@ -390,7 +393,7 @@ function App() {
                     path="/:accessID/:screenName/EditLeather Packing List/:id/:Mode"
                     element={<Editpacking />}
                   />
-                   <Route
+                  <Route
                     path="/:accessID/Production Card/EditInspection Form/:id"
                     element={<Editinspection />}
                   />
@@ -398,11 +401,11 @@ function App() {
                     path="/:accessID/:screenName/EditOver Head/:id/:Mode"
                     element={<Editoverhead />}
                   />
-                   <Route
+                  <Route
                     path="/:accessID/:screenName/EditIndent Purchase Order/:id/:Mode"
                     element={<Editpurchaseorder />}
                   />
-                      <Route
+                  <Route
                     path="/:accessID/:screenName/EditOpen Purchase Order/:id/:Mode"
                     element={<Editpurchaseorderopen />}
                   />
@@ -438,7 +441,7 @@ function App() {
                     path="/Secondarylistview/:accessID/:screenNamePre/:filtertype/:prdNumber/:secondaryAccessID/:screenName/PC/:remarkType/:remarkDec"
                     element={<ListviewSecondary />}
                   />
-                  <Route 
+                  <Route
                     path="/Secondarylistview/:accessID/:screenName/:productID/:productDescription/:customerID/costing-product/:bomVersion/:bomID/:secondaryAccessID"
                     element={<ListviewSecondary />}
                   />
@@ -446,11 +449,11 @@ function App() {
                     path="/Secondarylistview/:accessID/:screenName/:productID/:productDescription/:customerID/costing-product/:bomVersion/:bomID/:secondaryAccessID/:FirstLeatherID/EditCosting/:id/:Mode"
                     element={<Editcosting />}
                   />
-                   <Route
+                  <Route
                     path="/TR140/Customer-Product/EditCustomer-Product/:id/:Mode"
                     element={<Editcosting />}
                   />
-                   {/* <Route
+                  {/* <Route
                     path="/TR140/Customer-Product/EditCustomer-Product-new/:id/:Mode"
                     element={<Editcostingnew />}
                   /> */}
@@ -509,13 +512,16 @@ function App() {
                   />
                   <Route
                     path="/Secondarylistview/:accessID/:screenName/:parentID/EditCheck Out/:id/:Mode"
-                    element={<EditEmpCheckout/>}
+                    element={<EditEmpCheckout />}
                   />
                   <Route
                     path="/Secondarylistview/:accessID/:screenName/:filtertype/EditLocation/:id/:Mode"
                     element={<Editlocation />}
                   />
-                  <Route path="/Secondarylistview/:accessID/:screenName/:Type/stock-care-by" element={ <Editstockcare/>}/>
+                  <Route
+                    path="/Secondarylistview/:accessID/:screenName/:Type/stock-care-by"
+                    element={<Editstockcare />}
+                  />
                   <Route
                     path="/Secondarylistview/:accessID/:screenName/:filtertype/:parentID/EditGate Entry/:id/:Mode"
                     element={<Editgate />}

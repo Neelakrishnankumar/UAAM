@@ -596,7 +596,37 @@ const Listview = () => {
               sx={{ marginLeft: "50px" }}
             />
           </Box>
-        ) : accessID == "TR009" ? (
+        ) : accessID == "TR099" ? (
+          <Box display="flex" flexDirection="row" padding="25px">
+            <Chip
+              icon={<ListAltOutlinedIcon color="primary" />}
+              label="List of Usergroups"
+              variant="outlined"
+            />
+          </Box>
+          ) : accessID == "TR014" ? (
+            <Box display="flex" flexDirection="row" padding="25px">
+              <Chip
+              icon={<EditIcon color="primary" />}
+              label="Edit"
+              variant="outlined"
+            />
+              <Chip
+                icon={<ListAltOutlinedIcon color="primary" />}
+                label="Location"
+                variant="outlined"
+                sx={{ marginLeft: "50px" }}
+              />
+              <Chip
+                icon={<ListAltOutlinedIcon color="primary" />}
+                label="Subscription"
+                variant="outlined"
+                sx={{ marginLeft: "50px" }}
+              />
+            </Box>
+   
+    
+    ) : accessID == "TR009" ? (
           <Box display="flex" flexDirection="row" padding="25px">
             <Chip
               icon={<EditIcon color="primary" />}
