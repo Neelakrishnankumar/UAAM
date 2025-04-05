@@ -55,6 +55,49 @@ empAttendanceData:{},
 AttendanceData:{},
 };
 
+
+export const subScriptionCheck = createAsyncThunk(
+  "sub/subScriptionCheck",
+  async (data) => {
+    
+    var url = store.getState().globalurl.subCheckUrl;
+    // var url = store.getState().globalurl.employeeattendanceUrl;
+   
+    console.log("get" + JSON.stringify(data));
+    const response = await axios.post(url, data, {
+      headers: {
+        Authorization:
+          "eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJzdWIiOiJCZXhAMTIzIiwibmFtZSI6IkJleCIsImFkbWluIjp0cnVlLCJleHAiOjE2Njk5ODQzNDl9.uxE3r3X4lqV_WKrRKRPXd-Jub9BnVcCXqCtLL4I0fpU",
+      },
+    });
+    console.log(
+      "🚀 ~ file: newFormApiReducer.js:27 ~ fetchData ~ response:",
+      response
+    );
+    return response.data;
+  }
+);
+export const subScriptionIdGet = createAsyncThunk(
+  "sub/subScriptionCheck",
+  async (data) => {
+    
+    var url = store.getState().globalurl.SubIdGetUrl;
+    // var url = store.getState().globalurl.employeeattendanceUrl;
+   
+    console.log("get" + JSON.stringify(data));
+    const response = await axios.post(url, data, {
+      headers: {
+        Authorization:
+          "eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJzdWIiOiJCZXhAMTIzIiwibmFtZSI6IkJleCIsImFkbWluIjp0cnVlLCJleHAiOjE2Njk5ODQzNDl9.uxE3r3X4lqV_WKrRKRPXd-Jub9BnVcCXqCtLL4I0fpU",
+      },
+    });
+    console.log(
+      "🚀 ~ file: newFormApiReducer.js:27 ~ fetchData ~ response:",
+      response
+    );
+    return response.data;
+  }
+);
 export const empAttendance = createAsyncThunk(
   "employee/Payrollattendance",
   async ({ data }) => {

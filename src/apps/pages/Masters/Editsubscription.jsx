@@ -29,6 +29,8 @@ import {
   getFetchData,
   postApidata,
   postData,
+  subScriptionCheck,
+  subScriptionIdGet,
 } from "../../../store/reducers/Formapireducer";
 import React, { useState, useEffect, useRef } from "react";
 import { LoadingButton } from "@mui/lab";
@@ -53,6 +55,7 @@ const Editsubscription = () => {
   var accessID = params.accessID;
   var paramscompID = params.filtertype;
   const data = useSelector((state) => state.formApi.Data);
+  const getLoading = useSelector((state) => state.formApi.getLoading);
   const Status = useSelector((state) => state.formApi.Status);
   const Msg = useSelector((state) => state.formApi.msg);
   // console.log(params, "--find params");
@@ -69,9 +72,9 @@ const Editsubscription = () => {
   const CompanyID = sessionStorage.getItem("compID");
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const location = useLocation();
-  // useEffect(() => {
-  //   dispatch(getFetchData({ accessID, get: "get", recID }));
-  // }, [location.key]);
+  useEffect(() => {
+    dispatch(getFetchData({ accessID, get: "get", recID }));
+  }, [location.key]);
 
   //Products Lookup
   const [openProdPopup, setOpenProdPopup] = useState(false);
@@ -89,6 +92,18 @@ const Editsubscription = () => {
     ProdsubCode: "",
     ProdsubDesc: "",
   });
+
+  if (!isPopupData) {
+    selectProdLookupData.ProdCode = data.OurProductCode;
+    selectProdLookupData.ProdDesc = data.OurProductDescription;
+    selectProdLookupData.ProdRecordid = data.OurProductID;
+
+    selectProdsubLookupData.ProdsubCode = data.ProductSubscriptionCode;
+    selectProdsubLookupData.ProdsubDesc = data.ProductSubscriptionName;
+    selectProdsubLookupData.ProdsubRecordid = data.ProdSubscriptionID;
+  }
+
+  const [subType, setSubType] = useState("Y");
   function handleShow(type) {
     if (type == "PROD") {
       setOpenProdPopup(true);
@@ -97,12 +112,27 @@ const Editsubscription = () => {
       setOpenSubPopup(true);
     }
   }
-  const childToParent = (childdata, type) => {
+  const childToParent = async (childdata, type) => {
+    setisPopupdata(true);
     console.log("type---" + type);
     console.log("Data---" + JSON.stringify(childdata));
 
     if (type == "Products") {
-      setisPopupdata(true);
+      if (params.Mode == "A") {
+        const res = await dispatch(
+          subScriptionIdGet({
+            CompanyID: paramscompID,
+            ProductID: childdata.RecordID,
+          })
+        );
+        if (res.payload.SubscriptionID) {
+          navigate(
+            `/Apps/Secondarylistview/TR238/subscription/${params.filtertype}/Editsubscription/${res.payload.SubscriptionID}/R`
+          );
+          // dispatch(getFetchData({ accessID, get: "get", recID:res.payload.SubscriptionID }));
+        }
+      }
+
       setselectProdLookupData({
         ProdRecordid: childdata.RecordID,
         ProdCode: childdata.Code,
@@ -117,6 +147,18 @@ const Editsubscription = () => {
         ProdsubCode: childdata.Code,
         ProdsubDesc: childdata.Name,
       });
+      if (params.Mode == "R") {
+        const res = await dispatch(
+          subScriptionCheck({
+            oldSubcriptionID: data.ProdSubscriptionID,
+            NewSubcriptionID: childdata.RecordID,
+          })
+        );
+        console.log(res, "res");
+        const type = res.payload.Type || "Y";
+        setSubType(type);
+      }
+
       setOpenSubPopup(false);
     }
   };
@@ -127,7 +169,6 @@ const Editsubscription = () => {
 
   const handleChangesub = (e, setter) => {
     const { name, value } = e.target;
-    console.log(name, "--name in handleChangesub");
     // Update the corresponding state
     setter(value);
 
@@ -135,7 +176,6 @@ const Editsubscription = () => {
     if (!isNaN(value) && !isNaN(subperiod)) {
       // Step 1: Add the period (in months) to the start date
       const tentativeEndDate = addMonths(value, subperiod);
-      console.log(tentativeEndDate, "--tentativeEndDate");
 
       // Step 2: Calculate the final end date, 30 days after the tentative end date
       // const finalEndDate = new Date(tentativeEndDate);
@@ -143,15 +183,11 @@ const Editsubscription = () => {
       finalEndDate.setDate(finalEndDate.getDate() + subperiod * 30); // Add 30 days
 
       const formattedEndDate = finalEndDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
-      console.log("Final End Date (30 days after):", formattedEndDate);
 
       // Step 3: Set the calculated end date in the form
       SetsubEnddate(formattedEndDate);
     }
     // Log all state values
-    console.log("fromDate:", subfromdate);
-    console.log("End Date:", subEnddate);
-    console.log("Sub Period:", subperiod);
   };
   const SubPeriodOnchange = (e, setter) => {
     const { name, value } = e.target;
@@ -188,13 +224,26 @@ const Editsubscription = () => {
     notificationDate: "",
     subscriptionEndDate: "",
     retainDate: "",
-    productid: "",
-    productsubscription: "",
-
+    productid:
+      mode == "A"
+        ? null
+        : {
+            Code: data.OurProductCode,
+            Name: data.OurProductDescription,
+            RecordID: data.OurProductID,
+          },
+    productsubscription:
+      mode == "A"
+        ? null
+        : {
+            Code: data.ProductSubscriptionCode,
+            Name: data.ProductSubscriptionName,
+            RecordID: data.ProdSubscriptionID,
+          },
   };
 
   const Fnsave = async (values) => {
-    let action = mode === "A" ? "insert" : "update";
+    let action = mode === "A" ? "insert" : "insert";
     const idata = {
       RecordID: recID,
       CompanyID: paramscompID,
@@ -203,11 +252,12 @@ const Editsubscription = () => {
       ProdSubscriptionID: values.productsubscription.RecordID || 0,
       // OurProductID: selectProdLookupData.ProdRecordid,
       // ProdSubscriptionID: selectProdsubLookupData.ProdsubRecordid,
-      StartDate: subfromdate,
-      EndDate: subEnddate,
-      NoOfMonth: subperiod,
+      StartDate: values.subscriptionStartDate,
+      EndDate: values.subscriptionEndDate,
+      NoOfMonth: values.subscriptionperiod,
       RetainDate: values.retainDate,
       NotificationDate: values.notificationDate,
+      Type: subType,
     };
 
     const response = await dispatch(postData({ accessID, action, idata }));
@@ -254,7 +304,7 @@ const Editsubscription = () => {
   };
   return (
     <React.Fragment>
-      {/* {getLoading ? <LinearProgress /> : false} */}
+      {getLoading ? <LinearProgress /> : false}
       <Paper elevation={3} sx={{ margin: "0px 10px", background: "#F2F0F0" }}>
         <Box display="flex" justifyContent="space-between" p={2}>
           <Box display="flex" borderRadius="3px" alignItems="center">
@@ -321,80 +371,56 @@ const Editsubscription = () => {
           </Box>
         </Box>
       </Paper>
-      {/* {!getLoading ? ( */}
-      {/* <Box m="20px"> */}
-      <Paper elevation={3} sx={{ margin: "10px" }}>
-        <Formik
-          initialValues={InitialValue}
-          onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              Fnsave(values);
-              setSubmitting(false); // ✅ Set submitting to false after save
-            }, 100);
-          }}
-          // onSubmit={(values, setSubmitting) => {
-          //   setTimeout(() => {
-          //     Fnsave(values);
-          //   }, 100);
-          // }}
-          //  validationSchema={ DesignationSchema}
-          enableReinitialize={true}
-        >
-          {({
-            errors,
-            touched,
-            handleBlur,
-            handleChange,
-            isSubmitting,
-            values,
-            handleSubmit,
-            setFieldValue
-          }) => (
-            //               useEffect((values) => {
-            //   if (values.subscriptionStartDate && values.subscriptionperiod) {
-            //     const startDate = new Date(values.subscriptionStartDate);
-            //     const period = parseInt(values.subscriptionperiod, 10);
-
-            //     if (!isNaN(startDate) && !isNaN(period)) {
-            //       const tentativeEndDate = addMonths(startDate, period);
-            //       const lastDayOfMonth = endOfMonth(tentativeEndDate);
-
-            //       handleChange({
-            //         target: {
-            //           name: "subscriptionEndDate",
-            //           value: lastDayOfMonth.toISOString().split("T")[0],
-            //         },
-            //       });
-            //     }
-            //   }
-            // }, [values.subscriptionStartDate, values.subscriptionperiod]);
-
-            <form onSubmit={handleSubmit}>
-              <Box
-                display="grid"
-                gridTemplateColumns="repeat(4, minMax(0, 1fr))"
-                gap={formGap}
-                padding={1}
-                sx={{
-                  "& > div": {
-                    gridColumn: isNonMobile ? undefined : "span 4", // Adjust for mobile view
-                  },
-                }}
-              >
-                <FormControl
-                  fullWidth
-                  sx={{ gridColumn: "span 2", gap: formGap }}
+      {!getLoading ? (
+        <Paper elevation={3} sx={{ margin: "10px" }}>
+          <Formik
+            initialValues={InitialValue}
+            onSubmit={(values, { setSubmitting }) => {
+              setTimeout(() => {
+                Fnsave(values);
+                setSubmitting(false); // ✅ Set submitting to false after save
+              }, 100);
+            }}
+            //  validationSchema={ DesignationSchema}
+            enableReinitialize={true}
+          >
+            {({
+              errors,
+              touched,
+              handleBlur,
+              handleChange,
+              isSubmitting,
+              values,
+              handleSubmit,
+              setFieldValue,
+            }) => (
+              <form onSubmit={handleSubmit}>
+                <Box
+                  display="grid"
+                  gridTemplateColumns="repeat(4, minMax(0, 1fr))"
+                  gap={formGap}
+                  padding={1}
+                  sx={{
+                    "& > div": {
+                      gridColumn: isNonMobile ? undefined : "span 4", // Adjust for mobile view
+                    },
+                  }}
                 >
                   <FormControl
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
+                    fullWidth
+                    sx={{ gridColumn: "span 2", gap: formGap }}
                   >
-                    {/* <TextField
+                    <FormControl
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      {/* <TextField
                       label="ProductID"
                       variant="standard"
+                      disabled={params.Mode == "R"}
                       value={selectProdLookupData.ProdCode}
                       focused
                       // required
@@ -402,129 +428,174 @@ const Editsubscription = () => {
                     />
                     <IconButton
                       sx={{ height: 40, width: 40 }}
+                      disabled={params.Mode == "R"}
                       onClick={() => handleShow("PROD")}
                     >
                       <img src="https://img.icons8.com/color/48/null/details-popup.png" />
                     </IconButton>
 
                     <TextField
+                           disabled={params.Mode == "R"}
                       variant="standard"
                       value={selectProdLookupData.ProdDesc}
                       fullWidth
                       inputProps={{ tabIndex: "-1" }}
                       focused
                     /> */}
- <SingleFormikOptimizedAutocomplete
-                      label="Product ID"
-                      id="productid"
-                      name="productid"
-                      value={values.productid}
-                      onChange={(e, newValue) => {
-                        setFieldValue("productid", newValue);
-                      }}
-                      log
-                      url={`${
-                        store.getState().globalurl.listViewurl
-                      }?data={"Query":{"AccessID":"2098","ScreenName":"Product ID","Filter":"","Any":"","CompId":"4"}}`}
+                      <SingleFormikOptimizedAutocomplete
+                        disabled={mode == "R"}
+                        label="Product ID"
+                        id="productid"
+                        name="productid"
+                        value={values.productid}
+                        onChange={async (e, newValue) => {
+                          setFieldValue("productid", newValue);
+
+                          if (params.Mode == "A" && newValue) {
+                            const res = await dispatch(
+                              subScriptionIdGet({
+                                CompanyID: paramscompID,
+                                ProductID: newValue.RecordID,
+                              })
+                            );
+                            if (res.payload.SubscriptionID) {
+                              navigate(
+                                `/Apps/Secondarylistview/TR238/subscription/${params.filtertype}/Editsubscription/${res.payload.SubscriptionID}/R`
+                              );
+                              // dispatch(getFetchData({ accessID, get: "get", recID:res.payload.SubscriptionID }));
+                            }
+                          }
+                        }}
+                        log
+                        url={`${
+                          store.getState().globalurl.listViewurl
+                        }?data={"Query":{"AccessID":"2098","ScreenName":"Product ID","Filter":"","Any":"","CompId":"4"}}`}
+                      />
+                    </FormControl>
+                    <TextField
+                      required
+                      name="subscriptionStartDate"
+                      type="date"
+                      id="subscriptionStartDate"
+                      label="Subscription Start Date"
+                      variant="standard"
+                      focused
+                      // onChange={(e) => handleChangesub(e, Setsubfromdate)}
+                      // value={subfromdate}
+                      value={values.subscriptionStartDate}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={
+                        !!touched.subscriptionPeriod &&
+                        !!errors.subscriptionPeriod
+                      }
+                      helperText={
+                        touched.subscriptionPeriod && errors.subscriptionPeriod
+                      }
+                      autoFocus
                     />
 
+                    <TextField
+                      required
+                      name="subscriptionperiod"
+                      type="number"
+                      id="subscriptionperiod"
+                      label="Subscription Period (in months)"
+                      variant="standard"
+                      focused
+                      // onChange={(e) => SubPeriodOnchange(e, Setsubperiod)}
+                      // value={subperiod}
+                      value={values.subscriptionperiod}
+                      onBlur={handleBlur}
+                      onChange={(e) => {
+                        const { name, value } = e.target;
+                        setFieldValue("subscriptionperiod", value);
+                        const startDate = new Date(
+                          values.subscriptionStartDate
+                        );
+                        if (values.subscriptionStartDate && value) {
+                          const period = parseInt(value, 10);
+
+                          console.log(period, "period");
+
+                          if (!isNaN(period)) {
+                            const finalEndDate = new Date(startDate);
+                            finalEndDate.setDate(
+                              finalEndDate.getDate() + period * 30
+                            ); // Add 30 days
+
+                            const formattedEndDate = finalEndDate
+                              .toISOString()
+                              .split("T")[0]; // Format as YYYY-MM-DD
+
+                            setFieldValue(
+                              "subscriptionEndDate",
+                              formattedEndDate
+                            );
+                          }
+                        } else {
+                          setFieldValue("subscriptionEndDate", "");
+                        }
+                      }}
+                      error={
+                        !!touched.subscriptionperiod &&
+                        !!errors.subscriptionperiod
+                      }
+                      helperText={
+                        touched.subscriptionperiod && errors.subscriptionperiod
+                      }
+                      autoFocus
+                      sx={{
+                        gridColumn: "span 2",
+                        background: "",
+                        input: { textAlign: "right" },
+                      }}
+                    />
+                    <TextField
+                      name="retainDate"
+                      type="date"
+                      id="retainDate"
+                      label="Retain Date"
+                      variant="standard"
+                      focused
+                      value={values.retainDate}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={!!touched.retainDate && !!errors.retainDate}
+                      helperText={touched.retainDate && errors.retainDate}
+                      autoFocus
+                    />
                   </FormControl>
-                  <TextField
-                    name="subscriptionStartDate"
-                    type="date"
-                    id="subscriptionStartDate"
-                    label="Subscription Start Date"
-                    variant="standard"
-                    focused
-                    onChange={(e) => handleChangesub(e, Setsubfromdate)}
-                    value={subfromdate}
-                    // value={values.subscriptionStartDate}
-                    // onBlur={handleBlur}
-                    // onChange={handleChange}
-                    // error={!!touched.subscriptionPeriod && !!errors.subscriptionPeriod}
-                    // helperText={touched.subscriptionPeriod && errors.subscriptionPeriod}
-                    autoFocus
-                  />
-
-                  <TextField
-                    name="subscriptionperiod"
-                    type="number"
-                    id="subscriptionperiod"
-                    label="Subscription Period (in months)"
-                    variant="standard"
-                    focused
-                    onChange={(e) => SubPeriodOnchange(e, Setsubperiod)}
-                    value={subperiod}
-                    // value={values.subscriptionperiod}
-                    // onBlur={handleBlur}
-                    // onChange={handleChange}
-                    // error={!!touched.subscriptionperiod && !!errors.subscriptionperiod}
-                    // helperText={touched.subscriptionperiod && errors.subscriptionperiod}
-                    autoFocus
-                    sx={{
-                      gridColumn: "span 2",
-                      background: "",
-                      input: { textAlign: "right" },
-                    }}
-                  />
-                  <TextField
-                    name="retainDate"
-                    type="date"
-                    id="retainDate"
-                    label="Retain Date"
-                    variant="standard"
-                    focused
-                    value={values.retainDate}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    error={!!touched.retainDate && !!errors.retainDate}
-                    helperText={touched.retainDate && errors.retainDate}
-                    autoFocus
-                  />
-                </FormControl>
-                <FormControl
-                  fullWidth
-                  sx={{ gridColumn: "span 2", gap: formGap }}
-                >
-                  {/* <TextField
-      name="code"
-      type="text"
-      id="code"
-      label="Code"
-      variant="standard"
-      focused
-      required
-      value={values.code}
-      onBlur={handleBlur}
-      onChange={handleChange}
-      error={!!touched.code && !!errors.code}
-      helperText={touched.code && errors.code}
-      autoFocus
-    /> */}
-
                   <FormControl
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
+                    fullWidth
+                    sx={{ gridColumn: "span 2", gap: formGap }}
                   >
-                    {/* <TextField
+                    <FormControl
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      {/* <TextField
                       label="Product Subscription"
                       variant="standard"
                       value={selectProdsubLookupData.ProdsubCode}
                       focused
                       // required
                       inputProps={{ tabIndex: "-1" }}
+                     
                     />
                     <IconButton
                       sx={{ height: 40, width: 40 }}
                       onClick={() => handleShow("PRODSUB")}
+                    
                     >
                       <img src="https://img.icons8.com/color/48/null/details-popup.png" />
                     </IconButton>
 
                     <TextField
+              
                       variant="standard"
                       value={selectProdsubLookupData.ProdsubDesc}
                       fullWidth
@@ -532,132 +603,140 @@ const Editsubscription = () => {
                       focused
                     /> */}
 
-                    <SingleFormikOptimizedAutocomplete
-                      label="Product Subscription"
-                      id="productsubscription"
-                      name="productsubscription"
-                      value={values.productsubscription}
-                      onChange={(e, newValue) => {
-                        setFieldValue("productsubscription", newValue);
-                      }}
-                      log
-                      url={`${
-                        store.getState().globalurl.listViewurl
-                      }?data={"Query":{"AccessID":"2099","ScreenName":"Product Subscription","Filter":"parentID='${values.productid ? values.productid.RecordID : 0}'","Any":"","CompId":"4"}}`}
+                      <SingleFormikOptimizedAutocomplete
+                        label="Product Subscription"
+                        id="productsubscription"
+                        name="productsubscription"
+                        value={values.productsubscription}
+                        onChange={async (e, newValue) => {
+                          setFieldValue("productsubscription", newValue);
+                          if (newValue) {
+                            if (params.Mode == "R") {
+                              const res = await dispatch(
+                                subScriptionCheck({
+                                  oldSubcriptionID: data.ProdSubscriptionID,
+                                  NewSubcriptionID: newValue.RecordID,
+                                })
+                              );
+                              console.log(res, "res");
+                              const type = res.payload.Type || "Y";
+                              setSubType(type);
+                            }
+                          }
+                        }}
+                        log
+                        url={`${
+                          store.getState().globalurl.listViewurl
+                        }?data={"Query":{"AccessID":"2099","ScreenName":"Product Subscription","Filter":"parentID='${
+                          values.productid ? values.productid.RecordID : 0
+                        }'","Any":"","CompId":"4"}}`}
+                      />
+                    </FormControl>
+                    <TextField
+                      name="subscriptionEndDate"
+                      type="date"
+                      id="subscriptionEndDate"
+                      label="Subscription End Date"
+                      variant="standard"
+                      focused
+                      // onChange={(e) => handleChangesub(e, SetsubEnddate)}
+                      // value={subEnddate}
+                      value={values.subscriptionEndDate}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={
+                        !!touched.subscriptionEndDate &&
+                        !!errors.subscriptionEndDate
+                      }
+                      helperText={
+                        touched.subscriptionEndDate &&
+                        errors.subscriptionEndDate
+                      }
+                      autoFocus
+                      inputProps={{ readOnly: true }}
+                    />
+
+                    <TextField
+                      name="notificationDate"
+                      type="date"
+                      id="notificationDate"
+                      label="Notification Date"
+                      variant="standard"
+                      focused
+                      value={values.notificationDate}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={
+                        !!touched.notificationDate && !!errors.notificationDate
+                      }
+                      helperText={
+                        touched.notificationDate && errors.notificationDate
+                      }
+                      autoFocus
                     />
                   </FormControl>
-                  <TextField
-                    name="subscriptionEndDate"
-                    type="date"
-                    id="subscriptionEndDate"
-                    label="Subscription End Date"
-                    variant="standard"
-                    focused
-                    onChange={(e) => handleChangesub(e, SetsubEnddate)}
-                    value={subEnddate}
-                    // value={values.subscriptionEndDate}
-                    // onBlur={handleBlur}
-                    // onChange={handleChange}
-                    // error={!!touched.subscriptionEndDate && !!errors.subscriptionEndDate}
-                    // helperText={touched.subscriptionEndDate && errors.subscriptionEndDate}
-                    autoFocus
-                    inputProps={{ readOnly: true }}
-                  />
+                </Box>
 
-                  <TextField
-                    name="notificationDate"
-                    type="date"
-                    id="notificationDate"
-                    label="Notification Date"
-                    variant="standard"
-                    focused
-                    value={values.notificationDate}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    error={
-                      !!touched.notificationDate && !!errors.notificationDate
-                    }
-                    helperText={
-                      touched.notificationDate && errors.notificationDate
-                    }
-                    autoFocus
-                  />
-                </FormControl>
-              </Box>
-
-              {/* {YearFlag == "true" ? (
-    <LoadingButton color="secondary" variant="contained" type="submit" 
-    loading={isLoading}>
-      Save
-    </LoadingButton>
-  ) : (
-    <Button color="secondary" variant="contained" 
-    disabled
-    >
-      Save
-    </Button>
-  )} */}
-              <Box
-                display="flex"
-                padding={1}
-                justifyContent="end"
-                mt="20px"
-                gap="20px"
-              >
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  type="submit"
-                  disabled={isSubmitting}
+                <Box
+                  display="flex"
+                  padding={1}
+                  justifyContent="end"
+                  mt="20px"
+                  gap="20px"
                 >
-                  Save
-                </Button>
-                <Button
-                  color="error"
-                  variant="contained"
-                  onClick={() =>
-                    navigate(
-                      `/Apps/Secondarylistview/TR238/subscription/${params.filtertype}`
-                    )
-                  }
-                >
-                  Cancel
-                </Button>
-              </Box>
-            </form>
-          )}
-        </Formik>
-        <Popup
-          title="Products"
-          openPopup={openProdPopup}
-          setOpenPopup={setOpenProdPopup}
-        >
-          <Listviewpopup
-            accessID="2098"
-            screenName="Products"
-            childToParent={childToParent}
-            // filterName={"CompanyID"}
-            // filterValue={CompID}
-          />
-        </Popup>
-        <Popup
-          title="Products Subscription"
-          openPopup={openSubPopup}
-          setOpenPopup={setOpenSubPopup}
-        >
-          <Listviewpopup
-            accessID="2099"
-            screenName="Products Subscription"
-            childToParent={childToParent}
-            filterName={"parentID"}
-            filterValue={selectProdLookupData.ProdRecordid}
-          />
-        </Popup>
-      </Paper>
-      {/* </Box> */}
-      {/* // ) : (
-      //   false
-      // )} */}
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    color="error"
+                    variant="contained"
+                    onClick={() =>
+                      navigate(
+                        `/Apps/Secondarylistview/TR238/subscription/${params.filtertype}`
+                      )
+                    }
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              </form>
+            )}
+          </Formik>
+          <Popup
+            title="Products"
+            openPopup={openProdPopup}
+            setOpenPopup={setOpenProdPopup}
+          >
+            <Listviewpopup
+              accessID="2098"
+              screenName="Products"
+              childToParent={childToParent}
+              // filterName={"CompanyID"}
+              // filterValue={CompID}
+            />
+          </Popup>
+          <Popup
+            title="Products Subscription"
+            openPopup={openSubPopup}
+            setOpenPopup={setOpenSubPopup}
+          >
+            <Listviewpopup
+              accessID="2099"
+              screenName="Products Subscription"
+              childToParent={childToParent}
+              filterName={"parentID"}
+              filterValue={selectProdLookupData.ProdRecordid}
+            />
+          </Popup>
+        </Paper>
+      ) : (
+        false
+      )}
     </React.Fragment>
   );
 };

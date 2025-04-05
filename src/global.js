@@ -80,6 +80,8 @@ const initialState = {
       locationManualUrl: "https://uaam.beyondexs.com/api/ManualSaleLocationController.php",
       inchargeManualUrl: "https://uaam.beyondexs.com/api/ManualSaleEmployeeNameController.php",
       ProductcatUrl: "https://uaam.beyondexs.com/api/ManualDetailProductCatgController.php",
+      subCheckUrl: "https://uaam.beyondexs.com/api/SubscriptionRenewalController.php",
+      SubIdGetUrl: "https://uaam.beyondexs.com/api/SubscriptionIdGetController.php",
 
   };
 

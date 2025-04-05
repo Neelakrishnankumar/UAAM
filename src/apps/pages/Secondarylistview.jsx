@@ -84,7 +84,7 @@ const ListviewSecondary = () => {
   var accessID = params.secondaryAccessID
     ? params.secondaryAccessID
     : params.accessID;
-  const [pageSize, setPageSize] = React.useState(10);
+  const [pageSize, setPageSize] = React.useState(20);
   const [collapse, setcollapse] = React.useState(false);
   const [page, setPage] = React.useState(secondaryCurrentPage);
   var parentID = params.filtertype;
@@ -118,6 +118,8 @@ const ListviewSecondary = () => {
     filter = invoiceFilter;
   } else if (accessID == "TR074") {
     filter = `${parentID}' AND Finyear='${year}' AND CompID = '${compID}`;
+  } else if (accessID == "TR094") {
+    filter = `SubscriptionID=${parentID}`;
   } else if (accessID == "TR112" || accessID == "TR112") {
     filter = `'${parentID}' AND Finyear='${year}'`;
   } else if (accessID == "TR047") {
@@ -1993,10 +1995,20 @@ const ListviewSecondary = () => {
               color="#0000D1"
               sx={{ cursor: "default" }}
               onClick={() => {
-                navigate("/Apps/TR099/Companies");
+                navigate("/Apps/TR014/Company");
               }}
             >
               Companies
+            </Typography>
+            <Typography
+              variant="h5"
+              color="#0000D1"
+              sx={{ cursor: "default" }}
+              onClick={() => {
+                navigate(`/Apps/Secondarylistview/TR238/subscription/${params.Number}`);
+              }}
+            >
+              Subscriptions
             </Typography>
             <Typography variant="h5" color="#0000D1" sx={{ cursor: "default" }}>
               Users

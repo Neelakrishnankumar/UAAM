@@ -34,6 +34,7 @@ import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore
 import { StockProcessApi } from "./Formapireducer";
 import OpenInBrowserOutlinedIcon from "@mui/icons-material/OpenInBrowserOutlined";
 import Swal from "sweetalert2";
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 const initialState = {
   rowData: [],
   columnData: [],
@@ -539,6 +540,7 @@ export const fetchListview =
         AccessID != "TR010" &&
         AccessID != "TR091" &&
         AccessID != "TR140" &&
+        AccessID != "TR094" &&
         AccessID != "TR238" &&
         AccessID != "TR022"
       ) {
@@ -1698,6 +1700,49 @@ export const fetchListview =
                 );
               },
             };
+
+            
+          } else if (AccessID == "TR238") {
+            obj = {
+              field: "action",
+              headerName: "Action",
+              minWidth: 100,
+              sortable: false,
+              headerAlign: "center",
+              filterable: false,
+              disableColumnMenu: true,
+              disableExport: true,
+              renderCell: (params) => {
+                return (
+                  <div style={{display:"flex", gap:1}}>
+ 
+                        <Link
+                          to={`/Apps/Secondarylistview/${params.row.ChildID}/${params.row.ChildName}/${params.row.RecordID}/${params.row.CompanyID}`}
+                          state={{companyID:params.row.CompanyID}}
+                        >
+                          <Tooltip title="List of Users">
+                            <IconButton color="info" size="small">
+                              <ListAltOutlinedIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Link>
+                        {params.row.SubActive == "Y" &&
+                      <Link
+                          to={`./Editsubscription/${params.row.RecordID}/R`}
+                        >
+                          <Tooltip title="Renew">
+                            <IconButton color="info" size="small">
+                              <AutorenewIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Link>}
+                      
+                  </div>
+                );
+              },
+            };
+
+            
           } else if (AccessID == "TR080") {
             listviewData.Data.columns.push(obj);
             dispatch(
@@ -1869,7 +1914,7 @@ export const fetchListview =
                             </IconButton>
                           </Tooltip>
                         </Link>
-                        <Link
+                        {/* <Link
                           to={`/Apps/Secondarylistview/${params.row.ChildID1}/${params.row.ChildName1}/${params.row.RecordID}`}
                         >
                           <Tooltip title="List of Users">
@@ -1877,7 +1922,7 @@ export const fetchListview =
                               <ListAltOutlinedIcon />
                             </IconButton>
                           </Tooltip>
-                        </Link>
+                        </Link> */}
                       </>
                     ) : (
                       false
