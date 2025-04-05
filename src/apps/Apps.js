@@ -558,16 +558,13 @@ function App() {
                   {/* SUBSCRPTION SCREEN */}
 
                   <Route
-                   path="/Secondarylistview/:accessID/:screenName/:filtertype/Editsubscription/:id/:Mode"
-
-                    // path="/:accessID/:screenName/Editsubscription/:id/:Mode"
+                    path="/Secondarylistview/:accessID/:screenName/:filtertype/Editsubscription/:id/:Mode"
                     element={<Editsubscription />}
                   />
-                   <Route
+                  <Route
                     path="/:accessID/:screenName/EditProducts/:id/:Mode"
                     element={<EditProductSubScription />}
                   />
-
                 </Routes>
               </main>
             </div>

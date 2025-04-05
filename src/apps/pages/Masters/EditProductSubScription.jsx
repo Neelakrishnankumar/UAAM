@@ -659,8 +659,10 @@ const EditProductSubScription = () => {
                         value={values.code}
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        error={!!touched.code && !!errors.code}
-                        helperText={touched.code && errors.code}
+                        // error={!!touched.code && !!errors.code}
+                        // helperText={touched.code && errors.code}
+                        error={touched.code && !!errors.code}
+                        helperText={touched.code && errors.code ? errors.code : ""}
                         sx={{ gridColumn: "span 2" }}
                         focused
                         inputProps={{ maxLength: 5 }}
@@ -672,60 +674,7 @@ const EditProductSubScription = () => {
                           e.target.setCustomValidity("");
                         }}
                       />
-                      {typeUom == "C" ? (
-                        <React.Fragment>
-                          <TextField
-                            fullWidth
-                            variant="standard"
-                            type="text"
-                            label="Major Description"
-                            value={values.description}
-                            id="description"
-                            name="description"
-                            required
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            // error={!!touched.Description && !!errors.Description}
-                            // helperText={touched.Description && errors.Description}
-                            sx={{ gridColumn: "span 2" }}
-                            focused
-                            inputProps={{ maxLength: 25 }}
-                            onInvalid={(e) => {
-                              e.target.setCustomValidity(
-                                "Please Fill The Description"
-                              );
-                            }}
-                            onInput={(e) => {
-                              e.target.setCustomValidity("");
-                            }}
-                          />
-                          <TextField
-                            fullWidth
-                            variant="standard"
-                            type="text"
-                            label="Minor Description"
-                            value={values.MinorDescription}
-                            id="MinorDescription"
-                            name="MinorDescription"
-                            required
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            // error={!!touched.MinorDescription && !!errors.MinorDescription}
-                            // helperText={touched.MinorDescription && errors.MinorDescription}
-                            sx={{ gridColumn: "span 2" }}
-                            focused
-                            inputProps={{ maxLength: 25 }}
-                            onInvalid={(e) => {
-                              e.target.setCustomValidity(
-                                "Please Fill The MinorDescription"
-                              );
-                            }}
-                            onInput={(e) => {
-                              e.target.setCustomValidity("");
-                            }}
-                          />
-                        </React.Fragment>
-                      ) : (
+                   
                         <TextField
                           fullWidth
                           variant="standard"
@@ -751,7 +700,7 @@ const EditProductSubScription = () => {
                             e.target.setCustomValidity("");
                           }}
                         />
-                      )}
+                     
 
                       <TextField
                         fullWidth

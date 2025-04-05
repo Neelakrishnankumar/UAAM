@@ -39,6 +39,8 @@ import Listviewpopup from "../Lookup";
 import { LocationSchema } from "../../Security/validation";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { formGap } from "../../../ui-components/utils";
+import { SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
+import store from "../../..";
 // import CryptoJS from "crypto-js";
 const Editlocation = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -77,6 +79,8 @@ const Editlocation = () => {
     locationnumber: data.Number,
     sortorder: data.SortOrder,
     disable: data.Disable === "Y" ? true : false,
+    contactperson: data.ContactPerson ? {RecordID:data.ContactPerson,Code:data.ContactPersonCode,Name:data.ContactPersonName} : null
+
   };
 
   const Fnsave = async (values) => {
@@ -91,7 +95,10 @@ const Editlocation = () => {
       SortOrder: values.sortorder,
       Disable: values.disable == true ? "Y" : "N",
       CompanyRecordID: parentID,
-      ContactPerson: selectCPLookupData.CPlookupRecordid,
+      ContactPerson: values.contactperson.RecordID || 0,
+      ContactPersonCode: values.contactperson.Code|| '' ,
+      ContactPersonName: values.contactperson.RecordID || 0,
+      // ContactPerson: selectCPLookupData.CPlookupRecordid,
       //Finyear,
       //CompanyID,
     };
@@ -247,6 +254,7 @@ const Editlocation = () => {
               isSubmitting,
               values,
               handleSubmit,
+              setFieldValue
             }) => (
               <form onSubmit={handleSubmit}>
                 <Box
@@ -331,7 +339,18 @@ const Editlocation = () => {
                         alignItems: "center",
                       }}
                     >
-                      <TextField
+                         <SingleFormikOptimizedAutocomplete 
+                                          label="Contact Person"
+                                          id="contactperson"
+                                          name="contactperson"
+                                          value={values.contactperson}
+                                          onChange={(e,newValue)=> {
+                                            setFieldValue("contactperson",newValue)
+                                          }}
+                                          log
+                                         url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2024","ScreenName":"Contact Person","Filter":"CompanyID='${CompID}'","Any":"","CompId":"4"}}`}
+                                          />
+                      {/* <TextField
                         id="employee"
                         label="Contact Person"
                         variant="standard"
@@ -352,7 +371,7 @@ const Editlocation = () => {
                         inputProps={{ tabIndex: "-1" }}
                         focused
                         value={selectCPLookupData.CPlookupDesc}
-                      />
+                      /> */}
                     </Box>
                   </FormControl>
                   <TextField

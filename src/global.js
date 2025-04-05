@@ -4,7 +4,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
    name : 'Uaam',
-
     listViewurl :'https://uaam.beyondexs.com/api/wslistview_mysql.php',
     loginUrl:'https://uaam.beyondexs.com/api/LController.php',
     comboUrl:'https://uaam.beyondexs.com/api/APIController.php',

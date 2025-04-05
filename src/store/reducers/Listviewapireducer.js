@@ -1745,10 +1745,12 @@ export const fetchListview =
                       <Link
                         to={`./Edit${screenName}/${params.row.RecordID}/E`}
                         state={{
+                          CompanyName: params.row.Name,
                           CustomerID: params.row.CustomerRecordID,
                           ProductID: params.row.ProductRecordID,
                           BomID: params.row.BomRecordID,
                         }}
+                       
                       >
                         <Tooltip title="Edit">
                           <IconButton color="info" size="small">

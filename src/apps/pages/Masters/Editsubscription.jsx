@@ -38,6 +38,8 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import Popup from "../popup";
 import Listviewpopup from "../Lookup";
 import { formGap } from "../../../ui-components/utils";
+import store from "../../..";
+import { SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
 
 // import CryptoJS from "crypto-js";
 
@@ -186,6 +188,9 @@ const Editsubscription = () => {
     notificationDate: "",
     subscriptionEndDate: "",
     retainDate: "",
+    productid: "",
+    productsubscription: "",
+
   };
 
   const Fnsave = async (values) => {
@@ -193,8 +198,11 @@ const Editsubscription = () => {
     const idata = {
       RecordID: recID,
       CompanyID: paramscompID,
-      OurProductID: selectProdLookupData.ProdRecordid,
-      ProdSubscriptionID: selectProdsubLookupData.ProdsubRecordid,
+      OurProductID: values.productid.RecordID || 0,
+
+      ProdSubscriptionID: values.productsubscription.RecordID || 0,
+      // OurProductID: selectProdLookupData.ProdRecordid,
+      // ProdSubscriptionID: selectProdsubLookupData.ProdsubRecordid,
       StartDate: subfromdate,
       EndDate: subEnddate,
       NoOfMonth: subperiod,
@@ -340,6 +348,7 @@ const Editsubscription = () => {
             isSubmitting,
             values,
             handleSubmit,
+            setFieldValue
           }) => (
             //               useEffect((values) => {
             //   if (values.subscriptionStartDate && values.subscriptionperiod) {
@@ -383,7 +392,7 @@ const Editsubscription = () => {
                       alignItems: "center",
                     }}
                   >
-                    <TextField
+                    {/* <TextField
                       label="ProductID"
                       variant="standard"
                       value={selectProdLookupData.ProdCode}
@@ -404,7 +413,21 @@ const Editsubscription = () => {
                       fullWidth
                       inputProps={{ tabIndex: "-1" }}
                       focused
+                    /> */}
+ <SingleFormikOptimizedAutocomplete
+                      label="Product ID"
+                      id="productid"
+                      name="productid"
+                      value={values.productid}
+                      onChange={(e, newValue) => {
+                        setFieldValue("productid", newValue);
+                      }}
+                      log
+                      url={`${
+                        store.getState().globalurl.listViewurl
+                      }?data={"Query":{"AccessID":"2098","ScreenName":"Product ID","Filter":"","Any":"","CompId":"4"}}`}
                     />
+
                   </FormControl>
                   <TextField
                     name="subscriptionStartDate"
@@ -486,7 +509,7 @@ const Editsubscription = () => {
                       alignItems: "center",
                     }}
                   >
-                    <TextField
+                    {/* <TextField
                       label="Product Subscription"
                       variant="standard"
                       value={selectProdsubLookupData.ProdsubCode}
@@ -507,6 +530,20 @@ const Editsubscription = () => {
                       fullWidth
                       inputProps={{ tabIndex: "-1" }}
                       focused
+                    /> */}
+
+                    <SingleFormikOptimizedAutocomplete
+                      label="Product Subscription"
+                      id="productsubscription"
+                      name="productsubscription"
+                      value={values.productsubscription}
+                      onChange={(e, newValue) => {
+                        setFieldValue("productsubscription", newValue);
+                      }}
+                      log
+                      url={`${
+                        store.getState().globalurl.listViewurl
+                      }?data={"Query":{"AccessID":"2099","ScreenName":"Product Subscription","Filter":"parentID='${values.productid ? values.productid.RecordID : 0}'","Any":"","CompId":"4"}}`}
                     />
                   </FormControl>
                   <TextField

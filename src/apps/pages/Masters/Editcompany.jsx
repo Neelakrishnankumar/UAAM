@@ -64,6 +64,9 @@ const Editcompany = () => {
   console.log("🚀 ~ Editcompany ~ Data:", Data);
   const getLoading = useSelector((state) => state.formApi.getLoading);
   const isLoading = useSelector((state) => state.formApi.postLoading);
+
+  const  {CompanyName}  = location.state || {};
+  console.log(CompanyName, "--get rowData Company name");
   // const { UGA_ADD, UGA_VIEW, UGA_MOD, UGA_DEL, UGA_PROCESS, UGA_PRIN } =
   //   useSelector((state) => state.screenRights.data);
 
@@ -90,6 +93,8 @@ const Editcompany = () => {
     useregular: Data.Regularslno === "Y" ? true : false,
     noOfEmployees: Data.NumberOfEmployee,
     noofusers: Data.NumberOfUsers,
+    country: Data.CnRecordID ?{RecordID:Data.CnRecordID,Code:Data.CountryCode , Name:Data.CountryName} : null
+
   };
   /*************************LOOKUP DATA*********************/
   const [openCNpopup, setOpenCNpopup] = useState(false);
@@ -127,9 +132,12 @@ const Editcompany = () => {
   const fnSave = async (values) => {
     var idata = {
       RecordID: recID,
-      CnRecordID: selectcnLookupData.CNlookupRecordid,
-      CountryCode: selectcnLookupData.CNlookupCode,
-      CountryName: selectcnLookupData.CNlookupDesc,
+      CnRecordID: values.country.RecordID || 0,
+      CountryCode: values.country.Code|| '' ,
+      CountryName:values.country.Name || '',
+      // CnRecordID: selectcnLookupData.CNlookupRecordid,
+      // CountryCode: selectcnLookupData.CNlookupCode,
+      // CountryName: selectcnLookupData.CNlookupDesc,
       Code: values.code,
       Name: values.name,
       Email: values.email,
@@ -190,6 +198,8 @@ const Editcompany = () => {
       }
     });
   };
+
+  
   return (
     <Box>
       {getLoading ? <LinearProgress /> : false}
@@ -206,7 +216,10 @@ const Editcompany = () => {
                 <MenuOutlinedIcon />
               </IconButton>
             )}
-            <Typography variant="h3">Company</Typography>
+            <Typography variant="h3">
+            Company ({CompanyName})
+
+            </Typography>
           </Box>
 
           <Box display="flex">
@@ -338,13 +351,13 @@ const Editcompany = () => {
                       inputProps={{ maxLength: 500 }}
                       multiline
                     />
-                    <TextField
+                    {/* <TextField
                       label="ID"
                       variant="standard"
                       value={selectcnLookupData.CNlookupRecordid}
                       focused
                       sx={{ display: "none" }}
-                    />
+                    /> */}
                     <FormControl
                       sx={{
                         gridColumn: "span 2",
@@ -358,7 +371,7 @@ const Editcompany = () => {
                           alignItems: "center",
                         }}
                       >
-                        {/* <SingleFormikOptimizedAutocomplete 
+                        <SingleFormikOptimizedAutocomplete 
                     label="Country"
                     id="country"
                     name="country"
@@ -366,10 +379,11 @@ const Editcompany = () => {
                     onChange={(e,newValue)=> {
                       setFieldValue("country",newValue)
                     }}
-                   url={`${store.getState.globalurl.listViewurl}?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
-                    /> */}
+                    log
+                   url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
+                    />
 
-                        <TextField
+                        {/* <TextField
                           label="Country"
                           variant="standard"
                           value={selectcnLookupData.CNlookupCode}
@@ -390,7 +404,7 @@ const Editcompany = () => {
                           fullWidth
                           inputProps={{ tabIndex: "-1" }}
                           focused
-                        />
+                        /> */}
                       </FormControl>
                     </FormControl>
                     <TextField

@@ -34,6 +34,8 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import Listviewpopup from "../Lookup";
 import { UserSchema } from "../../Security/validation";
 import { formGap } from "../../../ui-components/utils";
+import store from "../../..";
+import { SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
 const Edituser = () => {
   const dispatch = useDispatch();
   const params = useParams();
@@ -62,6 +64,8 @@ const Edituser = () => {
     comments: data.Comm1,
     disable: data.Disable == "Y" ? true : false,
     sortorder: data.Sortorder,
+    usergroup: data.GrpID ? {RecordID:data.GrpID,Code:data.GroupCode,Name:data.GroupName} : null
+
   };
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -77,7 +81,10 @@ const Edituser = () => {
     }
     const idata = {
       RecordID: recID,
-      GrpID: selectUGLookupData.UGlookupRecordid,
+      GrpID: values.usergroup.RecordID || 0,
+      GroupCode: values.usergroup.Code || '',
+      GroupName: values.usergroup.Name || '',
+      // GrpID: selectUGLookupData.UGlookupRecordid,
       Code: values.code,
       Name1: values.name,
       Password: values.password,
@@ -247,6 +254,7 @@ const Edituser = () => {
               values,
               handleSubmit,
               setFieldTouched,
+              setFieldValue
             }) => (
               <form onSubmit={handleSubmit}>
                 <Box
@@ -298,7 +306,18 @@ const Edituser = () => {
                         alignItems: "center",
                       }}
                     >
-                      <TextField
+ <SingleFormikOptimizedAutocomplete 
+                                          label="User Group"
+                                          id="usergroup"
+                                          name="usergroup"
+                                          value={values.usergroup}
+                                          onChange={(e,newValue)=> {
+                                            setFieldValue("usergroup",newValue)
+                                          }}
+                                          log
+                                         url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2039","ScreenName":"UserGroup","Filter":"CompanyID='${companyRecID}'","Any":"","CompId":"4"}}`}
+                                          />
+                      {/* <TextField
                         id="outlined-basic"
                         label="ID"
                         variant="standard"
@@ -321,7 +340,7 @@ const Edituser = () => {
                       >
                         <img src="https://img.icons8.com/color/48/null/details-popup.png" />
                       </IconButton>
-                      {/* <MoreHorizIcon onClick={()=>handleShow('CTY')} color='white' sx={{height:'30px'}} mt='15px' fontSize='medium' /> */}
+                      {/* <MoreHorizIcon onClick={()=>handleShow('CTY')} color='white' sx={{height:'30px'}} mt='15px' fontSize='medium' /> 
 
                       <TextField
                         id="outlined-basic"
@@ -331,7 +350,7 @@ const Edituser = () => {
                         fullWidth
                         inputProps={{ tabIndex: "-1" }}
                         focused
-                      />
+                      /> */}
                     </FormControl>
                   </FormControl>
                   <TextField
