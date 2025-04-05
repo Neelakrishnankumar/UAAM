@@ -85,9 +85,11 @@ const Edituser = () => {
       Comm1: values.comments,
       Disable: values.checkbox == true ? "Y" : "N",
       Sortorder: values.sortorder,
+      
       // YearID: YearRecorid,
       // Company: logincompanyRecID,
       //YearID:Finyear,
+      SubscriptionID: params.parentID,
       Company: companyRecID,
     };
     const data = await dispatch(postData({ accessID, action, idata }));
@@ -96,10 +98,9 @@ const Edituser = () => {
       toast.success(data.payload.Msg);
       // setIni(true)
       setLoading(false);
-      navigate(`/Apps/Secondarylistview/TR094/Users/${companyRecID}`);
+      navigate(-1);
     } else {
       toast.error(data.payload.Message);
-      console.log(data.payload.Message, "--error data.payload.Message");
 
       setLoading(false);
     }
@@ -160,7 +161,7 @@ const Edituser = () => {
           navigate("/");
         }
         if (props === "Close") {
-          navigate(`/Apps/Secondarylistview/TR094/Users/${companyRecID}`);
+          navigate(-1);
         }
       } else {
         return;
@@ -193,7 +194,7 @@ const Edituser = () => {
                   color="#0000D1"
                   sx={{ cursor: "default" }}
                   onClick={() => {
-                    navigate("/Apps/TR099/Companies");
+                    navigate("/Apps/TR014/Company");
                   }}
                 >
                   Companies
@@ -203,9 +204,17 @@ const Edituser = () => {
                   color="#0000D1"
                   sx={{ cursor: "default" }}
                   onClick={() => {
-                    navigate(
-                      `/Apps/Secondarylistview/TR094/Users/${companyRecID}`
-                    );
+                    navigate(`/Apps/Secondarylistview/TR238/subscription/${companyRecID}`);
+                  }}
+                >
+                  Subscriptions
+                </Typography>
+                <Typography
+                  variant="h5"
+                  color="#0000D1"
+                  sx={{ cursor: "default" }}
+                  onClick={() => {
+                    navigate(-1);
                   }}
                 >
                   Users
@@ -298,14 +307,7 @@ const Edituser = () => {
                         alignItems: "center",
                       }}
                     >
-                      <TextField
-                        id="outlined-basic"
-                        label="ID"
-                        variant="standard"
-                        value={selectUGLookupData.UGRecordID}
-                        focused
-                        sx={{ display: "none" }}
-                      />
+                  
                       <TextField
                         id="outlined-basic"
                         label="User Group"
@@ -325,7 +327,7 @@ const Edituser = () => {
 
                       <TextField
                         id="outlined-basic"
-                        label=""
+                       
                         variant="standard"
                         value={selectUGLookupData.UGlookupDesc}
                         fullWidth
@@ -341,6 +343,7 @@ const Edituser = () => {
                     label="Password"
                     variant="standard"
                     focused
+                    required
                     sx={{ gridColumn: "span 2" }}
                     onFocus={() => setFieldTouched("password", true)}
                     onBlur={handleBlur}
@@ -450,9 +453,7 @@ const Edituser = () => {
                     variant="contained"
                     color="error"
                     onClick={() => {
-                      navigate(
-                        `/Apps/Secondarylistview/TR094/Users/${companyRecID}`
-                      );
+                      navigate(-1);
                     }}
                   >
                     CANCEL

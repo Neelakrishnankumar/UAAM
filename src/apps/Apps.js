@@ -123,6 +123,10 @@ function App() {
                 {/* <Topbar Tittle={screenName} /> */}
 
                 <Routes>
+                <Route
+                    path="/Secondarylistview/:accessID/:screenName/:parentID/:companyRecID/EditUsers/:id/:Mode"
+                    element={<Edituser />}
+                  />
                   <Route
                     path="/:accessID/:screenName/EditEmployeePayroll/:id/:Mode"
                     element={<EditemployeePayroll />}
@@ -421,10 +425,7 @@ function App() {
                     path="/:accessID/:screenName/price-of-other-customer/:id"
                     element={<Editpriceofothercustomer />}
                   />
-                  <Route
-                    path="/Secondarylistview/:accessID/:screenName/:companyRecID/EditUsers/:id/:Mode"
-                    element={<Edituser />}
-                  />
+                 
                   <Route
                     path="/Secondarylistview/:accessID/:screenName/:companyRecID/EditUsergroups/:id/:Mode"
                     element={<Editusergroup />}

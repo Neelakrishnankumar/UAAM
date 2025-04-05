@@ -29,6 +29,8 @@ import {
   getFetchData,
   postApidata,
   postData,
+  subScriptionCheck,
+  subScriptionIdGet,
 } from "../../../store/reducers/Formapireducer";
 import React, { useState, useEffect, useRef } from "react";
 import { LoadingButton } from "@mui/lab";
@@ -51,6 +53,7 @@ const Editsubscription = () => {
   var accessID = params.accessID;
   var paramscompID = params.filtertype;
   const data = useSelector((state) => state.formApi.Data);
+  const getLoading = useSelector((state) => state.formApi.getLoading);
   const Status = useSelector((state) => state.formApi.Status);
   const Msg = useSelector((state) => state.formApi.msg);
   // console.log(params, "--find params");
@@ -67,9 +70,9 @@ const Editsubscription = () => {
   const CompanyID = sessionStorage.getItem("compID");
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const location = useLocation();
-  // useEffect(() => {
-  //   dispatch(getFetchData({ accessID, get: "get", recID }));
-  // }, [location.key]);
+  useEffect(() => {
+    dispatch(getFetchData({ accessID, get: "get", recID }));
+  }, [location.key]);
 
   //Products Lookup
   const [openProdPopup, setOpenProdPopup] = useState(false);
@@ -87,6 +90,18 @@ const Editsubscription = () => {
     ProdsubCode: "",
     ProdsubDesc: "",
   });
+
+  if (!isPopupData) {
+    selectProdLookupData.ProdCode = data.OurProductCode;
+    selectProdLookupData.ProdDesc = data.OurProductDescription;
+    selectProdLookupData.ProdRecordid = data.OurProductID;
+
+    selectProdsubLookupData.ProdsubCode = data.ProductSubscriptionCode;
+    selectProdsubLookupData.ProdsubDesc = data.ProductSubscriptionName;
+    selectProdsubLookupData.ProdsubRecordid = data.ProdSubscriptionID;
+  }
+
+  const [subType , setSubType] = useState("Y")
   function handleShow(type) {
     if (type == "PROD") {
       setOpenProdPopup(true);
@@ -95,12 +110,22 @@ const Editsubscription = () => {
       setOpenSubPopup(true);
     }
   }
-  const childToParent = (childdata, type) => {
+  const childToParent =  async(childdata, type) => {
+    setisPopupdata(true);
     console.log("type---" + type);
     console.log("Data---" + JSON.stringify(childdata));
 
     if (type == "Products") {
-      setisPopupdata(true);
+      if(params.Mode == "A"){
+
+        const res = await dispatch(subScriptionIdGet({"CompanyID":paramscompID,"ProductID":childdata.RecordID}))
+        if(res.payload.SubscriptionID){
+          navigate(`/Apps/Secondarylistview/TR238/subscription/${params.filtertype}/Editsubscription/${res.payload.SubscriptionID}/R`)
+          // dispatch(getFetchData({ accessID, get: "get", recID:res.payload.SubscriptionID }));
+        }
+    
+      }
+     
       setselectProdLookupData({
         ProdRecordid: childdata.RecordID,
         ProdCode: childdata.Code,
@@ -115,6 +140,14 @@ const Editsubscription = () => {
         ProdsubCode: childdata.Code,
         ProdsubDesc: childdata.Name,
       });
+      if(params.Mode == "R"){
+
+        const res = await dispatch(subScriptionCheck({"oldSubcriptionID":data.ProdSubscriptionID,"NewSubcriptionID": childdata.RecordID}))
+        console.log(res,"res");
+        const type = res.payload.Type || "Y"
+        setSubType(type)
+      }
+
       setOpenSubPopup(false);
     }
   };
@@ -123,9 +156,9 @@ const Editsubscription = () => {
   const [subEnddate, SetsubEnddate] = useState("");
   const [subperiod, Setsubperiod] = useState("");
 
+
   const handleChangesub = (e, setter) => {
     const { name, value } = e.target;
-    console.log(name, "--name in handleChangesub");
     // Update the corresponding state
     setter(value);
 
@@ -133,7 +166,7 @@ const Editsubscription = () => {
     if (!isNaN(value) && !isNaN(subperiod)) {
       // Step 1: Add the period (in months) to the start date
       const tentativeEndDate = addMonths(value, subperiod);
-      console.log(tentativeEndDate, "--tentativeEndDate");
+
 
       // Step 2: Calculate the final end date, 30 days after the tentative end date
       // const finalEndDate = new Date(tentativeEndDate);
@@ -141,15 +174,12 @@ const Editsubscription = () => {
       finalEndDate.setDate(finalEndDate.getDate() + subperiod * 30); // Add 30 days
 
       const formattedEndDate = finalEndDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
-      console.log("Final End Date (30 days after):", formattedEndDate);
+
 
       // Step 3: Set the calculated end date in the form
       SetsubEnddate(formattedEndDate);
     }
     // Log all state values
-    console.log("fromDate:", subfromdate);
-    console.log("End Date:", subEnddate);
-    console.log("Sub Period:", subperiod);
   };
   const SubPeriodOnchange = (e, setter) => {
     const { name, value } = e.target;
@@ -181,33 +211,32 @@ const Editsubscription = () => {
   // *************** INITIALVALUE  *************** //
 
   const InitialValue = {
-    subscriptionStartDate: "",
-    subscriptionperiod: "",
-    notificationDate: "",
+    subscriptionStartDate:"",
+    subscriptionperiod:"",
+    notificationDate:"",
     subscriptionEndDate: "",
     retainDate: "",
   };
 
   const Fnsave = async (values) => {
-    let action = mode === "A" ? "insert" : "update";
+    let action = mode === "A" ? "insert" : "insert";
     const idata = {
       RecordID: recID,
       CompanyID: paramscompID,
       OurProductID: selectProdLookupData.ProdRecordid,
       ProdSubscriptionID: selectProdsubLookupData.ProdsubRecordid,
-      StartDate: subfromdate,
-      EndDate: subEnddate,
-      NoOfMonth: subperiod,
+      StartDate: values.subscriptionStartDate,
+      EndDate: values.subscriptionEndDate,
+      NoOfMonth: values.subscriptionperiod,
       RetainDate: values.retainDate,
       NotificationDate: values.notificationDate,
+      Type:subType
     };
 
     const response = await dispatch(postData({ accessID, action, idata }));
     if (response.payload.Status == "Y") {
       toast.success(response.payload.Msg);
-      navigate(
-        `/Apps/Secondarylistview/TR238/subscription/${params.filtertype}`
-      );
+      navigate(`/Apps/Secondarylistview/TR238/subscription/${params.filtertype}`);
     } else {
       toast.error(response.payload.Msg);
     }
@@ -246,7 +275,7 @@ const Editsubscription = () => {
   };
   return (
     <React.Fragment>
-      {/* {getLoading ? <LinearProgress /> : false} */}
+      {getLoading ? <LinearProgress /> : false}
       <Paper elevation={3} sx={{ margin: "0px 10px", background: "#F2F0F0" }}>
         <Box display="flex" justifyContent="space-between" p={2}>
           <Box display="flex" borderRadius="3px" alignItems="center">
@@ -313,8 +342,8 @@ const Editsubscription = () => {
           </Box>
         </Box>
       </Paper>
-      {/* {!getLoading ? ( */}
-      {/* <Box m="20px"> */}
+      {!getLoading ? (
+  
       <Paper elevation={3} sx={{ margin: "10px" }}>
         <Formik
           initialValues={InitialValue}
@@ -324,11 +353,6 @@ const Editsubscription = () => {
               setSubmitting(false); // ✅ Set submitting to false after save
             }, 100);
           }}
-          // onSubmit={(values, setSubmitting) => {
-          //   setTimeout(() => {
-          //     Fnsave(values);
-          //   }, 100);
-          // }}
           //  validationSchema={ DesignationSchema}
           enableReinitialize={true}
         >
@@ -340,26 +364,8 @@ const Editsubscription = () => {
             isSubmitting,
             values,
             handleSubmit,
+            setFieldValue
           }) => (
-            //               useEffect((values) => {
-            //   if (values.subscriptionStartDate && values.subscriptionperiod) {
-            //     const startDate = new Date(values.subscriptionStartDate);
-            //     const period = parseInt(values.subscriptionperiod, 10);
-
-            //     if (!isNaN(startDate) && !isNaN(period)) {
-            //       const tentativeEndDate = addMonths(startDate, period);
-            //       const lastDayOfMonth = endOfMonth(tentativeEndDate);
-
-            //       handleChange({
-            //         target: {
-            //           name: "subscriptionEndDate",
-            //           value: lastDayOfMonth.toISOString().split("T")[0],
-            //         },
-            //       });
-            //     }
-            //   }
-            // }, [values.subscriptionStartDate, values.subscriptionperiod]);
-
             <form onSubmit={handleSubmit}>
               <Box
                 display="grid"
@@ -386,6 +392,7 @@ const Editsubscription = () => {
                     <TextField
                       label="ProductID"
                       variant="standard"
+                      disabled={params.Mode == "R"}
                       value={selectProdLookupData.ProdCode}
                       focused
                       // required
@@ -393,12 +400,14 @@ const Editsubscription = () => {
                     />
                     <IconButton
                       sx={{ height: 40, width: 40 }}
+                      disabled={params.Mode == "R"}
                       onClick={() => handleShow("PROD")}
                     >
                       <img src="https://img.icons8.com/color/48/null/details-popup.png" />
                     </IconButton>
 
                     <TextField
+                           disabled={params.Mode == "R"}
                       variant="standard"
                       value={selectProdLookupData.ProdDesc}
                       fullWidth
@@ -407,36 +416,59 @@ const Editsubscription = () => {
                     />
                   </FormControl>
                   <TextField
+                  required
                     name="subscriptionStartDate"
                     type="date"
                     id="subscriptionStartDate"
                     label="Subscription Start Date"
                     variant="standard"
                     focused
-                    onChange={(e) => handleChangesub(e, Setsubfromdate)}
-                    value={subfromdate}
-                    // value={values.subscriptionStartDate}
-                    // onBlur={handleBlur}
-                    // onChange={handleChange}
-                    // error={!!touched.subscriptionPeriod && !!errors.subscriptionPeriod}
-                    // helperText={touched.subscriptionPeriod && errors.subscriptionPeriod}
+                    // onChange={(e) => handleChangesub(e, Setsubfromdate)}
+                    // value={subfromdate}
+                    value={values.subscriptionStartDate}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.subscriptionPeriod && !!errors.subscriptionPeriod}
+                    helperText={touched.subscriptionPeriod && errors.subscriptionPeriod}
                     autoFocus
                   />
 
                   <TextField
+                  required
                     name="subscriptionperiod"
                     type="number"
                     id="subscriptionperiod"
                     label="Subscription Period (in months)"
                     variant="standard"
                     focused
-                    onChange={(e) => SubPeriodOnchange(e, Setsubperiod)}
-                    value={subperiod}
-                    // value={values.subscriptionperiod}
-                    // onBlur={handleBlur}
-                    // onChange={handleChange}
-                    // error={!!touched.subscriptionperiod && !!errors.subscriptionperiod}
-                    // helperText={touched.subscriptionperiod && errors.subscriptionperiod}
+                    // onChange={(e) => SubPeriodOnchange(e, Setsubperiod)}
+                    // value={subperiod}
+                    value={values.subscriptionperiod}
+                    onBlur={handleBlur}
+                    onChange={(e)=>{
+                      const { name, value } = e.target;
+                      setFieldValue("subscriptionperiod",value)
+                      const startDate = new Date(values.subscriptionStartDate);
+                      if (values.subscriptionStartDate && value) {
+                    
+                        const period = parseInt(value, 10);
+                
+                        console.log(period,"period");
+                        
+                        if (!isNaN(period)) {
+                          const finalEndDate = new Date(startDate);
+                          finalEndDate.setDate(finalEndDate.getDate() + period* 30); // Add 30 days
+                  
+                          const formattedEndDate = finalEndDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+      
+                          setFieldValue("subscriptionEndDate",formattedEndDate)
+                        }
+                      }else{
+                        setFieldValue("subscriptionEndDate","")
+                      }
+                    }}
+                    error={!!touched.subscriptionperiod && !!errors.subscriptionperiod}
+                    helperText={touched.subscriptionperiod && errors.subscriptionperiod}
                     autoFocus
                     sx={{
                       gridColumn: "span 2",
@@ -463,22 +495,6 @@ const Editsubscription = () => {
                   fullWidth
                   sx={{ gridColumn: "span 2", gap: formGap }}
                 >
-                  {/* <TextField
-      name="code"
-      type="text"
-      id="code"
-      label="Code"
-      variant="standard"
-      focused
-      required
-      value={values.code}
-      onBlur={handleBlur}
-      onChange={handleChange}
-      error={!!touched.code && !!errors.code}
-      helperText={touched.code && errors.code}
-      autoFocus
-    /> */}
-
                   <FormControl
                     sx={{
                       display: "flex",
@@ -493,15 +509,18 @@ const Editsubscription = () => {
                       focused
                       // required
                       inputProps={{ tabIndex: "-1" }}
+                     
                     />
                     <IconButton
                       sx={{ height: 40, width: 40 }}
                       onClick={() => handleShow("PRODSUB")}
+                    
                     >
                       <img src="https://img.icons8.com/color/48/null/details-popup.png" />
                     </IconButton>
 
                     <TextField
+              
                       variant="standard"
                       value={selectProdsubLookupData.ProdsubDesc}
                       fullWidth
@@ -516,13 +535,13 @@ const Editsubscription = () => {
                     label="Subscription End Date"
                     variant="standard"
                     focused
-                    onChange={(e) => handleChangesub(e, SetsubEnddate)}
-                    value={subEnddate}
-                    // value={values.subscriptionEndDate}
-                    // onBlur={handleBlur}
-                    // onChange={handleChange}
-                    // error={!!touched.subscriptionEndDate && !!errors.subscriptionEndDate}
-                    // helperText={touched.subscriptionEndDate && errors.subscriptionEndDate}
+                    // onChange={(e) => handleChangesub(e, SetsubEnddate)}
+                    // value={subEnddate}
+                    value={values.subscriptionEndDate}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.subscriptionEndDate && !!errors.subscriptionEndDate}
+                    helperText={touched.subscriptionEndDate && errors.subscriptionEndDate}
                     autoFocus
                     inputProps={{ readOnly: true }}
                   />
@@ -548,18 +567,6 @@ const Editsubscription = () => {
                 </FormControl>
               </Box>
 
-              {/* {YearFlag == "true" ? (
-    <LoadingButton color="secondary" variant="contained" type="submit" 
-    loading={isLoading}>
-      Save
-    </LoadingButton>
-  ) : (
-    <Button color="secondary" variant="contained" 
-    disabled
-    >
-      Save
-    </Button>
-  )} */}
               <Box
                 display="flex"
                 padding={1}
@@ -617,10 +624,10 @@ const Editsubscription = () => {
           />
         </Popup>
       </Paper>
-      {/* </Box> */}
-      {/* // ) : (
-      //   false
-      // )} */}
+
+      ) : (
+        false
+      )}
     </React.Fragment>
   );
 };

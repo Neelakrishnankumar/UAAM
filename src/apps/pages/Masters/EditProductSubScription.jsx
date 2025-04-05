@@ -1057,7 +1057,7 @@ const EditProductSubScription = () => {
                             FnProductSub(values, resetForm, false);
                           }, 100);
                         }}
-                        validationSchema={SubscriptionScma}
+                        // validationSchema={SubscriptionScma}
                         enableReinitialize={true}
                       >
                         {({
