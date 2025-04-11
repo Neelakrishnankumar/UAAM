@@ -2196,10 +2196,9 @@ const ListviewSecondary = () => {
               color: "", // Color for even rows
             },
             "& .gridcolor": {
-              // backgroundColor: "#80cbc4",
-              // backgroundColor: "#f5cbae",
-              // color: "#00695f",
-              border: "1px solid #00695f",
+              color: '#00695f', // Change this to whatever color you want
+              fontWeight: 'bold', // optiona
+              // color: "1px solid #00695f",
             },
           }}
         >
