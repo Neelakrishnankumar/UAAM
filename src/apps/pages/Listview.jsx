@@ -351,6 +351,25 @@ const Listview = () => {
                     );
                   }}
                 />
+                {/* <AddOutlinedIcon
+  onClick={() => {
+    navigate(
+      `./Edit${screenName}/-1/A${accessID === "TR010" ? "/0" : ""}`,
+      {
+        state: accessID === "TR014"
+          ? { CompanyName: -1 }
+          : accessID === "TR095"
+          ? { ...st }
+          : {
+            CustomerID: "-1",
+            ProductID: "-1",
+            BomID: "-1",
+            }
+      }
+    );
+  }}
+/> */}
+
               </IconButton>
             </Tooltip>
           )}

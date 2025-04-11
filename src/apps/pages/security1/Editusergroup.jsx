@@ -67,8 +67,12 @@ const Editusergroup = () => {
   const params = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const rowDatastate = location.state || {};
+  console.log(rowDatastate, "--rowDatastate");
+  
   const recID = params.id;
   const mode = params.Mode;
+  
   const accessID = params.accessID;
   const companyRecID = params.companyRecID;
   const [pageSize, setPageSize] = React.useState(10);
@@ -277,11 +281,12 @@ const Editusergroup = () => {
     {
       field: "SM_CAPTION1",
       headerName: "Screen Name",
-      width: 250,
+      width: 150,
     },
     {
       field: "all",
       headerName: "All",
+      // width: 10,
       flex: 1,
       align: "center",
       headerAlign: "center",
@@ -305,6 +310,7 @@ const Editusergroup = () => {
       field: "UGA_ADD",
       headerName: "ADD",
       flex: 1,
+      // width: 10,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
@@ -321,6 +327,7 @@ const Editusergroup = () => {
       field: "UGA_VIEW",
       headerName: "VIEW",
       flex: 1,
+      // width: 10,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
@@ -336,6 +343,7 @@ const Editusergroup = () => {
       field: "UGA_MOD",
       headerName: "MODIFY",
       flex: 1,
+      // width: 10,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
@@ -351,6 +359,7 @@ const Editusergroup = () => {
       field: "UGA_DEL",
       headerName: "DELETE",
       flex: 1,
+      // width: 10,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
@@ -366,6 +375,7 @@ const Editusergroup = () => {
       field: "UGA_PROCESS",
       headerName: "PRINT",
       flex: 1,
+      // width: 10,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
@@ -381,6 +391,7 @@ const Editusergroup = () => {
       field: "UGA_PRINT",
       headerName: "PROCESS",
       flex: 1,
+      // width: 10,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
@@ -483,7 +494,7 @@ const Editusergroup = () => {
                     navigate("/Apps/TR099/Companies");
                   }}
                 >
-                  Companies
+                  {`Companies(${rowDatastate.UGCompany})`}
                 </Typography>
                 <Typography
                   variant="h5"
@@ -495,7 +506,8 @@ const Editusergroup = () => {
                     );
                   }}
                 >
-                  User Group
+{mode === "E" ? `User Group(${rowDatastate.Usergroup})` : "User Group(New)"}
+               
                 </Typography>
               </Breadcrumbs>
             </Box>
@@ -724,7 +736,8 @@ const Editusergroup = () => {
                       color="error"
                       onClick={() => {
                         navigate(
-                          `/Apps/Secondarylistview/TR095/Usergroups/${companyRecID}`
+                          -1
+                          // `/Apps/Secondarylistview/TR095/Usergroups/${companyRecID}`
                         );
                       }}
                     >

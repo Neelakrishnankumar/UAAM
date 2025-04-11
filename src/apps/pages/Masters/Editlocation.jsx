@@ -70,6 +70,9 @@ const Editlocation = () => {
   }, [location.key]);
   // *************** INITIALVALUE  *************** //
 
+  const rowData = location.state || {};
+
+
   const InitialValue = {
     code: data.Code,
     name: data.Name,
@@ -203,7 +206,7 @@ const Editlocation = () => {
                   navigate("/Apps/TR014/Company");
                 }}
               >
-                Company
+             {`Company(${rowData.CompanyName})`}
               </Typography>
               <Typography
                 variant="h5"
@@ -213,7 +216,10 @@ const Editlocation = () => {
                   navigate("/Apps/Secondarylistview/TR128/Location/3");
                 }}
               >
-                Location
+                {mode === "E" ? `Location(${rowData.LocationName})` : "Location(New)"}
+
+                 {/* {`Location(${rowData.LocationName})`} */}
+                 
               </Typography>
 
               {/* <Typography variant="h3">Location</Typography> */}
@@ -468,7 +474,8 @@ const Editlocation = () => {
                     variant="contained"
                     onClick={() => {
                       navigate(
-                        `/Apps/Secondarylistview/TR128/Location/${parentID}`
+                        -1
+                        // `/Apps/Secondarylistview/TR128/Location/${parentID}`
                       );
                     }}
                   >

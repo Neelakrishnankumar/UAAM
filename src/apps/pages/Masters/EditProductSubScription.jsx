@@ -76,6 +76,8 @@ const EditProductSubScription = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const location = useLocation();
+const rowData = location.state || {};
+console.log(rowData, "--find rowData");
 
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const YearFlag = sessionStorage.getItem("YearFlag");
@@ -496,10 +498,13 @@ const EditProductSubScription = () => {
                     color="#0000D1"
                     sx={{ cursor: "default" }}
                     onClick={() => {
-                      navigate(`/Apps/TR240/Products`);
+                      navigate(`/Apps/TR240/Products`,);
                     }}
                   >
-                    List Of Products
+       {mode === "E" ? ` List Of Products(${rowData.Products})` : "List Of Products(New)"}
+
+                    {/* {` List Of Products(${rowData.Products})`} */}
+                   
                   </Typography>
                   <Typography
                     variant="h5"
@@ -786,7 +791,9 @@ const EditProductSubScription = () => {
                       color="error"
                       variant="contained"
                       onClick={() => {
-                        navigate(`/Apps/TR240/Products`);
+                        navigate(
+                          `/Apps/TR240/Products`
+                        );
                       }}
                     >
                       Cancel

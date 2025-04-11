@@ -64,9 +64,9 @@ const Editcompany = () => {
   console.log("🚀 ~ Editcompany ~ Data:", Data);
   const getLoading = useSelector((state) => state.formApi.getLoading);
   const isLoading = useSelector((state) => state.formApi.postLoading);
+  
+  const rowData = location.state || {};
 
-  const  {CompanyName}  = location.state || {};
-  console.log(CompanyName, "--get rowData Company name");
   // const { UGA_ADD, UGA_VIEW, UGA_MOD, UGA_DEL, UGA_PROCESS, UGA_PRIN } =
   //   useSelector((state) => state.screenRights.data);
 
@@ -217,7 +217,9 @@ const Editcompany = () => {
               </IconButton>
             )}
             <Typography variant="h3">
-            Company ({CompanyName})
+           
+            {mode === "E" ? `Company(${rowData.CompanyName})` : "Company(New)"}
+
 
             </Typography>
           </Box>
