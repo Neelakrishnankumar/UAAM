@@ -19,6 +19,8 @@ import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import SummarizeOutlinedIcon from "@mui/icons-material/SummarizeOutlined";
 import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
+
 import {
   DataGrid,
   GridToolbarQuickFilter,
@@ -99,11 +101,11 @@ const ListviewSecondary = () => {
   var CompanyID = `${parentID}'`;
   const { toggleSidebar, broken, rtl } = useProSidebar();
 
-  //company
-  const { CompanyName } = location.state || {};
-  console.log(CompanyName, "--find rowData");
 
   const rowData = location.state || {};
+
+  console.log(rowData, "--rowData");
+
   var Description = params.Desc;
   var Number = params.Number;
   var filter;
@@ -1433,10 +1435,10 @@ const ListviewSecondary = () => {
                 color="#0000D1"
                 sx={{ cursor: "default" }}
                 onClick={() => {
-                  navigate("/Apps/TR014/Company");
+                  navigate("/Apps/TR014/Company",{state: rowData});
                 }}
               >
-                Company
+               {`Company(${rowData.CompanyName})`}
               </Typography>
               <Typography
                 variant="h5"
@@ -1808,10 +1810,10 @@ const ListviewSecondary = () => {
               color="#0000D1"
               sx={{ cursor: "default" }}
               onClick={() => {
-                navigate("/Apps/TR014/Company", { state: { CompanyName } });
+                navigate("/Apps/TR014/Company", {state: rowData});
               }}
             >
-              Company ({CompanyName})
+              {`Company(${rowData.CompanyName})`}
             </Typography>
             <Typography variant="h5" color="#0000D1" sx={{ cursor: "default" }}>
               Location
@@ -1831,10 +1833,10 @@ const ListviewSecondary = () => {
               color="#0000D1"
               sx={{ cursor: "default" }}
               onClick={() => {
-                navigate("/Apps/TR014/Company");
+                navigate("/Apps/TR014/Company", {state:rowData});
               }}
             >
-              Company
+              {`Company(${rowData.CompanyName})`}
             </Typography>
             <Typography
               variant="h5"
@@ -1842,11 +1844,11 @@ const ListviewSecondary = () => {
               sx={{ cursor: "default" }}
               onClick={() => {
                 navigate(
-                  `/Apps/Secondarylistview/TR128/Location/${params.Number}`
+                  `/Apps/Secondarylistview/TR128/Location/${params.Number}`,{state:rowData}
                 );
               }}
             >
-              Location
+              {`Location(${rowData.LocationName})`}
             </Typography>
             <Typography variant="h5" color="#0000D1" sx={{ cursor: "default" }}>
               Gate Entry
@@ -1865,10 +1867,10 @@ const ListviewSecondary = () => {
               color="#0000D1"
               sx={{ cursor: "default" }}
               onClick={() => {
-                navigate("/Apps/TR014/Company");
+                navigate("/Apps/TR014/Company",{state: rowData});
               }}
             >
-              Company
+            {`Company(${rowData.CompanyName})`}
             </Typography>
             <Typography
               variant="h5"
@@ -1876,11 +1878,11 @@ const ListviewSecondary = () => {
               sx={{ cursor: "default" }}
               onClick={() => {
                 navigate(
-                  `/Apps/Secondarylistview/TR128/Location/${params.Number}`
+                  `/Apps/Secondarylistview/TR128/Location/${params.Number}`,{state: rowData}
                 );
               }}
             >
-              Location
+             {`Location(${rowData.LocationName})`}
             </Typography>
             <Typography variant="h5" color="#0000D1" sx={{ cursor: "default" }}>
               Bin
@@ -1975,10 +1977,11 @@ const ListviewSecondary = () => {
               color="#0000D1"
               sx={{ cursor: "default" }}
               onClick={() => {
-                navigate("/Apps/TR099/Companies");
+                navigate("/Apps/TR099/Companies",{state: rowData});
               }}
             >
-              Companies
+                {`Companies(${rowData.UGCompany})`}
+           
             </Typography>
             <Typography variant="h5" color="#0000D1" sx={{ cursor: "default" }}>
               User Groups
@@ -1995,20 +1998,20 @@ const ListviewSecondary = () => {
               color="#0000D1"
               sx={{ cursor: "default" }}
               onClick={() => {
-                navigate("/Apps/TR014/Company");
+                navigate("/Apps/TR014/Company",{state:rowData});
               }}
             >
-              Companies
+              {`Companies(${rowData.CompanyName})`}
             </Typography>
             <Typography
               variant="h5"
               color="#0000D1"
               sx={{ cursor: "default" }}
               onClick={() => {
-                navigate(`/Apps/Secondarylistview/TR238/subscription/${params.Number}`);
+                navigate(`/Apps/Secondarylistview/TR238/subscription/${params.Number}`, {state:rowData});
               }}
             >
-              Subscriptions
+               {`Subscriptions(${rowData.SubsName})`}
             </Typography>
             <Typography variant="h5" color="#0000D1" sx={{ cursor: "default" }}>
               Users
@@ -2073,6 +2076,7 @@ const ListviewSecondary = () => {
                   <AssessmentIcon sx={{ marginTop: "10px" }} color="primary" />
                 </IconButton>
               </Tooltip>
+
               <Tooltip arrow title="Add">
                 <IconButton>
                   <AddOutlinedIcon
@@ -2082,7 +2086,10 @@ const ListviewSecondary = () => {
                           screenName === "Remarks"
                             ? "Delivery Chalan"
                             : screenName
-                        }/-1/A`
+                        }/-1/A`,
+                        {
+                          state: {...rowData }
+                        }
                       );
                     }}
                   />
@@ -2099,7 +2106,10 @@ const ListviewSecondary = () => {
                         screenName === "Remarks"
                           ? "Delivery Chalan"
                           : screenName
-                      }/-1/A`
+                      }/-1/A`,
+                      {
+                        state: {...rowData }
+                      }
                     );
                   }}
                 />
@@ -2249,7 +2259,26 @@ const ListviewSecondary = () => {
         </Box>
       </Paper>
       {accessID == "TR238" ? (
-        false
+        <Box
+        display="flex"
+        flexDirection="row"
+        padding="25px"
+        sx={{ overflowY: "auto" }}
+      >
+        
+        <Chip
+          icon={<ListAltOutlinedIcon color="primary" />}
+          label="List Of Users"
+          variant="outlined"
+          sx={{ marginLeft: "50px" }}
+        />
+         <Chip
+          icon={<AutorenewIcon color="primary" />}
+          label="Renew"
+          variant="outlined"
+          sx={{ marginLeft: "50px" }}
+        />
+      </Box>
       ) : accessID == "TR001" ? (
         <Box
           display="flex"

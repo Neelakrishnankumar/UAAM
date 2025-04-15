@@ -43,6 +43,9 @@ const Edituser = () => {
   const recID = params.id;
   const mode = params.Mode;
   const location = useLocation();
+  const rowData = location.state || {};
+  console.log(rowData, "--rowData");
+  
   const companyRecID = params.companyRecID;
   // const logincompanyRecID = sessionStorage.getItem("compID");
   // const YearRecorid = sessionStorage.getItem("YearRecorid");
@@ -201,20 +204,20 @@ const Edituser = () => {
                   color="#0000D1"
                   sx={{ cursor: "default" }}
                   onClick={() => {
-                    navigate("/Apps/TR014/Company");
+                    navigate("/Apps/TR014/Company",{state:rowData});
                   }}
                 >
-                  Companies
+                  {`Companies(${rowData.CompanyName})`}
                 </Typography>
                 <Typography
                   variant="h5"
                   color="#0000D1"
                   sx={{ cursor: "default" }}
                   onClick={() => {
-                    navigate(`/Apps/Secondarylistview/TR238/subscription/${companyRecID}`);
+                    navigate(`/Apps/Secondarylistview/TR238/subscription/${companyRecID}`,{state:rowData});
                   }}
                 >
-                  Subscriptions
+                    {`Subscriptions(${rowData.SubsName})`}
                 </Typography>
                 <Typography
                   variant="h5"
@@ -224,7 +227,9 @@ const Edituser = () => {
                     navigate(-1);
                   }}
                 >
-                  Users
+                     {mode === "E" ? `Users(${rowData.Users})` : "Users(New)"}
+
+                   {/* {`Users(${rowData.Users})`} */}
                 </Typography>
               </Breadcrumbs>
             </Box>

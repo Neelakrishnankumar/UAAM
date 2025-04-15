@@ -58,8 +58,10 @@ const Editgate = () => {
   const Finyear = sessionStorage.getItem("YearRecorid");
   const CompanyID = sessionStorage.getItem("compID");
 
+  
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const location = useLocation();
+  const rowData = location.state || {};
   useEffect(() => {
     dispatch(getFetchData({ accessID, get: "get", recID: recid }));
   }, [location.key]);
@@ -157,10 +159,10 @@ const Editgate = () => {
                 color="#0000D1"
                 sx={{ cursor: "default" }}
                 onClick={() => {
-                  navigate("/Apps/TR014/Company");
+                  navigate("/Apps/TR014/Company",{state: rowData});
                 }}
               >
-                Company
+               {`Company(${rowData.CompanyName})`}
               </Typography>
               <Typography
                 variant="h5"
@@ -168,11 +170,11 @@ const Editgate = () => {
                 sx={{ cursor: "default" }}
                 onClick={() => {
                   navigate(
-                    `/Apps/Secondarylistview/TR128/Location/${params.parentID}`
+                    `/Apps/Secondarylistview/TR128/Location/${params.parentID}`,{state: rowData}
                   );
                 }}
               >
-                Location
+               {`Location(${rowData.LocationName})`}
               </Typography>
               <Typography
                 variant="h5"
@@ -180,11 +182,13 @@ const Editgate = () => {
                 sx={{ cursor: "default" }}
                 onClick={() => {
                   navigate(
-                    `/Apps/Secondarylistview/TR127/Gate Entry/${params.filtertype}/${params.parentID}`
+                    `/Apps/Secondarylistview/TR127/Gate Entry/${params.filtertype}/${params.parentID}`,{state: rowData}
                   );
                 }}
               >
-                Gate Entry
+   {mode === "E" ? `Gate(${rowData.GateName})` : "Gate(New)"}
+        
+               {/* {`Gate(${rowData.GateName})`} */}
               </Typography>
             </Breadcrumbs>
             {/* <Typography variant="h3">Gate</Typography> */}
@@ -356,7 +360,8 @@ const Editgate = () => {
                     variant="contained"
                     onClick={() => {
                       navigate(
-                        `/Apps/Secondarylistview/TR127/Gate Entry/${params.filtertype}/${params.parentID}`
+                        -1
+                        // `/Apps/Secondarylistview/TR127/Gate Entry/${params.filtertype}/${params.parentID}`
                       );
                     }}
                   >

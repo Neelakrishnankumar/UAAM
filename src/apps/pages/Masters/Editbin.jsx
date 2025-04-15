@@ -76,6 +76,9 @@ const Editbin = () => {
 
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const location = useLocation();
+const rowData = location.state || {};
+console.log(rowData, "--rowData");
+
   const [pageSize, setPageSize] = React.useState(10);
   useEffect(() => {
     dispatch(getFetchData({ accessID, get: "get", recID }));
@@ -311,10 +314,10 @@ const Editbin = () => {
                     color="#0000D1"
                     sx={{ cursor: "default" }}
                     onClick={() => {
-                      navigate("/Apps/TR014/Company");
+                      navigate("/Apps/TR014/Company",{state: rowData});
                     }}
                   >
-                    Company
+                    {`Company(${rowData.CompanyName})`}
                   </Typography>
                   <Typography
                     variant="h5"
@@ -322,11 +325,11 @@ const Editbin = () => {
                     sx={{ cursor: "default" }}
                     onClick={() => {
                       navigate(
-                        `/Apps/Secondarylistview/TR128/Location/${params.parentID}`
+                        `/Apps/Secondarylistview/TR128/Location/${params.parentID}`,{state: rowData}
                       );
                     }}
                   >
-                    Location
+                   {`Location(${rowData.LocationName})`}
                   </Typography>
                   <Typography
                     variant="h5"
@@ -334,11 +337,11 @@ const Editbin = () => {
                     sx={{ cursor: "default" }}
                     onClick={() => {
                       navigate(
-                        `/Apps/Secondarylistview/TR129/Bins/${params.filtertype}/${params.parentID}`
+                        `/Apps/Secondarylistview/TR129/Bins/${params.filtertype}/${params.parentID}`,{state: rowData}
                       );
                     }}
                   >
-                    Bin
+                   {`Bin(${rowData.bin})`}
                   </Typography>
                   {show == "1" ? (
                     <Typography
@@ -520,7 +523,8 @@ const Editbin = () => {
                         variant="contained"
                         onClick={() => {
                           navigate(
-                            `/Apps/Secondarylistview/TR129/Bins/${params.filtertype}/${params.parentID}`
+                            -1
+                            // `/Apps/Secondarylistview/TR129/Bins/${params.filtertype}/${params.parentID}`
                           );
                         }}
                       >

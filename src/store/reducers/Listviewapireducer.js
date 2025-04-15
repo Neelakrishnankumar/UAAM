@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import React from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Button, IconButton, Tooltip, Stack, Box, Alert } from "@mui/material";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import AssignmentLateIcon from "@mui/icons-material/AssignmentLate";
@@ -34,7 +34,7 @@ import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore
 import { StockProcessApi } from "./Formapireducer";
 import OpenInBrowserOutlinedIcon from "@mui/icons-material/OpenInBrowserOutlined";
 import Swal from "sweetalert2";
-import AutorenewIcon from '@mui/icons-material/Autorenew';
+import AutorenewIcon from "@mui/icons-material/Autorenew";
 const initialState = {
   rowData: [],
   columnData: [],
@@ -465,6 +465,7 @@ export const fetchListview =
     // alert(compID);
     const year = sessionStorage.getItem("year");
     const company = sessionStorage.getItem("company");
+
     // alert("Inside listview--",sessionStorage.getItem("UserName"));
     var LoggedInUserName = sessionStorage.getItem("UserName");
     // alert("LoggedInUserName",LoggedInUserName);
@@ -1700,8 +1701,6 @@ export const fetchListview =
                 );
               },
             };
-
-            
           } else if (AccessID == "TR238") {
             obj = {
               field: "action",
@@ -1714,35 +1713,34 @@ export const fetchListview =
               disableExport: true,
               renderCell: (params) => {
                 return (
-                  <div style={{display:"flex", gap:1}}>
- 
-                        <Link
-                          to={`/Apps/Secondarylistview/${params.row.ChildID}/${params.row.ChildName}/${params.row.RecordID}/${params.row.CompanyID}`}
-                          state={{companyID:params.row.CompanyID}}
-                        >
-                          <Tooltip title="List of Users">
-                            <IconButton color="info" size="small">
-                              <ListAltOutlinedIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </Link>
-                        {params.row.SubActive == "Y" &&
-                      <Link
-                          to={`./Editsubscription/${params.row.RecordID}/R`}
-                        >
-                          <Tooltip title="Renew">
-                            <IconButton color="info" size="small">
-                              <AutorenewIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </Link>}
-                      
+                  <div style={{ display: "flex", gap: 1 }}>
+                    <Link
+                      to={`/Apps/Secondarylistview/${params.row.ChildID}/${params.row.ChildName}/${params.row.RecordID}/${params.row.CompanyID}`}
+                      state={{ 
+                        companyID: params.row.CompanyID,
+                        CompanyName: params.row.CompanyName,
+                        SubsName: params.row.ProdSubscriptionName
+                      }}
+                    >
+                      <Tooltip title="List of Users">
+                        <IconButton color="info" size="small">
+                          <ListAltOutlinedIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Link>
+                    {params.row.SubActive == "Y" && (
+                      <Link to={`./Editsubscription/${params.row.RecordID}/R`}>
+                        <Tooltip title="Renew">
+                          <IconButton color="info" size="small">
+                            <AutorenewIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Link>
+                    )}
                   </div>
                 );
               },
             };
-
-            
           } else if (AccessID == "TR080") {
             listviewData.Data.columns.push(obj);
             dispatch(
@@ -1789,13 +1787,49 @@ export const fetchListview =
                     AccessID !== "TR052" ? (
                       <Link
                         to={`./Edit${screenName}/${params.row.RecordID}/E`}
-                        state={{
-                          CompanyName: params.row.Name,
-                          CustomerID: params.row.CustomerRecordID,
-                          ProductID: params.row.ProductRecordID,
-                          BomID: params.row.BomRecordID,
-                        }}
-                       
+                        state={
+                          AccessID === "TR014"
+                            ? {
+                                CompanyName: params.row.Name,
+                              }
+                            : AccessID === "TR128"
+                            ? {
+                                LocationName: params.row.Name,
+                                CompanyName: params.row.CompanyName,
+                              }
+                            : AccessID === "TR127"
+                            ? {
+                                GateName: params.row.Name,
+                                LocationName: params.row.LocationName,
+                                CompanyName: params.row.CompanyName,
+                              }
+                            : AccessID === "TR129"
+                            ? {
+                                bin: params.row.Name,
+                                LocationName: params.row.LocationName,
+                                CompanyName: params.row.CompanyName,
+                              }
+                              : AccessID === "TR094"
+                              ? {
+                                  Users: params.row.Name,
+                                  CompanyName: params.row.CompanyName,
+                                  SubsName: params.row.ProdSubscriptionName
+                                }
+                                : AccessID === "TR240"
+                                ? {
+                                    Products: params.row.Name,
+                                  }
+                                  : AccessID === "TR095"
+                                  ? {
+                                    Usergroup: params.row.Name,
+                                    UGCompany: params.row.Company,
+                                    }
+                            : {
+                                CustomerID: params.row.CustomerRecordID,
+                                ProductID: params.row.ProductRecordID,
+                                BomID: params.row.BomRecordID,
+                              }
+                        }
                       >
                         <Tooltip title="Edit">
                           <IconButton color="info" size="small">
@@ -1907,6 +1941,9 @@ export const fetchListview =
                       <>
                         <Link
                           to={`/Apps/Secondarylistview/${params.row.ChildID}/${params.row.ChildName}/${params.row.RecordID}`}
+                        state={{
+                          UGCompany: params.row.Name
+                        }}
                         >
                           <Tooltip title="List of  usergroups">
                             <IconButton color="info" size="small">
@@ -1943,6 +1980,9 @@ export const fetchListview =
                         </Link>
                         <Link
                           to={`/Apps/Secondarylistview/${params.row.ChildID1}/${params.row.ChildName1}/${params.row.RecordID}`}
+                          state={{
+                            CompanyName: params.row.Name,
+                          }}
                           // to={`/Apps/${params.row.ChildID1}/${params.row.ChildName1}/Edit${params.row.ChildName1}/${params.row.RecordID}/E`}
                         >
                           <Tooltip title="Subscriptions">
@@ -2024,6 +2064,10 @@ export const fetchListview =
                       <Box>
                         <Link
                           to={`/Apps/Secondarylistview/${params.row.ChildID}/${params.row.ChildName}/${params.row.RecordID}/${params.row.parentID}`}
+                          state={{
+                            LocationName: params.row.Name,
+                            CompanyName: params.row.CompanyName,
+                          }}
                         >
                           <Tooltip title="Gate">
                             <IconButton color="info" size="small">
@@ -2033,6 +2077,10 @@ export const fetchListview =
                         </Link>
                         <Link
                           to={`/Apps/Secondarylistview/${params.row.ChildID1}/${params.row.ChildName1}/${params.row.RecordID}/${params.row.parentID}`}
+                          state={{
+                            LocationName: params.row.Name,
+                            CompanyName: params.row.CompanyName,
+                          }}
                         >
                           <Tooltip title="Bin">
                             <IconButton color="info" size="small">
