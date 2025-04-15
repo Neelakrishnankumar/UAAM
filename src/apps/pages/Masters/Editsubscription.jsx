@@ -458,7 +458,7 @@ const Editsubscription = () => {
                                 ProductID: newValue.RecordID,
                               })
                             );
-                            if (res.payload.SubscriptionID) {
+                            if (res.payload.Status == "Y") {
                               navigate(
                                 `/Apps/Secondarylistview/TR238/subscription/${params.filtertype}/Editsubscription/${res.payload.SubscriptionID}/R`
                               );

@@ -2193,7 +2193,7 @@ const ListviewSecondary = () => {
           }}
         >
           <DataGrid
-            sx={{
+           sx={{
               "& .MuiDataGrid-footerContainer": {
                 height: dataGridHeaderFooterHeight,
                 minHeight: dataGridHeaderFooterHeight,
