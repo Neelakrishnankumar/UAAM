@@ -1813,7 +1813,7 @@ export const fetchListview =
                               ? {
                                   Users: params.row.Name,
                                   CompanyName: params.row.CompanyName,
-                                  SubsName: params.row.ProdSubscriptionName
+                                  SubsName: params.row.SubscriptionName
                                 }
                                 : AccessID === "TR240"
                                 ? {

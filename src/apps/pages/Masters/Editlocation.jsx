@@ -111,7 +111,7 @@ const Editlocation = () => {
     if (data.payload.Status == "Y") {
       toast.success(data.payload.Msg);
 
-      navigate(`/Apps/Secondarylistview/TR128/Location/${parentID}`);
+      navigate(`/Apps/Secondarylistview/TR128/Location/${parentID}`,{state:rowData});
     } else {
       toast.error(data.payload.Msg);
     }

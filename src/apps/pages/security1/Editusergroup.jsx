@@ -460,7 +460,8 @@ const Editusergroup = () => {
     const response = await dispatch(postData({ accessID, action, idata }));
     if (response.payload.Status == "Y") {
       toast.success(response.payload.Msg);
-      navigate(`/Apps/Secondarylistview/TR095/Usergroups/${companyRecID}`);
+      navigate(-1);
+      // navigate(`/Apps/Secondarylistview/TR095/Usergroups/${companyRecID}`,{state:rowData});
     } else {
       toast.error(response.payload.Msg);
     }

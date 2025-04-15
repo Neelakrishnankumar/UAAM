@@ -98,7 +98,7 @@ const Editgate = () => {
     if (response.payload.Status == "Y") {
       toast.success(response.payload.Msg);
       navigate(
-        `/Apps/Secondarylistview/TR127/Gate Entry/${params.filtertype}/${params.parentID}`
+        `/Apps/Secondarylistview/TR127/Gate Entry/${params.filtertype}/${params.parentID}`,{state:rowData}
       );
     } else {
       toast.error(response.payload.Msg);
@@ -360,8 +360,8 @@ const Editgate = () => {
                     variant="contained"
                     onClick={() => {
                       navigate(
-                        -1
-                        // `/Apps/Secondarylistview/TR127/Gate Entry/${params.filtertype}/${params.parentID}`
+                        // -1
+                        `/Apps/Secondarylistview/TR127/Gate Entry/${params.filtertype}/${params.parentID}`,{state:rowData}
                       );
                     }}
                   >

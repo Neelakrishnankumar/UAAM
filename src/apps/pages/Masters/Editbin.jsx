@@ -116,7 +116,7 @@ console.log(rowData, "--rowData");
     if (data.payload.Status == "Y") {
       toast.success(data.payload.Msg);
       navigate(
-        `/Apps/Secondarylistview/TR129/Bins/${params.filtertype}/${params.parentID}`
+        `/Apps/Secondarylistview/TR129/Bins/${params.filtertype}/${params.parentID}`,{state:rowData}
       );
     } else {
       toast.error(data.payload.Msg);

@@ -76,6 +76,8 @@ const Editsubscription = () => {
     dispatch(getFetchData({ accessID, get: "get", recID }));
   }, [location.key]);
 
+
+  const rowData = location.state || {};
   //Products Lookup
   const [openProdPopup, setOpenProdPopup] = useState(false);
   const [openSubPopup, setOpenSubPopup] = useState(false);
@@ -697,7 +699,7 @@ const Editsubscription = () => {
                     variant="contained"
                     onClick={() =>
                       navigate(
-                        `/Apps/Secondarylistview/TR238/subscription/${params.filtertype}`
+                        `/Apps/Secondarylistview/TR238/subscription/${params.filtertype}`,{state: rowData}
                       )
                     }
                   >
