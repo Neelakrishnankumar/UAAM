@@ -663,7 +663,7 @@ const Editusergroup = () => {
                             color: "", // Color for odd rows
                           },
                           "& .even-row": {
-                            backgroundColor: "#D3D3D3",
+                            backgroundColor: "#c4f5f2",
                             color: "", // Color for even rows
                           },
                         }}

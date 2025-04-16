@@ -493,7 +493,8 @@ const Listview = () => {
         )}
         <Box
           m="5px 0 0 0"
-          height="85vh"
+          padding={2}
+          height={dataGridHeight}
           sx={{
             "& .MuiDataGrid-root": {
               border: "none",
@@ -523,18 +524,18 @@ const Listview = () => {
               color: "", // Color for odd rows
             },
             "& .even-row": {
-              backgroundColor: "#D3D3D3",
+              backgroundColor: "#c4f5f2",
               color: "", // Color for even rows
             },
           }}
         >
           <DataGrid
             sx={{
-              "& .MuiDataGrid-footerContainer": {
-                height: dataGridHeaderFooterHeight,
-                minHeight: dataGridHeaderFooterHeight,
-              },
-            }}
+              "& .MuiDataGrid-footerContainer":{
+                height:dataGridHeaderFooterHeight,
+                minHeight:dataGridHeaderFooterHeight,
+              }
+             }}
             key={accessID}
             rows={rows}
             // columns={UGA_MOD || UGA_VIEW ? columns : columnShow}
