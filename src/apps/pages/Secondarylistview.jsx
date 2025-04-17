@@ -2158,10 +2158,9 @@ const ListviewSecondary = () => {
     <React.Fragment>
       {/* <Box m="5px"> */}
       <Paper elevation={4} sx={{ margin: "30px 20px 0px 20px" }}>
-        <Box
+      <Box
           m="5px 0 0 0"
           padding={2}
-          // height="85vh"
           height={dataGridHeight}
           sx={{
             "& .MuiDataGrid-root": {
@@ -2175,6 +2174,7 @@ const ListviewSecondary = () => {
             },
             "& .MuiDataGrid-columnHeaders": {
               backgroundColor: colors.blueAccent[800],
+              // borderBottom: "none",
             },
             "& .MuiDataGrid-virtualScroller": {
               backgroundColor: colors.primary[400],
@@ -2186,29 +2186,23 @@ const ListviewSecondary = () => {
             "& .MuiCheckbox-root": {
               color: `${colors.greenAccent[200]} !important`,
             },
-
             "& .odd-row": {
               backgroundColor: "",
               color: "", // Color for odd rows
             },
             "& .even-row": {
-              backgroundColor: "#D3D3D3",
+              backgroundColor: "#d0edec",
               color: "", // Color for even rows
-            },
-            "& .gridcolor": {
-              color: '#00695f', // Change this to whatever color you want
-              fontWeight: 'bold', // optiona
-              // color: "1px solid #00695f",
             },
           }}
         >
           <DataGrid
-           sx={{
-              "& .MuiDataGrid-footerContainer": {
-                height: dataGridHeaderFooterHeight,
-                minHeight: dataGridHeaderFooterHeight,
-              },
-            }}
+            sx={{
+              "& .MuiDataGrid-footerContainer":{
+                height:dataGridHeaderFooterHeight,
+                minHeight:dataGridHeaderFooterHeight,
+              }
+             }}
             rowHeight={dataGridRowHeight}
             headerHeight={dataGridHeaderFooterHeight}
             pageSize={pageSize}
