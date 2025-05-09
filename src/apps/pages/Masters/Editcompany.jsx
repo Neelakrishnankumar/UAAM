@@ -280,7 +280,7 @@ const Editcompany = () => {
                     {/* {JSON.stringify(errors)} */}
                     <TextField
                       fullWidth
-                      placeholder="Auto"
+                      // placeholder="Auto"
                       variant="standard"
                       type="text"
                       label="Code"
