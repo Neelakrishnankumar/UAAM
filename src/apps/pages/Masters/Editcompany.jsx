@@ -280,7 +280,7 @@ const Editcompany = () => {
                     {/* {JSON.stringify(errors)} */}
                     <TextField
                       fullWidth
-                      placeholder="Auto"
+                      // placeholder="Auto"
                       variant="standard"
                       type="text"
                       label="Code"
@@ -292,7 +292,7 @@ const Editcompany = () => {
                       // helperText={touched.code && errors.code}
                       focused
                       autoFocus
-                      inputProps={{ readOnly: true }}
+                      inputProps={{maxLength: 5}}
                       // onInvalid={(e) => {
                       //   e.target.setCustomValidity("Please Fill The Code");
                       // }}

@@ -82,7 +82,7 @@ const Editlocation = () => {
     locationnumber: data.Number,
     sortorder: data.SortOrder,
     disable: data.Disable === "Y" ? true : false,
-    contactperson: data.ContactPerson ? {RecordID:data.ContactPerson,Code:data.ContactPersonCode,Name:data.ContactPersonName} : null
+    // contactperson: data.ContactPerson ? {RecordID:data.ContactPerson,Code:data.ContactPersonCode,Name:data.ContactPersonName} : null
 
   };
 
@@ -98,10 +98,10 @@ const Editlocation = () => {
       SortOrder: values.sortorder,
       Disable: values.disable == true ? "Y" : "N",
       CompanyRecordID: parentID,
-      ContactPerson: values.contactperson.RecordID || 0,
-      ContactPersonCode: values.contactperson.Code|| '' ,
-      ContactPersonName: values.contactperson.RecordID || 0,
-      // ContactPerson: selectCPLookupData.CPlookupRecordid,
+      // ContactPerson: values.contactperson ? values.contactperson.RecordID : 0,
+      // ContactPersonCode: values.contactperson ? values.contactperson.Code : '' ,
+      // ContactPersonName: values.contactperson ? values.contactperson.Name : "",
+      ContactPerson: selectCPLookupData.CPlookupRecordid || 0,
       //Finyear,
       //CompanyID,
     };
@@ -337,15 +337,15 @@ const Editlocation = () => {
                       },
                     }}
                   />
-                  <FormControl sx={{ gridColumn: "span 2", gap: formGap }}>
+                  {/* <FormControl sx={{ gridColumn: "span 2", gap: formGap }}>
                     <Box
                       sx={{
                         display: "flex",
                         flexDirection: "row",
                         alignItems: "center",
                       }}
-                    >
-                         <SingleFormikOptimizedAutocomplete 
+                    > */}
+                         {/* <SingleFormikOptimizedAutocomplete 
                                           label="Contact Person"
                                           id="contactperson"
                                           name="contactperson"
@@ -355,7 +355,7 @@ const Editlocation = () => {
                                           }}
                                           log
                                          url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2024","ScreenName":"Contact Person","Filter":"CompanyID='${CompID}'","Any":"","CompId":"4"}}`}
-                                          />
+                                          /> */}
                       {/* <TextField
                         id="employee"
                         label="Contact Person"
@@ -378,8 +378,8 @@ const Editlocation = () => {
                         focused
                         value={selectCPLookupData.CPlookupDesc}
                       /> */}
-                    </Box>
-                  </FormControl>
+                    {/* </Box>
+                  </FormControl> */}
                   <TextField
                     name="contactnumber"
                     type="number"
