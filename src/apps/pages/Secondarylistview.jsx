@@ -2194,6 +2194,11 @@ const ListviewSecondary = () => {
               backgroundColor: "#d0edec",
               color: "", // Color for even rows
             },
+            "& .gridcolor": {
+              color: '#00695f', // Change this to whatever color you want
+              fontWeight: 'bold', // optiona
+              // color: "1px solid #00695f",
+            },
           }}
         >
           <DataGrid
