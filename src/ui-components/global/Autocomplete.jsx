@@ -216,6 +216,7 @@ export const SingleFormikOptimizedAutocomplete = ({
         <TextField
           variant="standard"
           focused
+          required
           {...params}
           label={props.label || "Select Options"}
           error={!!error}

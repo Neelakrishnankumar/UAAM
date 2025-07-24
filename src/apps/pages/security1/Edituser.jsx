@@ -296,8 +296,10 @@ const Edituser = () => {
                     error={!!touched.code && !!errors.code}
                     helperText={touched.code && errors.code}
                     autoFocus
+                    required
                   />
                   <TextField
+                  required
                     name="name"
                     type="text"
                     id="name"
@@ -392,6 +394,7 @@ const Edituser = () => {
                     label="Confirm Password"
                     variant="standard"
                     focused
+                    required
                     sx={{ gridColumn: "span 2" }}
                     onFocus={() => setFieldTouched("comfirmpassword", true)}
                     onBlur={handleBlur}
@@ -482,7 +485,7 @@ const Edituser = () => {
                   </Button>
                   <Button
                     variant="contained"
-                    color="error"
+                    color="warning"
                     onClick={() => {
                       navigate(-1);
                     }}

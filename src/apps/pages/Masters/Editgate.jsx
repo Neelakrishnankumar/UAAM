@@ -87,7 +87,7 @@ const Editgate = () => {
       Code: values.code,
       Name: values.name,
       Comments: values.comment,
-      SortOrder: values.sortorder,
+      SortOrder: values.sortorder || 0,
       Disable: isCheck,
       LocRecordID: parentID,
       // Finyear,
@@ -260,8 +260,10 @@ const Editgate = () => {
                       error={!!touched.code && !!errors.code}
                       helperText={touched.code && errors.code}
                       autoFocus
+                      
                     />
                     <TextField
+                    required
                       name="name"
                       type="text"
                       id="name"
@@ -346,17 +348,8 @@ const Editgate = () => {
                   >
                     Save
                   </LoadingButton>
-                  {/* ) : ( */}
-                  {/* <Button
-                      color="secondary"
-                      variant="contained"
-                      disabled={true}
-                    >
-                      Save
-                    </Button> */}
-                  {/* )} */}
                   <Button
-                    color="error"
+                    color="warning"
                     variant="contained"
                     onClick={() => {
                       navigate(

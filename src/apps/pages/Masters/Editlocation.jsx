@@ -91,10 +91,10 @@ const Editlocation = () => {
       RecordID: recID,
       Code: values.code,
       Name: values.name,
-      Address: values.address,
-      Email: values.contactmail,
-      ContactPersonNum: values.contactnumber,
-      Number: values.locationnumber,
+      Address:"",
+      Email: "",
+      ContactPersonNum: "",
+      Number: "",
       SortOrder: values.sortorder,
       Disable: values.disable == true ? "Y" : "N",
       CompanyRecordID: parentID,
@@ -304,7 +304,7 @@ const Editlocation = () => {
                     helperText={touched.name && errors.name}
                     sx={{ gridColumn: "span 2" }}
                   />
-                  <TextField
+                  {/* <TextField
                     name="address"
                     type="text"
                     id="address"
@@ -317,8 +317,8 @@ const Editlocation = () => {
                     sx={{ gridColumn: "span 2" }}
                     error={!!touched.address && !!errors.address}
                     helperText={touched.address && errors.address}
-                  />
-                  <TextField
+                  /> */}
+                  {/* <TextField
                     name="locationnumber"
                     type="number"
                     id="locationnumber"
@@ -336,7 +336,7 @@ const Editlocation = () => {
                         style: { textAlign: "right" },
                       },
                     }}
-                  />
+                  /> */}
                   {/* <FormControl sx={{ gridColumn: "span 2", gap: formGap }}>
                     <Box
                       sx={{
@@ -380,7 +380,7 @@ const Editlocation = () => {
                       /> */}
                     {/* </Box>
                   </FormControl> */}
-                  <TextField
+                  {/* <TextField
                     name="contactnumber"
                     type="number"
                     id="contactnumber"
@@ -398,8 +398,8 @@ const Editlocation = () => {
                         style: { textAlign: "right" },
                       },
                     }}
-                  />
-                  <TextField
+                  /> */}
+                  {/* <TextField
                     name="contactmail"
                     type="text"
                     id="contactmail"
@@ -412,7 +412,7 @@ const Editlocation = () => {
                     error={!!touched.contactmail && !!errors.contactmail}
                     helperText={touched.contactmail && errors.contactmail}
                     sx={{ gridColumn: "span 2" }}
-                  />
+                  /> */}
                   <TextField
                     name="sortorder"
                     type="number"
@@ -470,7 +470,7 @@ const Editlocation = () => {
                   </LoadingButton>
 
                   <Button
-                    color="error"
+                    color="warning"
                     variant="contained"
                     onClick={() => {
                       navigate(

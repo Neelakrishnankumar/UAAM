@@ -161,7 +161,7 @@ console.log(rowData, "--find rowData");
       //   YearID: Year,
       //   Type: typeUom,
       Code: values.code,
-      SortOrder: values.sortOrder,
+      SortOrder: values.sortOrder || 0,
       Disable: values.checkbox == true ? "Y" : "N",
       //   MinorDescription: typeUom == "C" ? values.MinorDescription : "N",
       //   Finyear,
@@ -788,7 +788,7 @@ console.log(rowData, "--find rowData");
                     )} */}
 
                     <Button
-                      color="error"
+                      color="warning"
                       variant="contained"
                       onClick={() => {
                         navigate(
@@ -1030,7 +1030,7 @@ console.log(rowData, "--find rowData");
                             <FormControl fullWidth sx={{ gap: formGap, mt: 8 }}>
                               <TextField
                                 fullWidth
-                                //  required
+                                 required
                                 variant="standard"
                                 type="number"
                                 label="No Of Employee"
@@ -1058,7 +1058,7 @@ console.log(rowData, "--find rowData");
 
                               <TextField
                                 fullWidth
-                                //  required
+                                 required
                                 variant="standard"
                                 type="number"
                                 label="No Of EndUser"

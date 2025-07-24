@@ -1343,8 +1343,8 @@ const Sidebars = () => {
                 {!collapsed && <ListItemText primary="Change Password" />}
               </ListItemButton>
             </Tooltip> */}
-            <Divider sx={{ mt: 1 }} variant="middle" />
-            <Grid mt={1} p={1} container direction={"column"} spacing={2}>
+             <Divider sx={{ mt: 1 }} variant="middle" />
+           {/* <Grid mt={1} p={1} container direction={"column"} spacing={2}>
               <Grid item>
                 <Chip
                   color="primary"
@@ -1372,7 +1372,7 @@ const Sidebars = () => {
                   label="Calculation"
                 />
               </Grid>
-            </Grid>
+            </Grid> */}
           </Box>
         </Menu>
       </Sidebar>

@@ -419,36 +419,12 @@ const Editsubscription = () => {
                         alignItems: "center",
                       }}
                     >
-                      {/* <TextField
-                      label="ProductID"
-                      variant="standard"
-                      disabled={params.Mode == "R"}
-                      value={selectProdLookupData.ProdCode}
-                      focused
-                      // required
-                      inputProps={{ tabIndex: "-1" }}
-                    />
-                    <IconButton
-                      sx={{ height: 40, width: 40 }}
-                      disabled={params.Mode == "R"}
-                      onClick={() => handleShow("PROD")}
-                    >
-                      <img src="https://img.icons8.com/color/48/null/details-popup.png" />
-                    </IconButton>
-
-                    <TextField
-                           disabled={params.Mode == "R"}
-                      variant="standard"
-                      value={selectProdLookupData.ProdDesc}
-                      fullWidth
-                      inputProps={{ tabIndex: "-1" }}
-                      focused
-                    /> */}
                       <SingleFormikOptimizedAutocomplete
                         disabled={mode == "R"}
                         label="Product ID"
                         id="productid"
                         name="productid"
+                        required
                         value={values.productid}
                         onChange={async (e, newValue) => {
                           setFieldValue("productid", newValue);
@@ -695,7 +671,7 @@ const Editsubscription = () => {
                     Save
                   </Button>
                   <Button
-                    color="error"
+                    color="warning"
                     variant="contained"
                     onClick={() =>
                       navigate(

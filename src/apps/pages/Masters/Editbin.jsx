@@ -442,6 +442,7 @@ console.log(rowData, "--rowData");
                           error={!!touched.bincode && !!errors.bincode}
                           helperText={touched.bincode && errors.bincode}
                           autoFocus
+                          required
                         />
                         <TextField
                           name="binname"
@@ -456,6 +457,7 @@ console.log(rowData, "--rowData");
                           error={!!touched.binname && !!errors.binname}
                           helperText={touched.binname && errors.binname}
                           autoFocus
+                          required
                         />
 
                         <TextField
@@ -519,7 +521,7 @@ console.log(rowData, "--rowData");
                       </LoadingButton>
 
                       <Button
-                        color="error"
+                        color="warning"
                         variant="contained"
                         onClick={() => {
                           navigate(
