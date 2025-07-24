@@ -244,6 +244,7 @@ console.log(rowData, "--find rowData");
     "NoOfEmployee",
     "NoOfEndUser",
     "Price",
+    "OfferPrice",
     "action",
   ];
   const columns = React.useMemo(
@@ -522,7 +523,7 @@ console.log(rowData, "--find rowData");
                       color="#0000D1"
                       sx={{ cursor: "default" }}
                     >
-                      Products Subscriptons
+                      Product Subscripton
                     </Typography>
                   ) : (
                     false
@@ -1061,7 +1062,7 @@ console.log(rowData, "--find rowData");
                                  required
                                 variant="standard"
                                 type="number"
-                                label="No Of EndUser"
+                                label="No Of End User"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 id="NoOfenduser"

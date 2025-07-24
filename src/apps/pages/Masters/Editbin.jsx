@@ -198,7 +198,7 @@ console.log(rowData, "--rowData");
         }}
       >
         <Box sx={{ display: "flex", flexDirection: "row" }}>
-          <Typography>Shelves</Typography>
+          <Typography>Shelves & Racks</Typography>
           <Typography variant="h5">{`(${rowCount})`}</Typography>
         </Box>
         <Box

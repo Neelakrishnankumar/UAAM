@@ -510,7 +510,7 @@ const Editcompany = () => {
                       fullWidth
                       variant="standard"
                       type="email"
-                      label="Email Id"
+                      label="Email ID"
                       required
                       onInvalid={(e) => {
                         e.target.setCustomValidity("Please Fill The Email Id");
@@ -678,7 +678,7 @@ const Editcompany = () => {
                       />
 
                       <FormLabel focused={false}>Disable</FormLabel>
-                      <Field
+                      {/* <Field
                         type="checkbox"
                         name="stockClose"
                         id="stockClose"
@@ -699,7 +699,7 @@ const Editcompany = () => {
                       />
                       <FormLabel focused={false}>
                         Use Regular Serial Number
-                      </FormLabel>
+                      </FormLabel> */}
                     </Box>
                   </FormControl>
                 </Box>

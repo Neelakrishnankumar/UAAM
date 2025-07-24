@@ -991,10 +991,10 @@ const child = {
     {
       name: "License",
       id: 8,
-      Tooltipname: "Security",
+      Tooltipname: "License",
       MenuID: "SE100",
       icon: (
-        <Tooltip title="Security">
+        <Tooltip title="License">
           <GroupsOutlinedIcon sx={{ color: "#651fff" }} />
         </Tooltip>
       ),

@@ -1945,7 +1945,7 @@ export const fetchListview =
                           UGCompany: params.row.Name
                         }}
                         >
-                          <Tooltip title="List of  usergroups">
+                          <Tooltip title="List of  Usergroups">
                             <IconButton color="info" size="small">
                               <ListAltOutlinedIcon />
                             </IconButton>
@@ -1972,7 +1972,7 @@ export const fetchListview =
                             CompanyName: params.row.Name,
                           }}
                         >
-                          <Tooltip title="Locations">
+                          <Tooltip title="Location">
                             <IconButton color="info" size="small">
                               <ListAltOutlinedIcon />
                             </IconButton>
@@ -1985,7 +1985,7 @@ export const fetchListview =
                           }}
                           // to={`/Apps/${params.row.ChildID1}/${params.row.ChildName1}/Edit${params.row.ChildName1}/${params.row.RecordID}/E`}
                         >
-                          <Tooltip title="Subscriptions">
+                          <Tooltip title="Subscription">
                             <IconButton color="info" size="small">
                               <ListAltOutlinedIcon />
                             </IconButton>
@@ -2069,7 +2069,7 @@ export const fetchListview =
                             CompanyName: params.row.CompanyName,
                           }}
                         >
-                          <Tooltip title="Gate">
+                          <Tooltip title="Gate Entry">
                             <IconButton color="info" size="small">
                               <ListAltOutlinedIcon />
                             </IconButton>

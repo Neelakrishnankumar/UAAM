@@ -274,7 +274,7 @@ const Editusergroup = () => {
   const column = [
     {
       field: "SLNO",
-      headerName: "SLNO",
+      headerName: "SL#",
       width: 50,
     },
 
