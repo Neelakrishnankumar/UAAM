@@ -446,7 +446,7 @@ const Editsubscription = () => {
                     /> */}
                       <SingleFormikOptimizedAutocomplete
                         disabled={mode == "R"}
-                        label="Product ID"
+                        label="Product Code"
                         id="productid"
                         name="productid"
                         value={values.productid}

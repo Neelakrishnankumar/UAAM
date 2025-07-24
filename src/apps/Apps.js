@@ -108,7 +108,8 @@ import EditemployeePayroll from "./pages/Empolyee/EditemployeePayroll";
 import Logopage from "../assets/logopage";
 import Editsubscription from "./pages/Masters/Editsubscription";
 import EditProductSubScription from "./pages/Masters/EditProductSubScription";
-import CheckboxesTags from "./pages/Autocomplete";
+// import CheckboxesTags from "./pages/Autocomplete";
+
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -128,10 +129,10 @@ function App() {
                     path="/Secondarylistview/:accessID/:screenName/:parentID/:companyRecID/EditUsers/:id/:Mode"
                     element={<Edituser />}
                   />
-                <Route
+                {/* <Route
                     path="/auto"
                     element={<CheckboxesTags />}
-                  />
+                  /> */}
                   <Route
                     path="/:accessID/:screenName/EditEmployeePayroll/:id/:Mode"
                     element={<EditemployeePayroll />}
