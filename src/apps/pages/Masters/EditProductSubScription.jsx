@@ -160,7 +160,7 @@ console.log(rowData, "--find rowData");
       Name: values.description,
       //   YearID: Year,
       //   Type: typeUom,
-      Code: values.code,
+      Code: values.code || "",
       SortOrder: values.sortOrder,
       Disable: values.checkbox == true ? "Y" : "N",
       //   MinorDescription: typeUom == "C" ? values.MinorDescription : "N",
@@ -629,7 +629,7 @@ console.log(rowData, "--find rowData");
                   fnSave(values);
                 }, 100);
               }}
-              validationSchema={SubscriptionScma}
+              // validationSchema={SubscriptionScma}
               enableReinitialize={true}
             >
               {({
@@ -658,27 +658,29 @@ console.log(rowData, "--find rowData");
                         fullWidth
                         variant="standard"
                         type="text"
-                        required
+                        // required
                         id="code"
                         name="code"
                         label="Code"
+                        placeholder="Auto"
                         value={values.code}
                         onBlur={handleBlur}
                         onChange={handleChange}
                         // error={!!touched.code && !!errors.code}
                         // helperText={touched.code && errors.code}
-                        error={touched.code && !!errors.code}
-                        helperText={touched.code && errors.code ? errors.code : ""}
+                        // error={touched.code && !!errors.code}
+                        // helperText={touched.code && errors.code ? errors.code : ""}
                         sx={{ gridColumn: "span 2" }}
                         focused
-                        inputProps={{ maxLength: 5 }}
-                        autoFocus
-                        onInvalid={(e) => {
-                          e.target.setCustomValidity("Please Fill The Code");
-                        }}
-                        onInput={(e) => {
-                          e.target.setCustomValidity("");
-                        }}
+                        // inputProps={{ maxLength: 5 }}
+                        InputProps={{ readOnly:true}}
+                        // autoFocus
+                        // onInvalid={(e) => {
+                        //   e.target.setCustomValidity("Please Fill The Code");
+                        // }}
+                        // onInput={(e) => {
+                        //   e.target.setCustomValidity("");
+                        // }}
                       />
                    
                         <TextField
@@ -692,6 +694,7 @@ console.log(rowData, "--find rowData");
                           onBlur={handleBlur}
                           onChange={handleChange}
                           required
+                          autoFocus
                           error={!!touched.description && !!errors.description}
                           helperText={touched.description && errors.description}
                           sx={{ gridColumn: "span 2" }}
@@ -816,7 +819,7 @@ console.log(rowData, "--find rowData");
               // onSubmit={handleFormSubmit}
               initialValues={initialValues}
               enableReinitialize={true}
-              validationSchema={basicSchema}
+              // validationSchema={basicSchema}
             >
               {({ values, errors, touched, handleBlur, handleChange }) => (
                 <Box>

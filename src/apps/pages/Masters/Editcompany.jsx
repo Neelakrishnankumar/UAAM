@@ -284,27 +284,29 @@ const Editcompany = () => {
                       variant="standard"
                       type="text"
                       label="Code"
+                      placeholder="Auto"
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.code}
-                      name="code"
-                      // error={!!touched.code && !!errors.code}
-                      // helperText={touched.code && errors.code}
                       focused
-                      autoFocus
                       inputProps={{maxLength: 5}}
+                      InputProps={{readOnly:true}}
+                      name="code"
+                      autoFocus
+                      // error={!!touched.code && !!errors.code}
+                      // helperText={touched.code && errors.code}                      
                       // onInvalid={(e) => {
                       //   e.target.setCustomValidity("Please Fill The Code");
                       // }}
                       // onInput={(e) => {
                       //   e.target.setCustomValidity("");
                       // }}
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The Code");
-                      }}
-                      onInput={(e) => {
-                        e.target.setCustomValidity("");
-                      }}
+                      // onInvalid={(e) => {
+                      //   e.target.setCustomValidity("Please Fill The Code");
+                      // }}
+                      // onInput={(e) => {
+                      //   e.target.setCustomValidity("");
+                      // }}
                     />
 
                     <TextField
@@ -328,6 +330,7 @@ const Editcompany = () => {
                       focused
                       required
                       inputProps={{ maxLength: 50 }}
+                      autoFocus
                     />
 
                     <TextField

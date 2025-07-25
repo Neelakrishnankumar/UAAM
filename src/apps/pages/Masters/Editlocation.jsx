@@ -279,16 +279,18 @@ const Editlocation = () => {
                     type="text"
                     id="code"
                     label="Code"
+                    placeholder="Auto"
                     variant="standard"
                     focused
-                    required
+                    // required
                     value={values.code}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     error={!!touched.code && !!errors.code}
                     helperText={touched.code && errors.code}
                     sx={{ gridColumn: "span 2" }}
-                    autoFocus
+                    InputProps={{readOnly:true}}
+                    // autoFocus
                   />
                   <TextField
                     name="name"
@@ -303,6 +305,7 @@ const Editlocation = () => {
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
                     sx={{ gridColumn: "span 2" }}
+                    autoFocus
                   />
                   <TextField
                     name="address"
