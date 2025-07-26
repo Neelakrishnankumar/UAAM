@@ -633,13 +633,13 @@ const Listview = () => {
             />
               <Chip
                 icon={<ListAltOutlinedIcon color="primary" />}
-                label="Location"
+                label="Locations"
                 variant="outlined"
                 sx={{ marginLeft: "50px" }}
               />
               <Chip
                 icon={<ListAltOutlinedIcon color="primary" />}
-                label="Subscription"
+                label="Subscriptions"
                 variant="outlined"
                 sx={{ marginLeft: "50px" }}
               />

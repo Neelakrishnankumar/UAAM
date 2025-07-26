@@ -52,15 +52,11 @@ const Login=()=>{
 
 
   const [value, setValues] = React.useState({
-     
       showPassword: false,
     });
       
   
-    const handleChanges = (prop) => (event) => {
-      setValues({ ...value, [prop]: event.target.value });
-    };
-  
+
   
     const handleClickShowPassword = () => {
       setValues({
@@ -324,7 +320,7 @@ const Login=()=>{
                     >
                     Ok
                     </LoadingButton>
-      <Button variant="contained" color={"error"} onClick={() =>{ {clear(values)}{resetForm()}}}>Cancel</Button>
+      <Button variant="contained" color={"warning"} onClick={() =>{ {clear(values)}{resetForm()}}}>Cancel</Button>
 
       </Stack>
         </Stack>

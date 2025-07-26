@@ -386,7 +386,7 @@ const Editproductstock = () =>{
     SAVE
 </Button> */}
 {/* <Button variant="contained" color="error" onClick={() => navigate(`/Apps/Secondarylistview/TR001/Product%20Master/${stockcode }/${stockdesc}`)}> */}
-<Button variant="contained" color="error" onClick={() => navigate(-1)}>
+<Button variant="contained" color="warning" onClick={() => navigate(-1)}>
     CANCEL
 </Button>
                  </Box>

@@ -61,7 +61,6 @@ const Editcompany = () => {
   }, [location.key]);
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const Data = useSelector((state) => state.formApi.Data);
-  console.log("🚀 ~ Editcompany ~ Data:", Data);
   const getLoading = useSelector((state) => state.formApi.getLoading);
   const isLoading = useSelector((state) => state.formApi.postLoading);
   
@@ -475,6 +474,7 @@ const Editcompany = () => {
                       name="Lut"
                       // error={!!touched.gst && !!errors.gst}
                       // helperText={touched.gst && errors.gst}
+                      inputProps={{readOnly:true}}
                       focused
                     />
 
@@ -723,7 +723,7 @@ const Editcompany = () => {
                   </LoadingButton>
 
                   <Button
-                    color="error"
+                    color="warning"
                     variant="contained"
                     onClick={() => {
                       navigate("/Apps/TR014/Company");

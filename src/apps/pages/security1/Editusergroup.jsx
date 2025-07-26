@@ -448,13 +448,8 @@ const Editusergroup = () => {
       Comments: values.comments,
       Company: companyRecID,
       Disable: isCheck,
-      SortOrder: values.sortOrder,
-      // Finyear: YearRecorid,
+      SortOrder: values.sortOrder || 0,
       Groupaccess: rowData,
-      // YearID:,
-      // Company:,
-      //Finyear,
-      //CompanyID,
     };
 
     const response = await dispatch(postData({ accessID, action, idata }));
@@ -586,6 +581,7 @@ const Editusergroup = () => {
                       onChange={handleChange}
                       variant="standard"
                       focused
+                        required
                       sx={{ gridColumn: "span 2" }}
                       autoFocus
                     />
@@ -737,7 +733,7 @@ const Editusergroup = () => {
                     </LoadingButton>
                     <Button
                       variant="contained"
-                      color="error"
+                      color="warning"
                       onClick={() => {
                         navigate(
                           -1
