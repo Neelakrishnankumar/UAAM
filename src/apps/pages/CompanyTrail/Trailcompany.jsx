@@ -13,12 +13,12 @@ import {
   Tooltip,
   LinearProgress,
 } from "@mui/material";
-import { Formik, Field } from "formik";
+import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getFetchData, postData } from "../../../store/reducers/Formapireducer";
+import { getFetchData } from "../../../store/reducers/Formapireducer";
 import { toast } from "react-hot-toast";
 import Listviewpopup from "../Lookup";
 import Popup from "../popup";
@@ -28,46 +28,36 @@ import ResetTvIcon from "@mui/icons-material/ResetTv";
 import { LoadingButton } from "@mui/lab";
 import { useProSidebar } from "react-pro-sidebar";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import { screenRightsData } from "../../../store/reducers/screenRightsreducer";
 import { formGap } from "../../../ui-components/utils";
 import { SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
 import store from "../../..";
 
-// ***********************************************
-// Developer:Priya
-// Purpose: Create Company
-
-// ***********************************************
-
-const Editcompany = () => {
+const Trialcompany = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
   const params = useParams();
-  const YearFlag = sessionStorage.getItem("YearFlag");
-  const Year = sessionStorage.getItem("year");
-  const Finyear = sessionStorage.getItem("YearRecorid");
-  const CompanyID = sessionStorage.getItem("compID");
 
-  let recID = params.id;
-  let mode = params.Mode;
-  let accessID = params.accessID;
+  const recID = params.id;
+  const mode = params.Mode;
+  const accessID = params.accessID;
 
-  useEffect(() => {
-    //dispatch(screenRightsData(accessID));
+  const [openCNpopup, setOpenCNpopup] = useState(false);
+  const [isPopupData, setisPopupdata] = useState(false);
+  const [selectcnLookupData, setselectcnLookupData] = useState({
+    CNlookupRecordid: "",
+    CNlookupCode: "",
+    CNlookupDesc: "",
+  });
 
-    dispatch(getFetchData({ accessID, get: "get", recID }));
-  }, [location.key]);
-  const { toggleSidebar, broken, rtl } = useProSidebar();
   const Data = useSelector((state) => state.formApi.Data);
   const getLoading = useSelector((state) => state.formApi.getLoading);
   const isLoading = useSelector((state) => state.formApi.postLoading);
-  
-  const rowData = location.state || {};
 
-  // const { UGA_ADD, UGA_VIEW, UGA_MOD, UGA_DEL, UGA_PROCESS, UGA_PRIN } =
-  //   useSelector((state) => state.screenRights.data);
+  useEffect(() => {
+    dispatch(getFetchData({ accessID, get: "get", recID }));
+  }, [location.key]);
 
   const initialValues = {
     code: Data.Code,
@@ -87,36 +77,26 @@ const Editcompany = () => {
     Lut: Data.Lut,
     sortOrder: Data.SortOrder,
     license: Data.License,
-    disable: Data.Disable === "Y" ? true : false,
-    stockClose: Data.Process === "Y" ? true : false,
-    useregular: Data.Regularslno === "Y" ? true : false,
+    disable: Data.Disable === "Y",
+    stockClose: Data.Process === "Y",
+    useregular: Data.Regularslno === "Y",
     noOfEmployees: Data.NumberOfEmployee,
     noofusers: Data.NumberOfUsers,
-    country: Data.CnRecordID ?{RecordID:Data.CnRecordID,Code:Data.CountryCode , Name:Data.CountryName} : null
-
+    country: Data.CnRecordID
+      ? {
+          RecordID: Data.CnRecordID,
+          Code: Data.CountryCode,
+          Name: Data.CountryName,
+        }
+      : null,
   };
-  /*************************LOOKUP DATA*********************/
-  const [openCNpopup, setOpenCNpopup] = useState(false);
 
-  function handleShow(type) {
-    if (type == "CN") {
-      setOpenCNpopup(true);
-    }
-  }
-  const [isPopupData, setisPopupdata] = React.useState(false);
-  const [selectcnLookupData, setselectcnLookupData] = React.useState({
-    CNlookupRecordid: "",
-    CNlookupCode: "",
-    CNlookupDesc: "",
-  });
+  const handleShow = (type) => {
+    if (type === "CN") setOpenCNpopup(true);
+  };
 
-  if (isPopupData == false) {
-    selectcnLookupData.CNlookupRecordid = Data.CnRecordID;
-    selectcnLookupData.CNlookupCode = Data.CountryCode;
-    selectcnLookupData.CNlookupDesc = Data.CountryName;
-  }
   const childToParent = (childdata, type) => {
-    if (type == "Country") {
+    if (type === "Country") {
       setisPopupdata(true);
       setselectcnLookupData({
         CNlookupCode: childdata.Code,
@@ -124,19 +104,15 @@ const Editcompany = () => {
         CNlookupDesc: childdata.Name,
       });
       setOpenCNpopup(false);
-    } else {
     }
   };
-  /*************************SAVE FUCTION*********************/
+
   const fnSave = async (values) => {
-    var idata = {
+    const idata = {
       RecordID: recID,
-      CnRecordID: values.country.RecordID || 0,
-      CountryCode: values.country.Code|| '' ,
-      CountryName:values.country.Name || '',
-      // CnRecordID: selectcnLookupData.CNlookupRecordid,
-      // CountryCode: selectcnLookupData.CNlookupCode,
-      // CountryName: selectcnLookupData.CNlookupDesc,
+      CnRecordID: values.country?.RecordID || "0",
+      CountryCode: values.country?.Code || "",
+      CountryName: values.country?.Name || "",
       Code: values.code,
       Name: values.name,
       Email: values.email,
@@ -153,29 +129,43 @@ const Editcompany = () => {
       Lut: values.Lut,
       SortOrder: values.sortOrder,
       License: values.license,
-      // YearID: Year,
-      Disable: values.disable === true ? "Y" : "N",
-      Process: values.stockClose === true ? "Y" : "N",
-      Regularslno: values.useregular === true ? "Y" : "N",
-      // Finyear,
-      // CompanyID,
+      Disable: values.disable ? "Y" : "N",
+      Process: values.stockClose ? "Y" : "N",
+      Regularslno: values.useregular ? "Y" : "N",
       NumberOfEmployee: values.noOfEmployees,
       NumberOfUsers: values.noofusers,
     };
-    console.log(idata, "savedata");
-    let action = mode === "A" ? "insert" : "update";
-    const data = await dispatch(postData({ accessID, action, idata }));
-    if (data.payload.Status == "Y") {
-      sessionStorage.setItem(
-        "stockflag",
-        values.stockClose === true ? "Y" : "N"
+
+    console.log("Sending to API:", idata);
+
+    try {
+      const response = await fetch(
+        "https://dvmtapi.bexatm.com/uaam/api/TrialCompanyPostController.php",
+        {
+          method: "POST",
+          headers: {
+             'Content-Type': 'application/json',
+            "Authorization":"eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJzdWIiOiJCZXhAMTIzIiwibmFtZSI6IkJleCIsImFkbWluIjp0cnVlLCJleHAiOjE2Njk5ODQzNDl9.uxE3r3X4lqV_WKrRKRPXd-Jub9BnVcCXqCtLL4I0fpU"
+          },
+          body: JSON.stringify(idata),
+        }
       );
-      toast.success(data.payload.Msg);
-      navigate(`/Apps/TR014/Company`);
-    } else {
-      toast.error(data.payload.Msg);
+
+      const result = await response.json();
+      console.log("API Result:", result);
+
+      if (result.Status === "Y") {
+        toast.success(result.Msg || "Company saved successfully.");
+        navigate(`/Apps/TR014/Company`);
+      } else {
+        toast.error(result.Msg || "Failed to save company.");
+      }
+    } catch (error) {
+      console.error("Save Error:", error);
+      toast.error("Something went wrong while saving.");
     }
   };
+
   const fnLogOut = (props) => {
     Swal.fire({
       title: `Do you want ${props}?`,
@@ -186,14 +176,8 @@ const Editcompany = () => {
       confirmButtonText: props,
     }).then((result) => {
       if (result.isConfirmed) {
-        if (props === "Logout") {
-          navigate("/");
-        }
-        if (props === "Close") {
-          navigate("/Apps/TR014/Company");
-        }
-      } else {
-        return;
+        if (props === "Logout") navigate("/");
+        if (props === "Close") navigate("/Apps/TR014/Company");
       }
     });
   };
@@ -210,14 +194,10 @@ const Editcompany = () => {
             alignItems={"center"}
             justifyContent="space-between"
           >
-            {broken && !rtl && (
-              <IconButton onClick={() => toggleSidebar()}>
-                <MenuOutlinedIcon />
-              </IconButton>
-            )}
+         
             <Typography variant="h3">
            
-            {mode === "E" ? `Company(${rowData.CompanyName})` : "Company(New)"}
+           Company
 
 
             </Typography>
@@ -756,4 +736,4 @@ const Editcompany = () => {
   );
 };
 
-export default Editcompany;
+export default Trialcompany;

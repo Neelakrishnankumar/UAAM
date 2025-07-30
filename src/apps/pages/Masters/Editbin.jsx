@@ -434,6 +434,7 @@ console.log(rowData, "--rowData");
                           type="text"
                           id="bincode"
                           label="Bin Code"
+                          placeholder="Auto"
                           variant="standard"
                           focused
                           value={values.bincode}
@@ -441,8 +442,8 @@ console.log(rowData, "--rowData");
                           onChange={handleChange}
                           error={!!touched.bincode && !!errors.bincode}
                           helperText={touched.bincode && errors.bincode}
-                          autoFocus
-                          required
+                          InputProps={{readOnly:true}}
+                          // autoFocus
                         />
                         <TextField
                           name="binname"

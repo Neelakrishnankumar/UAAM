@@ -287,6 +287,7 @@ const Edituser = () => {
                     type="text"
                     id="code"
                     label="Code"
+                    placeholder="Auto"
                     variant="standard"
                     focused
                     sx={{ gridColumn: "span 2" }}
@@ -295,8 +296,8 @@ const Edituser = () => {
                     value={values.code}
                     error={!!touched.code && !!errors.code}
                     helperText={touched.code && errors.code}
-                    autoFocus
-                    required
+                    InputProps={{readOnly:true}}
+                    // autoFocus
                   />
                   <TextField
                   required
@@ -420,7 +421,7 @@ const Edituser = () => {
                     value={values.email}
                     error={!!touched.email && !!errors.email}
                     helperText={touched.email && errors.email}
-                    autoFocus
+                    // autoFocus
                   />
                   <TextField
                     name="comments"
@@ -435,7 +436,7 @@ const Edituser = () => {
                     value={values.comments}
                     error={!!touched.comments && !!errors.comments}
                     helperText={touched.comments && errors.comments}
-                    autoFocus
+                    // autoFocus
                   />
                   <TextField
                     name="sortorder"
@@ -449,7 +450,7 @@ const Edituser = () => {
                     value={values.sortorder}
                     error={!!touched.sortorder && !!errors.sortorder}
                     helperText={touched.sortorder && errors.sortorder}
-                    autoFocus
+                    // autoFocus
                     sx={{ gridColumn: "span 2", background: "" }}
                     onWheel={(e) => e.target.blur()}
                     InputProps={{

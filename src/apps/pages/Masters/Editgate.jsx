@@ -92,6 +92,10 @@ const Editgate = () => {
       LocRecordID: parentID,
       // Finyear,
       // CompanyID,
+      ReaderCode:"",
+      ReaderName:"",
+      Latitude:"",
+      Longitude:""
     };
 
     const response = await dispatch(postData({ accessID, action, idata }));
@@ -251,16 +255,17 @@ const Editgate = () => {
                       type="text"
                       id="code"
                       label="Code"
+                      placeholder="Auto"
                       variant="standard"
                       focused
-                      required
+                      // required
                       value={values.code}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       error={!!touched.code && !!errors.code}
                       helperText={touched.code && errors.code}
-                      autoFocus
-                      
+                      // autoFocus
+                      InputProps={{readOnly:true}}
                     />
                     <TextField
                     required
@@ -289,7 +294,7 @@ const Editgate = () => {
                       onChange={handleChange}
                       error={!!touched.comment && !!errors.comment}
                       helperText={touched.comment && errors.comment}
-                      autoFocus
+                      
                     />
 
                     <TextField

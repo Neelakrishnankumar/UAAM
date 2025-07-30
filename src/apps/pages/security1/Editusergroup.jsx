@@ -562,13 +562,14 @@ const Editusergroup = () => {
                       type="text"
                       id="code"
                       label="Code"
+                      placeholder="Auto"
                       value={values.code}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       variant="standard"
                       focused
                       sx={{ gridColumn: "span 2" }}
-                      required
+                      InputProps={{readOnly:true}}
                     />
                     <TextField
                       name="name"
@@ -582,6 +583,7 @@ const Editusergroup = () => {
                       focused
                         required
                       sx={{ gridColumn: "span 2" }}
+                      autoFocus
                     />
                     <TextField
                       name="comments"
