@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom";
 import { PDFViewer } from "@react-pdf/renderer";
 import MyDocument from "./apps/pages/pdf/pdf";
 import Trialcompany from "./apps/pages/CompanyTrail/Trailcompany";
+import NotificationPage from "./ui-components/Notification";
 
 const App = () => {
   const location = useLocation();
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="/*" element={<Login />} />
         <Route path="/Apps/*" element={<Apps />} />
         <Route path="/trial-comapny" element={<Trialcompany />} />
+           <Route path="/trial-comapny/notification" element={<NotificationPage/>} /> 
       </Routes>
     </React.Fragment>
   );

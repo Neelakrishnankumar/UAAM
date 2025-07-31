@@ -2134,7 +2134,7 @@ const ListviewSecondary = () => {
             csvOptions={{
               fileName: `${screenName}`,
             }}
-            slotProps={{ toolbar: { csvOptions: { allColumns: true } } }}
+            // slotProps={{ toolbar: { csvOptions: { allColumns: true } } }}
           />
 
           <IconButton onClick={() => navigate("/")} color="error">

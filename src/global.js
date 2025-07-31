@@ -86,6 +86,7 @@ const initialState = {
       ProductcatUrl: APIurl+ "ManualDetailProductCatgController.php",
       subCheckUrl: APIurl+ "SubscriptionRenewalController.php",
       SubIdGetUrl: APIurl+ "SubscriptionIdGetController.php",
+      trailCompanyUrl: APIurl+ "TrialCompanyPostController.php",
 
   };
 

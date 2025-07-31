@@ -31,7 +31,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { formGap } from "../../../ui-components/utils";
 import { SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
 import store from "../../..";
-
+import ESS from "../../../assets/img/esslogo6.png";
 const Trialcompany = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ const Trialcompany = () => {
   const isLoading = useSelector((state) => state.formApi.postLoading);
 
   useEffect(() => {
-    dispatch(getFetchData({ accessID, get: "get", recID }));
+    dispatch(getFetchData({ accessID:"TR014", get: "get", recID:"-1" }));
   }, [location.key]);
 
   const initialValues = {
@@ -80,8 +80,8 @@ const Trialcompany = () => {
     disable: Data.Disable === "Y",
     stockClose: Data.Process === "Y",
     useregular: Data.Regularslno === "Y",
-    noOfEmployees: Data.NumberOfEmployee,
-    noofusers: Data.NumberOfUsers,
+    noOfEmployees: 5,
+    noofusers: 1,
     country: Data.CnRecordID
       ? {
           RecordID: Data.CnRecordID,
@@ -136,7 +136,6 @@ const Trialcompany = () => {
       NumberOfUsers: values.noofusers,
     };
 
-    console.log("Sending to API:", idata);
 
     try {
       const response = await fetch(
@@ -144,7 +143,7 @@ const Trialcompany = () => {
         {
           method: "POST",
           headers: {
-             'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
             "Authorization":"eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJzdWIiOiJCZXhAMTIzIiwibmFtZSI6IkJleCIsImFkbWluIjp0cnVlLCJleHAiOjE2Njk5ODQzNDl9.uxE3r3X4lqV_WKrRKRPXd-Jub9BnVcCXqCtLL4I0fpU"
           },
           body: JSON.stringify(idata),
@@ -152,11 +151,9 @@ const Trialcompany = () => {
       );
 
       const result = await response.json();
-      console.log("API Result:", result);
-
       if (result.Status === "Y") {
         toast.success(result.Msg || "Company saved successfully.");
-        navigate(`/Apps/TR014/Company`);
+        navigate(`/trial-comapny/notification`);
       } else {
         toast.error(result.Msg || "Failed to save company.");
       }
@@ -186,34 +183,21 @@ const Trialcompany = () => {
   return (
     <Box>
       {getLoading ? <LinearProgress /> : false}
-      <Paper elevation={3} sx={{ margin: "0px 10px", background: "#F2F0F0" }}>
+            <Paper elevation={3} sx={{ margin: "0px 10px", background: "#F2F0F0" }}>
         <Box display="flex" justifyContent="space-between" p={2}>
-          <Box
-            display="flex"
-            borderRadius="3px"
-            alignItems={"center"}
-            justifyContent="space-between"
-          >
-         
-            <Typography variant="h3">
-           
-           Company
-
-
-            </Typography>
+          <Box display="flex" borderRadius="3px" alignItems="center">
+            <Box display={"flex"} borderRadius="3px" alignItems="center">
+              <Typography
+                variant="h5"
+                color="#0000D1"
+                sx={{ cursor: "default" }}
+              >
+              Company Registration
+              </Typography>
+            </Box>
           </Box>
-
           <Box display="flex">
-            <Tooltip title="Close">
-              <IconButton onClick={() => fnLogOut("Close")} color="error">
-                <ResetTvIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Logout">
-              <IconButton onClick={() => fnLogOut("Logout")} color="error">
-                <LogoutOutlinedIcon />
-              </IconButton>
-            </Tooltip>
+            <img src={ESS} style={{ height: "50px", width: "60px" }} />
           </Box>
         </Box>
       </Paper>
@@ -473,6 +457,7 @@ const Trialcompany = () => {
                       }}
                       focused
                       onWheel={(e) => e.target.blur()}
+                            inputProps={{readOnly:true}}
                     />
                   </FormControl>
                   <FormControl sx={{ gridColumn: "span 2", gap: formGap }}>
@@ -647,6 +632,7 @@ const Trialcompany = () => {
                       }}
                       focused
                       onWheel={(e) => e.target.blur()}
+                      inputProps={{readOnly:true}}
                     />
                     <Box>
                       <Field
