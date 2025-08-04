@@ -57,6 +57,8 @@ import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore
 import SearchIcon from "@mui/icons-material/Search";
 import EmailIcon from "@mui/icons-material/Email";
 import { searchData } from "../../store/reducers/Formapireducer";
+import PinDropIcon from '@mui/icons-material/PinDrop';
+import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import toast from "react-hot-toast";
 import {
   dataGridHeaderFooterHeight,
@@ -632,13 +634,13 @@ const Listview = () => {
               variant="outlined"
             />
               <Chip
-                icon={<ListAltOutlinedIcon color="primary" />}
+                icon={<PinDropIcon color="primary" />}
                 label="Locations"
                 variant="outlined"
                 sx={{ marginLeft: "50px" }}
               />
               <Chip
-                icon={<ListAltOutlinedIcon color="primary" />}
+                icon={<SubscriptionsIcon color="primary" />}
                 label="Subscriptions"
                 variant="outlined"
                 sx={{ marginLeft: "50px" }}

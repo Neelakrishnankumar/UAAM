@@ -34,7 +34,11 @@ import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore
 import { StockProcessApi } from "./Formapireducer";
 import OpenInBrowserOutlinedIcon from "@mui/icons-material/OpenInBrowserOutlined";
 import Swal from "sweetalert2";
+import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
+import PinDropIcon from '@mui/icons-material/PinDrop';
 import AutorenewIcon from "@mui/icons-material/Autorenew";
+import LoginIcon from '@mui/icons-material/Login';
+import FolderDeleteIcon from '@mui/icons-material/FolderDelete';
 const initialState = {
   rowData: [],
   columnData: [],
@@ -1974,7 +1978,7 @@ export const fetchListview =
                         >
                           <Tooltip title="Location">
                             <IconButton color="info" size="small">
-                              <ListAltOutlinedIcon />
+                              <PinDropIcon />
                             </IconButton>
                           </Tooltip>
                         </Link>
@@ -1987,7 +1991,7 @@ export const fetchListview =
                         >
                           <Tooltip title="Subscription">
                             <IconButton color="info" size="small">
-                              <ListAltOutlinedIcon />
+                              <SubscriptionsIcon />
                             </IconButton>
                           </Tooltip>
                         </Link>
@@ -2071,7 +2075,7 @@ export const fetchListview =
                         >
                           <Tooltip title="Gate Entry">
                             <IconButton color="info" size="small">
-                              <ListAltOutlinedIcon />
+                              <LoginIcon />
                             </IconButton>
                           </Tooltip>
                         </Link>
@@ -2084,7 +2088,7 @@ export const fetchListview =
                         >
                           <Tooltip title="Bin">
                             <IconButton color="info" size="small">
-                              <ListAltOutlinedIcon />
+                              <FolderDeleteIcon />
                             </IconButton>
                           </Tooltip>
                         </Link>

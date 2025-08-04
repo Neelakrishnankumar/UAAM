@@ -60,6 +60,8 @@ import {
   dataGridPageSizeOption,
   dataGridRowHeight,
 } from "../../ui-components/utils";
+import LoginIcon from '@mui/icons-material/Login';
+import FolderDeleteIcon from '@mui/icons-material/FolderDelete';
 const ListviewSecondary = () => {
   const colorMode = useContext(ColorModeContext);
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -2331,13 +2333,13 @@ const ListviewSecondary = () => {
             variant="outlined"
           />
           <Chip
-            icon={<ListAltOutlinedIcon color="primary" />}
+            icon={<LoginIcon color="primary" />}
             label="Gate"
             variant="outlined"
             sx={{ marginLeft: "50px" }}
           />
           <Chip
-            icon={<ListAltOutlinedIcon color="primary" />}
+            icon={<FolderDeleteIcon color="primary" />}
             label="Bin"
             variant="Bin"
             sx={{ marginLeft: "50px" }}
