@@ -1979,10 +1979,10 @@ const ListviewSecondary = () => {
               color="#0000D1"
               sx={{ cursor: "default" }}
               onClick={() => {
-                navigate("/Apps/TR099/Companies",{state: rowData});
+                navigate("/Apps/TR099/User Rights",{state: rowData});
               }}
             >
-                {`Companies(${rowData.UGCompany})`}
+                {`Company(${rowData.UGCompany})`}
            
             </Typography>
             <Typography variant="h5" color="#0000D1" sx={{ cursor: "default" }}>

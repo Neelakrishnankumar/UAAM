@@ -487,20 +487,20 @@ const Editusergroup = () => {
                   color="#0000D1"
                   sx={{ cursor: "default" }}
                   onClick={() => {
-                    navigate("/Apps/TR099/Companies");
+                    navigate("/Apps/TR099/User Rights");
                   }}
                 >
-                  {`Companies(${rowDatastate.UGCompany})`}
+                  {`Company(${rowDatastate.UGCompany})`}
                 </Typography>
                 <Typography
                   variant="h5"
                   color="#0000D1"
                   sx={{ cursor: "default" }}
-                  onClick={() => {
-                    navigate(
-                      `/Apps/Secondarylistview/TR095/Usergroups/${companyRecID}`
-                    );
-                  }}
+                  // onClick={() => {
+                  //   navigate(
+                  //     `/Apps/Secondarylistview/TR095/Usergroups/${companyRecID}`
+                  //   );
+                  // }}
                 >
 {mode === "E" ? `User Group(${rowDatastate.Usergroup})` : "User Group(New)"}
                

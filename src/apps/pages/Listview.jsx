@@ -622,7 +622,7 @@ const Listview = () => {
           <Box display="flex" flexDirection="row" padding="25px">
             <Chip
               icon={<ListAltOutlinedIcon color="primary" />}
-              label="List of Usergroups"
+              label="List of User Rights"
               variant="outlined"
             />
           </Box>
@@ -854,7 +854,7 @@ const Listview = () => {
           <Box display="flex" flexDirection="row" padding="25px">
             <Chip
               icon={<ListAltOutlinedIcon color="primary" />}
-              label="List of Usergroups"
+              label="List of User Rights"
               variant="outlined"
             />
             <Chip

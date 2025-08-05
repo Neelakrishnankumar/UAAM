@@ -145,6 +145,7 @@ const generateAlphaCode = (length = 4) => {
       Rbicode:"",
       Lut: "",
       SortOrder: "",
+   
     };
 
     console.log("Sending to API:", idata);

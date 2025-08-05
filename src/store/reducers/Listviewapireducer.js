@@ -1826,7 +1826,7 @@ export const fetchListview =
                                   }
                                   : AccessID === "TR095"
                                   ? {
-                                    Usergroup: params.row.Name,
+                                    Usergroup: params.row.Usergroups,
                                     UGCompany: params.row.Company,
                                     }
                             : {
