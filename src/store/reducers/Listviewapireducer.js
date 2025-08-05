@@ -1794,7 +1794,8 @@ export const fetchListview =
                         state={
                           AccessID === "TR014"
                             ? {
-                                CompanyName: params.row.Name,
+                                // CompanyName: params.row.Name,
+                                CompanyName: params.row.Company,
                               }
                             : AccessID === "TR128"
                             ? {
@@ -1949,7 +1950,7 @@ export const fetchListview =
                           UGCompany: params.row.Name
                         }}
                         >
-                          <Tooltip title="List of  Usergroups">
+                          <Tooltip title="List of  User Rights">
                             <IconButton color="info" size="small">
                               <ListAltOutlinedIcon />
                             </IconButton>
