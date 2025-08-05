@@ -21,7 +21,7 @@ const App = () => {
         <Route path="/*" element={<Login />} />
         <Route path="/Apps/*" element={<Apps />} />
         <Route path="/trial-comapny" element={<Trialcompany />} />
-           <Route path="/trial-comapny/notification" element={<NotificationPage/>} /> 
+           <Route path="/trial-company/notification" element={<NotificationPage/>} /> 
       </Routes>
     </React.Fragment>
   );

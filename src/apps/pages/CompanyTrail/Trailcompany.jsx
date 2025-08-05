@@ -153,7 +153,7 @@ const Trialcompany = () => {
       const result = await response.json();
       if (result.Status === "Y") {
         toast.success(result.Msg || "Company saved successfully.");
-        navigate(`/trial-comapny/notification`);
+        navigate(`/trial-company/notification`);
       } else {
         toast.error(result.Msg || "Failed to save company.");
       }
@@ -427,20 +427,7 @@ const Trialcompany = () => {
                         e.target.setCustomValidity("");
                       }}
                     />
-                    <TextField
-                      fullWidth
-                      variant="standard"
-                      type="text"
-                      label="LUT"
-                      value={values.Lut}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      name="Lut"
-                      // error={!!touched.gst && !!errors.gst}
-                      // helperText={touched.gst && errors.gst}
-                      inputProps={{readOnly:true}}
-                      focused
-                    />
+                 
 
                     <TextField
                       fullWidth
@@ -458,6 +445,21 @@ const Trialcompany = () => {
                       focused
                       onWheel={(e) => e.target.blur()}
                             inputProps={{readOnly:true}}
+                    />
+
+                       <TextField
+                      fullWidth
+                      variant="standard"
+                      type="text"
+                      label="LUT"
+                      value={values.Lut}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="Lut"
+                      // error={!!touched.gst && !!errors.gst}
+                      // helperText={touched.gst && errors.gst}
+                      inputProps={{readOnly:true}}
+                      focused
                     />
                   </FormControl>
                   <FormControl sx={{ gridColumn: "span 2", gap: formGap }}>
@@ -499,7 +501,7 @@ const Trialcompany = () => {
                       variant="standard"
                       type="text"
                       label="I.E.Code"
-                      required
+                      
                       onInvalid={(e) => {
                         e.target.setCustomValidity("Please Fill The I.E.Code");
                       }}
@@ -563,9 +565,6 @@ const Trialcompany = () => {
                           "Please Fill The License Key"
                         );
                       }}
-                      // onInput={(e) => {
-                      //   e.target.setCustomValidity("");
-                      // }}
                       value={values.license}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -574,12 +573,6 @@ const Trialcompany = () => {
                       helperText={touched.license && errors.license}
                       focused
                       onInput={(e) => {
-                        // Ensure only numeric input is allowed and trim to 4 digits
-                        // let value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-                        // if (value.length > 4) {
-                        //   value = value.slice(0, 4); // Limit to 4 digits
-                        // }
-                        // e.target.value = value;
                         e.target.setCustomValidity(""); // Clear the custom error
                       }}
                       inputProps={{ maxLength: 4 }}
@@ -592,30 +585,7 @@ const Trialcompany = () => {
                       // }}
                       // inputProps={{ maxLength: 4,  }}
                     />
-                    <TextField
-                      fullWidth
-                      variant="standard"
-                      type="number"
-                      label="Sort Order"
-                      value={values.sortOrder}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      name="sortOrder"
-                      error={!!touched.sortOrder && !!errors.sortOrder}
-                      helperText={touched.sortOrder && errors.sortOrder}
-                      sx={{
-                        gridColumn: "span 2",
-                        background: "",
-                        input: { textAlign: "right" },
-                      }}
-                      focused
-                      onWheel={(e) => e.target.blur()}
-                      // onInput={(e) => {
-                      //   e.target.value = Math.max(0, parseInt(e.target.value))
-                      //     .toString()
-                      //     .slice(0, 11);
-                      // }}
-                    />
+
 
                     <TextField
                       fullWidth
@@ -634,6 +604,25 @@ const Trialcompany = () => {
                       onWheel={(e) => e.target.blur()}
                       inputProps={{readOnly:true}}
                     />
+                      <TextField
+                      fullWidth
+                      variant="standard"
+                      type="number"
+                      label="Sort Order"
+                      value={values.sortOrder}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="sortOrder"
+                      error={!!touched.sortOrder && !!errors.sortOrder}
+                      helperText={touched.sortOrder && errors.sortOrder}
+                      sx={{
+                        gridColumn: "span 2",
+                        background: "",
+                        input: { textAlign: "right" },
+                      }}
+                      focused
+                      onWheel={(e) => e.target.blur()}
+                    />
                     <Box>
                       <Field
                         //  size="small"
@@ -647,28 +636,6 @@ const Trialcompany = () => {
                       />
 
                       <FormLabel focused={false}>Disable</FormLabel>
-                      {/* <Field
-                        type="checkbox"
-                        name="stockClose"
-                        id="stockClose"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        as={Checkbox}
-                        label="stockClose"
-                      />
-                      <FormLabel focused={false}>Opening Stock Close</FormLabel>
-                      <Field
-                        type="checkbox"
-                        name="useregular"
-                        id="useregular"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        as={Checkbox}
-                        label="useregular"
-                      />
-                      <FormLabel focused={false}>
-                        Use Regular Serial Number
-                      </FormLabel> */}
                     </Box>
                   </FormControl>
                 </Box>
@@ -680,7 +647,7 @@ const Trialcompany = () => {
                   gap="20px"
                 >
                   <LoadingButton
-                    color="secondary"
+                    color="success"
                     variant="contained"
                     type="submit"
                     loading={isLoading}
