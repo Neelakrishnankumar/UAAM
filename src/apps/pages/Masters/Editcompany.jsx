@@ -534,7 +534,7 @@ const Editcompany = () => {
                       variant="standard"
                       type="text"
                       label="I.E.Code"
-                      required
+                      // required
                       onInvalid={(e) => {
                         e.target.setCustomValidity("Please Fill The I.E.Code");
                       }}
