@@ -463,7 +463,7 @@ const Editusergroup = () => {
   };
   return (
     <React.Fragment>
-      {getLoading ? <LinearProgress /> : false}
+      {/* {getLoading ? <LinearProgress /> : false} */}
       <Paper elevation={3} sx={{ margin: "0px 10px", background: "#F2F0F0" }}>
         <Box display="flex" justifyContent="space-between" p={2}>
           <Box display="flex" borderRadius="3px" alignItems="center">
@@ -523,7 +523,7 @@ const Editusergroup = () => {
           </Box>
         </Box>
       </Paper>
-      {!getLoading && data && rowData ? (
+      {/* {!getLoading && data && rowData ? ( */}
         <Paper elevation={3} sx={{ margin: "10px" }}>
           <Box>
             <Formik
@@ -760,9 +760,9 @@ const Editusergroup = () => {
         </Popup> */}
           </Box>
         </Paper>
-      ) : (
+      {/* ) : (
         "Loading..."
-      )}
+      )} */}
     </React.Fragment>
   );
 };

@@ -63,7 +63,7 @@ const Editcompany = () => {
   const Data = useSelector((state) => state.formApi.Data);
   const getLoading = useSelector((state) => state.formApi.getLoading);
   const isLoading = useSelector((state) => state.formApi.postLoading);
-  
+
   const rowData = location.state || {};
 
   // const { UGA_ADD, UGA_VIEW, UGA_MOD, UGA_DEL, UGA_PROCESS, UGA_PRIN } =
@@ -92,7 +92,7 @@ const Editcompany = () => {
     useregular: Data.Regularslno === "Y" ? true : false,
     noOfEmployees: Data.NumberOfEmployee,
     noofusers: Data.NumberOfUsers,
-    country: Data.CnRecordID ?{RecordID:Data.CnRecordID,Code:Data.CountryCode , Name:Data.CountryName} : null
+    country: Data.CnRecordID ? { RecordID: Data.CnRecordID, Code: Data.CountryCode, Name: Data.CountryName } : null
 
   };
   /*************************LOOKUP DATA*********************/
@@ -132,8 +132,8 @@ const Editcompany = () => {
     var idata = {
       RecordID: recID,
       CnRecordID: values.country.RecordID || 0,
-      CountryCode: values.country.Code|| '' ,
-      CountryName:values.country.Name || '',
+      CountryCode: values.country.Code || '',
+      CountryName: values.country.Name || '',
       // CnRecordID: selectcnLookupData.CNlookupRecordid,
       // CountryCode: selectcnLookupData.CNlookupCode,
       // CountryName: selectcnLookupData.CNlookupDesc,
@@ -198,7 +198,7 @@ const Editcompany = () => {
     });
   };
 
-  
+
   return (
     <Box>
       {getLoading ? <LinearProgress /> : false}
@@ -216,8 +216,8 @@ const Editcompany = () => {
               </IconButton>
             )}
             <Typography variant="h3">
-           
-            {mode === "E" ? `Company(${rowData.CompanyName})` : "Company(New)"}
+
+              {mode === "E" ? `Company(${rowData.CompanyName})` : "Company(New)"}
 
 
             </Typography>
@@ -288,24 +288,24 @@ const Editcompany = () => {
                       onChange={handleChange}
                       value={values.code}
                       focused
-                      inputProps={{maxLength: 5}}
-                      InputProps={{readOnly:true}}
+                      inputProps={{ maxLength: 5 }}
+                      InputProps={{ readOnly: true }}
                       name="code"
                       autoFocus
-                      // error={!!touched.code && !!errors.code}
-                      // helperText={touched.code && errors.code}                      
-                      // onInvalid={(e) => {
-                      //   e.target.setCustomValidity("Please Fill The Code");
-                      // }}
-                      // onInput={(e) => {
-                      //   e.target.setCustomValidity("");
-                      // }}
-                      // onInvalid={(e) => {
-                      //   e.target.setCustomValidity("Please Fill The Code");
-                      // }}
-                      // onInput={(e) => {
-                      //   e.target.setCustomValidity("");
-                      // }}
+                    // error={!!touched.code && !!errors.code}
+                    // helperText={touched.code && errors.code}                      
+                    // onInvalid={(e) => {
+                    //   e.target.setCustomValidity("Please Fill The Code");
+                    // }}
+                    // onInput={(e) => {
+                    //   e.target.setCustomValidity("");
+                    // }}
+                    // onInvalid={(e) => {
+                    //   e.target.setCustomValidity("Please Fill The Code");
+                    // }}
+                    // onInput={(e) => {
+                    //   e.target.setCustomValidity("");
+                    // }}
                     />
 
                     <TextField
@@ -375,19 +375,19 @@ const Editcompany = () => {
                           alignItems: "center",
                         }}
                       >
-                        <SingleFormikOptimizedAutocomplete 
-                    label="Country"
-                    id="country"
-                    name="country"
-                    value={values.country}
-                    onChange={(e,newValue)=> {
-                      setFieldValue("country",newValue)
-                    }}
-                    log
-                   url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
-                    />
-
-                        {/* <TextField
+                        <SingleFormikOptimizedAutocomplete
+                          label="Country"
+                          id="country"
+                          name="country"
+                          value={values.country}
+                          onChange={(e, newValue) => {
+                            setFieldValue("country", newValue)
+                          }}
+                          log
+                          url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
+                        />
+                      </FormControl>
+                      {/* <TextField
                           label="Country"
                           variant="standard"
                           value={selectcnLookupData.CNlookupCode}
@@ -409,7 +409,7 @@ const Editcompany = () => {
                           inputProps={{ tabIndex: "-1" }}
                           focused
                         /> */}
-                      </FormControl>
+
                     </FormControl>
                     <TextField
                       fullWidth
@@ -474,7 +474,7 @@ const Editcompany = () => {
                       name="Lut"
                       // error={!!touched.gst && !!errors.gst}
                       // helperText={touched.gst && errors.gst}
-                      inputProps={{readOnly:true}}
+                      inputProps={{ readOnly: true }}
                       focused
                     />
 
@@ -595,7 +595,7 @@ const Editcompany = () => {
                       required
                       onInvalid={(e) => {
                         e.target.setCustomValidity(
-                          "Please Fill The License Key"
+                          "Please Fill The Subscription Code"
                         );
                       }}
                       // onInput={(e) => {
@@ -618,14 +618,14 @@ const Editcompany = () => {
                         e.target.setCustomValidity(""); // Clear the custom error
                       }}
                       inputProps={{ maxLength: 4 }}
-                      //  onInput={(e) => {
+                    //  onInput={(e) => {
 
-                      //   e.target.value = Math.max(0, parseInt(e.target.value))
-                      //     .toString()
-                      //     .slice(0, 4);
-                      //     e.target.setCustomValidity("");
-                      // }}
-                      // inputProps={{ maxLength: 4,  }}
+                    //   e.target.value = Math.max(0, parseInt(e.target.value))
+                    //     .toString()
+                    //     .slice(0, 4);
+                    //     e.target.setCustomValidity("");
+                    // }}
+                    // inputProps={{ maxLength: 4,  }}
                     />
                     <TextField
                       fullWidth
@@ -645,11 +645,11 @@ const Editcompany = () => {
                       }}
                       focused
                       onWheel={(e) => e.target.blur()}
-                      // onInput={(e) => {
-                      //   e.target.value = Math.max(0, parseInt(e.target.value))
-                      //     .toString()
-                      //     .slice(0, 11);
-                      // }}
+                    // onInput={(e) => {
+                    //   e.target.value = Math.max(0, parseInt(e.target.value))
+                    //     .toString()
+                    //     .slice(0, 11);
+                    // }}
                     />
 
                     <TextField

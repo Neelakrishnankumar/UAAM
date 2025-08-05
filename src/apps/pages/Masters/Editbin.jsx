@@ -25,6 +25,7 @@ import { CheckBox } from "@mui/icons-material";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
+import * as Yup from 'yup';
 import {
   getFetchData,
   postData,
@@ -86,7 +87,18 @@ console.log(rowData, "--rowData");
   const colors = tokens(theme.palette.mode);
 
   // *************** INITIALVALUE  *************** //
-
+const HsnSchema = Yup.object().shape({
+  shelvescode: Yup.string()
+    .trim()
+    .required("Shelves Code is required"),
+  shelvesname: Yup.string()
+    .trim()
+    .required("Shelves Name is required"),
+  sortorder: Yup.number()
+    .nullable()
+    .transform((_, val) => (val ? Number(val) : null)),
+  // add other validations as needed
+});
   const InitialValue = {
     bincode: data.Code,
     binname: data.Name,
@@ -552,7 +564,7 @@ console.log(rowData, "--rowData");
                   FnShelvessave(values, resetForm, false);
                 }, 100);
               }}
-              //  validationSchema={ HsnSchema}
+                validationSchema={ HsnSchema}
               enableReinitialize={true}
             >
               {({
@@ -726,8 +738,8 @@ console.log(rowData, "--rowData");
                         value={values.shelvescode}
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        // error={!!touched.name && !!errors.name}
-                        // helperText={touched.name && errors.name}
+                        error={!!touched.shelvescode && !!errors.shelvescode}
+                        helperText={touched.shelvescode && errors.shelvescode}
 
                         autoFocus
                       />
@@ -741,8 +753,8 @@ console.log(rowData, "--rowData");
                         value={values.shelvesname}
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        // error={!!touched.name && !!errors.name}
-                        // helperText={touched.name && errors.name}
+                        error={!!touched.shelvesname && !!errors.shelvesname}
+                        helperText={touched.shelvesname && errors.shelvesname}
 
                         autoFocus
                       />
@@ -756,8 +768,8 @@ console.log(rowData, "--rowData");
                         value={values.sortorder}
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        //   error={!!touched.SortOrder && !!errors.SortOrder}
-                        //   helperText={touched.SortOrder && errors.SortOrder}
+                          error={!!touched.sortorder && !!errors.sortorder}
+                          helperText={touched.sortorder && errors.sortorder}
                         sx={{ background: "" }}
                         InputProps={{
                           inputProps: {
