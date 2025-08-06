@@ -627,7 +627,25 @@ const Editcompany = () => {
                     // }}
                     // inputProps={{ maxLength: 4,  }}
                     />
+                   
+
                     <TextField
+                      fullWidth
+                      variant="standard"
+                      type="number"
+                      label="No Of Employees"
+                      value={values.noOfEmployees}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="noOfEmployees"
+                      sx={{
+                        gridColumn: "span 2",
+                        input: { textAlign: "right" },
+                      }}
+                      focused
+                      onWheel={(e) => e.target.blur()}
+                    />
+                     <TextField
                       fullWidth
                       variant="standard"
                       type="number"
@@ -650,23 +668,6 @@ const Editcompany = () => {
                     //     .toString()
                     //     .slice(0, 11);
                     // }}
-                    />
-
-                    <TextField
-                      fullWidth
-                      variant="standard"
-                      type="number"
-                      label="No Of Employees"
-                      value={values.noOfEmployees}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      name="noOfEmployees"
-                      sx={{
-                        gridColumn: "span 2",
-                        input: { textAlign: "right" },
-                      }}
-                      focused
-                      onWheel={(e) => e.target.blur()}
                     />
                     <Box>
                       <Field

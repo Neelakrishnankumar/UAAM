@@ -305,7 +305,8 @@ const Editlocation = () => {
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
                     sx={{ gridColumn: "span 2" }}
-                    autoFocus
+                    autoFocus                   
+                    required
                   />
                   {/* <TextField
                     name="address"

@@ -147,6 +147,7 @@ const generateAlphaCode = (length = 4) => {
       SortOrder: "",
    
     };
+console.log(fnSave,"fnSave");
 
     console.log("Sending to API:", idata);
 
@@ -207,7 +208,7 @@ const generateAlphaCode = (length = 4) => {
             justifyContent="space-between"
           >
          
-            <Typography variant="h3">
+            <Typography variant="h5">
            
            Company
 
@@ -239,7 +240,7 @@ const generateAlphaCode = (length = 4) => {
                 fnSave(values);
               }, 100);
             }}
-            validationSchema={companySchema}
+            // validationSchema={companySchema}
             enableReinitialize={true}
           >
             {({
@@ -464,6 +465,7 @@ const generateAlphaCode = (length = 4) => {
                       variant="standard"
                       type="text"
                       label="Web URL"
+                      
                       value={values.web}
                       onBlur={handleBlur}
                       onChange={handleChange}

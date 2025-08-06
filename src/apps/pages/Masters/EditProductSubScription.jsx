@@ -1207,9 +1207,11 @@ console.log(rowData, "--find rowData");
                                   Save
                                 </Button>
                               )} */}
+                             
                               <Button
                                 color="error"
                                 variant="contained"
+                                disabled={boMode=="A"}
                                 onClick={() => {
                                   Swal.fire({
                                     title: `Do you want Delete?`,
