@@ -20,9 +20,7 @@ const initialState = {
     imageNameUpdateUrl:APIurl+ 'CMController.php',
     attachmentUrl:baseurl +'uploads/attachments/',
     custprodattachmentUrl:baseurl +'uploads/custimage/',
-    fileUploadUrl:baseurl +'fileupload.php',
-
-    
+    fileUploadUrl:baseurl +'fileupload.php',   
     SalesfileuploadUrl: APIurl+ 'CsvppController.php',
      
     dcissueGetUrl:APIurl+ 'DcDetailQuanitySplitUpGetController.php',
