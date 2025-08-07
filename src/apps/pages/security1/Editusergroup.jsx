@@ -308,7 +308,7 @@ const Editusergroup = () => {
     },
     {
       field: "UGA_ADD",
-      headerName: "ADD",
+      headerName: "Add",
       flex: 1,
       // width: 10,
       align: "center",
@@ -325,7 +325,7 @@ const Editusergroup = () => {
 
     {
       field: "UGA_VIEW",
-      headerName: "VIEW",
+      headerName: "View",
       flex: 1,
       // width: 10,
       align: "center",
@@ -341,7 +341,7 @@ const Editusergroup = () => {
     },
     {
       field: "UGA_MOD",
-      headerName: "MODIFY",
+      headerName: "Modify",
       flex: 1,
       // width: 10,
       align: "center",
@@ -357,7 +357,7 @@ const Editusergroup = () => {
     },
     {
       field: "UGA_DEL",
-      headerName: "DELETE",
+      headerName: "Delete",
       flex: 1,
       // width: 10,
       align: "center",
@@ -373,7 +373,7 @@ const Editusergroup = () => {
     },
     {
       field: "UGA_PROCESS",
-      headerName: "PRINT",
+      headerName: "Print",
       flex: 1,
       // width: 10,
       align: "center",
@@ -389,7 +389,7 @@ const Editusergroup = () => {
     },
     {
       field: "UGA_PRINT",
-      headerName: "PROCESS",
+      headerName: "Process",
       flex: 1,
       // width: 10,
       align: "center",

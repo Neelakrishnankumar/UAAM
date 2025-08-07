@@ -144,10 +144,10 @@ const ListviewSecondary = () => {
     filter = `${parentID}' AND  Type='${Number}`;
   } else if (accessID == "TR097") {
     filter = `${parentID.slice(-1) == "I"
-        ? "(DcType IN ('I','B'))"
-        : parentID === "PO"
-          ? "(DcType IN ('O','P'))"
-          : "(DcType IN ('O','B'))"
+      ? "(DcType IN ('I','B'))"
+      : parentID === "PO"
+        ? "(DcType IN ('O','P'))"
+        : "(DcType IN ('O','B'))"
       }`;
   } else if (accessID == "TR102") {
     filter = `InvType='${parentID}'`;
@@ -2154,10 +2154,11 @@ const ListviewSecondary = () => {
             }}
             slotProps={{ toolbar: { csvOptions: { allColumns: true } } }}
           />
-
-          <IconButton onClick={() => fnLogOut("Logout")} color="error">
-            <LogoutOutlinedIcon />
-          </IconButton>
+          <Tooltip arrow title="Logout">
+            <IconButton onClick={() => fnLogOut("Logout")} color="error">
+              <LogoutOutlinedIcon />
+            </IconButton>
+          </Tooltip>
         </Box>
       </GridToolbarContainer>
     );
