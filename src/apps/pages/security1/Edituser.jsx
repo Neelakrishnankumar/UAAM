@@ -35,7 +35,7 @@ import Listviewpopup from "../Lookup";
 import { UserSchema } from "../../Security/validation";
 import { formGap } from "../../../ui-components/utils";
 import store from "../../..";
-import { SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
+import { Productautocomplete, SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
 const Edituser = () => {
   const dispatch = useDispatch();
   const params = useParams();
@@ -323,7 +323,7 @@ const Edituser = () => {
                       alignItems: "center",
                     }}
                   >
-                    <SingleFormikOptimizedAutocomplete
+                    <Productautocomplete
                       label="User Group"
                       id="usergroup"
                       name="usergroup"
