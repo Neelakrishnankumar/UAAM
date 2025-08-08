@@ -110,7 +110,7 @@ const Edituser = () => {
       setLoading(false);
       navigate(-1);
     } else {
-      toast.error(data.payload.Message);
+      toast.error(data.payload.Msg);
 
       setLoading(false);
     }
