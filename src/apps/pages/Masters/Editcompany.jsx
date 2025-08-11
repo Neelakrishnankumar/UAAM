@@ -63,7 +63,7 @@ const Editcompany = () => {
   const Data = useSelector((state) => state.formApi.Data);
   const getLoading = useSelector((state) => state.formApi.getLoading);
   const isLoading = useSelector((state) => state.formApi.postLoading);
-  
+
   const rowData = location.state || {};
 
   // const { UGA_ADD, UGA_VIEW, UGA_MOD, UGA_DEL, UGA_PROCESS, UGA_PRIN } =
@@ -92,7 +92,7 @@ const Editcompany = () => {
     useregular: Data.Regularslno === "Y" ? true : false,
     noOfEmployees: Data.NumberOfEmployee,
     noofusers: Data.NumberOfUsers,
-    country: Data.CnRecordID ?{RecordID:Data.CnRecordID,Code:Data.CountryCode , Name:Data.CountryName} : null
+    country: Data.CnRecordID ? { RecordID: Data.CnRecordID, Code: Data.CountryCode, Name: Data.CountryName } : null
 
   };
   /*************************LOOKUP DATA*********************/
@@ -132,8 +132,8 @@ const Editcompany = () => {
     var idata = {
       RecordID: recID,
       CnRecordID: values.country.RecordID || 0,
-      CountryCode: values.country.Code|| '' ,
-      CountryName:values.country.Name || '',
+      CountryCode: values.country.Code || '',
+      CountryName: values.country.Name || '',
       // CnRecordID: selectcnLookupData.CNlookupRecordid,
       // CountryCode: selectcnLookupData.CNlookupCode,
       // CountryName: selectcnLookupData.CNlookupDesc,
@@ -198,7 +198,7 @@ const Editcompany = () => {
     });
   };
 
-  
+
   return (
     <Box>
       {getLoading ? <LinearProgress /> : false}
@@ -216,8 +216,8 @@ const Editcompany = () => {
               </IconButton>
             )}
             <Typography variant="h3">
-           
-            {mode === "E" ? `Company(${rowData.CompanyName})` : "Company(New)"}
+
+              {mode === "E" ? `Company(${rowData.CompanyName})` : "Company(New)"}
 
 
             </Typography>
@@ -288,24 +288,24 @@ const Editcompany = () => {
                       onChange={handleChange}
                       value={values.code}
                       focused
-                      inputProps={{maxLength: 5}}
-                      InputProps={{readOnly:true}}
+                      inputProps={{ maxLength: 5 }}
+                      InputProps={{ readOnly: true }}
                       name="code"
                       autoFocus
-                      // error={!!touched.code && !!errors.code}
-                      // helperText={touched.code && errors.code}                      
-                      // onInvalid={(e) => {
-                      //   e.target.setCustomValidity("Please Fill The Code");
-                      // }}
-                      // onInput={(e) => {
-                      //   e.target.setCustomValidity("");
-                      // }}
-                      // onInvalid={(e) => {
-                      //   e.target.setCustomValidity("Please Fill The Code");
-                      // }}
-                      // onInput={(e) => {
-                      //   e.target.setCustomValidity("");
-                      // }}
+                    // error={!!touched.code && !!errors.code}
+                    // helperText={touched.code && errors.code}                      
+                    // onInvalid={(e) => {
+                    //   e.target.setCustomValidity("Please fill the Code");
+                    // }}
+                    // onInput={(e) => {
+                    //   e.target.setCustomValidity("");
+                    // }}
+                    // onInvalid={(e) => {
+                    //   e.target.setCustomValidity("Please fill the Code");
+                    // }}
+                    // onInput={(e) => {
+                    //   e.target.setCustomValidity("");
+                    // }}
                     />
 
                     <TextField
@@ -314,7 +314,7 @@ const Editcompany = () => {
                       type="text"
                       label="Name"
                       onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The Name");
+                        e.target.setCustomValidity("Please fill the Name");
                       }}
                       onInput={(e) => {
                         e.target.setCustomValidity("");
@@ -347,7 +347,7 @@ const Editcompany = () => {
                       focused
                       required
                       onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The Address");
+                        e.target.setCustomValidity("Please fill the Address");
                       }}
                       onInput={(e) => {
                         e.target.setCustomValidity("");
@@ -375,19 +375,19 @@ const Editcompany = () => {
                           alignItems: "center",
                         }}
                       >
-                        <SingleFormikOptimizedAutocomplete 
-                    label="Country"
-                    id="country"
-                    name="country"
-                    value={values.country}
-                    onChange={(e,newValue)=> {
-                      setFieldValue("country",newValue)
-                    }}
-                    log
-                   url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
-                    />
-
-                        {/* <TextField
+                        <SingleFormikOptimizedAutocomplete
+                          label="Country"
+                          id="country"
+                          name="country"
+                          value={values.country}
+                          onChange={(e, newValue) => {
+                            setFieldValue("country", newValue)
+                          }}
+                          log
+                          url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
+                        />
+                      </FormControl>
+                      {/* <TextField
                           label="Country"
                           variant="standard"
                           value={selectcnLookupData.CNlookupCode}
@@ -409,7 +409,7 @@ const Editcompany = () => {
                           inputProps={{ tabIndex: "-1" }}
                           focused
                         /> */}
-                      </FormControl>
+
                     </FormControl>
                     <TextField
                       fullWidth
@@ -418,7 +418,7 @@ const Editcompany = () => {
                       label="Pincode"
                       required
                       onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The Pincode");
+                        e.target.setCustomValidity("Please fill the Pincode");
                       }}
                       value={values.pincode}
                       onBlur={handleBlur}
@@ -444,7 +444,7 @@ const Editcompany = () => {
                       label="Phone"
                       required
                       onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The Phone");
+                        e.target.setCustomValidity("Please fill the Phone");
                       }}
                       value={values.phone}
                       onBlur={handleBlur}
@@ -474,7 +474,7 @@ const Editcompany = () => {
                       name="Lut"
                       // error={!!touched.gst && !!errors.gst}
                       // helperText={touched.gst && errors.gst}
-                      inputProps={{readOnly:true}}
+                      inputProps={{ readOnly: true }}
                       focused
                     />
 
@@ -516,7 +516,7 @@ const Editcompany = () => {
                       label="Email ID"
                       required
                       onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The Email Id");
+                        e.target.setCustomValidity("Please fill the Email Id");
                       }}
                       onInput={(e) => {
                         e.target.setCustomValidity("");
@@ -534,9 +534,9 @@ const Editcompany = () => {
                       variant="standard"
                       type="text"
                       label="I.E.Code"
-                      required
+                      // required
                       onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The I.E.Code");
+                        e.target.setCustomValidity("Please fill the I.E.Code");
                       }}
                       onInput={(e) => {
                         e.target.setCustomValidity("");
@@ -572,7 +572,7 @@ const Editcompany = () => {
                       label="GST"
                       required
                       onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The GST");
+                        e.target.setCustomValidity("Please fill the GST");
                       }}
                       onInput={(e) => {
                         e.target.setCustomValidity("");
@@ -595,7 +595,7 @@ const Editcompany = () => {
                       required
                       onInvalid={(e) => {
                         e.target.setCustomValidity(
-                          "Please Fill The License Key"
+                          "Please fill the Subscription Code"
                         );
                       }}
                       // onInput={(e) => {
@@ -618,16 +618,34 @@ const Editcompany = () => {
                         e.target.setCustomValidity(""); // Clear the custom error
                       }}
                       inputProps={{ maxLength: 4 }}
-                      //  onInput={(e) => {
+                    //  onInput={(e) => {
 
-                      //   e.target.value = Math.max(0, parseInt(e.target.value))
-                      //     .toString()
-                      //     .slice(0, 4);
-                      //     e.target.setCustomValidity("");
-                      // }}
-                      // inputProps={{ maxLength: 4,  }}
+                    //   e.target.value = Math.max(0, parseInt(e.target.value))
+                    //     .toString()
+                    //     .slice(0, 4);
+                    //     e.target.setCustomValidity("");
+                    // }}
+                    // inputProps={{ maxLength: 4,  }}
                     />
+                   
+
                     <TextField
+                      fullWidth
+                      variant="standard"
+                      type="number"
+                      label="No Of Employees"
+                      value={values.noOfEmployees}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="noOfEmployees"
+                      sx={{
+                        gridColumn: "span 2",
+                        input: { textAlign: "right" },
+                      }}
+                      focused
+                      onWheel={(e) => e.target.blur()}
+                    />
+                     <TextField
                       fullWidth
                       variant="standard"
                       type="number"
@@ -645,28 +663,11 @@ const Editcompany = () => {
                       }}
                       focused
                       onWheel={(e) => e.target.blur()}
-                      // onInput={(e) => {
-                      //   e.target.value = Math.max(0, parseInt(e.target.value))
-                      //     .toString()
-                      //     .slice(0, 11);
-                      // }}
-                    />
-
-                    <TextField
-                      fullWidth
-                      variant="standard"
-                      type="number"
-                      label="No Of Employees"
-                      value={values.noOfEmployees}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      name="noOfEmployees"
-                      sx={{
-                        gridColumn: "span 2",
-                        input: { textAlign: "right" },
-                      }}
-                      focused
-                      onWheel={(e) => e.target.blur()}
+                    // onInput={(e) => {
+                    //   e.target.value = Math.max(0, parseInt(e.target.value))
+                    //     .toString()
+                    //     .slice(0, 11);
+                    // }}
                     />
                     <Box>
                       <Field

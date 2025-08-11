@@ -10,6 +10,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
 import PrintOutlinedIcon from "@mui/icons-material/PrintOutlined";
 import store from "../..";
+
 // import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import { useNavigate } from "react-router-dom";
 import ViewInArOutlinedIcon from "@mui/icons-material/ViewInArOutlined";
@@ -34,7 +35,11 @@ import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore
 import { StockProcessApi } from "./Formapireducer";
 import OpenInBrowserOutlinedIcon from "@mui/icons-material/OpenInBrowserOutlined";
 import Swal from "sweetalert2";
+import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
+import PinDropIcon from '@mui/icons-material/PinDrop';
 import AutorenewIcon from "@mui/icons-material/Autorenew";
+import LoginIcon from '@mui/icons-material/Login';
+import FolderDeleteIcon from '@mui/icons-material/FolderDelete';
 const initialState = {
   rowData: [],
   columnData: [],
@@ -1790,7 +1795,8 @@ export const fetchListview =
                         state={
                           AccessID === "TR014"
                             ? {
-                                CompanyName: params.row.Name,
+                                // CompanyName: params.row.Name,
+                                CompanyName: params.row.Company,
                               }
                             : AccessID === "TR128"
                             ? {
@@ -1821,7 +1827,7 @@ export const fetchListview =
                                   }
                                   : AccessID === "TR095"
                                   ? {
-                                    Usergroup: params.row.Name,
+                                    Usergroup: params.row.Usergroups,
                                     UGCompany: params.row.Company,
                                     }
                             : {
@@ -1945,7 +1951,7 @@ export const fetchListview =
                           UGCompany: params.row.Name
                         }}
                         >
-                          <Tooltip title="List of  Usergroups">
+                          <Tooltip title="List of  User Rights">
                             <IconButton color="info" size="small">
                               <ListAltOutlinedIcon />
                             </IconButton>
@@ -1974,7 +1980,7 @@ export const fetchListview =
                         >
                           <Tooltip title="Location">
                             <IconButton color="info" size="small">
-                              <ListAltOutlinedIcon />
+                              <PinDropIcon />
                             </IconButton>
                           </Tooltip>
                         </Link>
@@ -1987,7 +1993,7 @@ export const fetchListview =
                         >
                           <Tooltip title="Subscription">
                             <IconButton color="info" size="small">
-                              <ListAltOutlinedIcon />
+                              <SubscriptionsIcon />
                             </IconButton>
                           </Tooltip>
                         </Link>
@@ -2071,7 +2077,7 @@ export const fetchListview =
                         >
                           <Tooltip title="Gate Entry">
                             <IconButton color="info" size="small">
-                              <ListAltOutlinedIcon />
+                              <LoginIcon />
                             </IconButton>
                           </Tooltip>
                         </Link>
@@ -2084,7 +2090,7 @@ export const fetchListview =
                         >
                           <Tooltip title="Bin">
                             <IconButton color="info" size="small">
-                              <ListAltOutlinedIcon />
+                              <FolderDeleteIcon />
                             </IconButton>
                           </Tooltip>
                         </Link>

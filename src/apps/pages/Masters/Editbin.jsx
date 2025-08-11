@@ -25,6 +25,7 @@ import { CheckBox } from "@mui/icons-material";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
+import * as Yup from 'yup';
 import {
   getFetchData,
   postData,
@@ -76,17 +77,33 @@ const Editbin = () => {
 
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const location = useLocation();
-const rowData = location.state || {};
-console.log(rowData, "--rowData");
+  const rowData = location.state || {};
+  console.log(rowData, "--rowData");
 
   const [pageSize, setPageSize] = React.useState(10);
   useEffect(() => {
     dispatch(getFetchData({ accessID, get: "get", recID }));
   }, [location.key]);
+  const validationSchema = Yup.object({
+    binname: Yup.string().required('Please fill the Bin Name')
+      .matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
+  });
   const colors = tokens(theme.palette.mode);
 
   // *************** INITIALVALUE  *************** //
-
+  const HsnSchema = Yup.object().shape({
+    shelvescode: Yup.string()
+      .trim()
+      .required("Please fill the Shelves Code"),
+    shelvesname: Yup.string()
+      .trim()
+      .required("Please fill the Shelves Name")
+      .matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
+    sortorder: Yup.number()
+      .nullable()
+      .transform((_, val) => (val ? Number(val) : null)),
+    // add other validations as needed
+  });
   const InitialValue = {
     bincode: data.Code,
     binname: data.Name,
@@ -116,7 +133,7 @@ console.log(rowData, "--rowData");
     if (data.payload.Status == "Y") {
       toast.success(data.payload.Msg);
       navigate(
-        `/Apps/Secondarylistview/TR129/Bins/${params.filtertype}/${params.parentID}`,{state:rowData}
+        `/Apps/Secondarylistview/TR129/Bins/${params.filtertype}/${params.parentID}`, { state: rowData }
       );
     } else {
       toast.error(data.payload.Msg);
@@ -231,8 +248,8 @@ console.log(rowData, "--rowData");
       Mode === "A" && !del
         ? "insert"
         : Mode === "E" && del
-        ? "harddelete"
-        : "update";
+          ? "harddelete"
+          : "update";
     const idata = {
       RecordID: shelvesdata.RecordID,
       Code: values.shelvescode,
@@ -314,7 +331,7 @@ console.log(rowData, "--rowData");
                     color="#0000D1"
                     sx={{ cursor: "default" }}
                     onClick={() => {
-                      navigate("/Apps/TR014/Company",{state: rowData});
+                      navigate("/Apps/TR014/Company", { state: rowData });
                     }}
                   >
                     {`Company(${rowData.CompanyName})`}
@@ -325,11 +342,11 @@ console.log(rowData, "--rowData");
                     sx={{ cursor: "default" }}
                     onClick={() => {
                       navigate(
-                        `/Apps/Secondarylistview/TR128/Location/${params.parentID}`,{state: rowData}
+                        `/Apps/Secondarylistview/TR128/Location/${params.parentID}`, { state: rowData }
                       );
                     }}
                   >
-                   {`Location(${rowData.LocationName})`}
+                    {`Location(${rowData.LocationName})`}
                   </Typography>
                   <Typography
                     variant="h5"
@@ -337,11 +354,14 @@ console.log(rowData, "--rowData");
                     sx={{ cursor: "default" }}
                     onClick={() => {
                       navigate(
-                        `/Apps/Secondarylistview/TR129/Bins/${params.filtertype}/${params.parentID}`,{state: rowData}
+                        `/Apps/Secondarylistview/TR129/Bins/${params.filtertype}/${params.parentID}`, { state: rowData }
                       );
                     }}
                   >
-                   {`Bin(${rowData.bin})`}
+                    {mode === "E"
+                      ? `Bin(${rowData.bin})`
+                      : "Bin(New)"}
+                    {/* {`Bin(${rowData.bin})`} */}
                   </Typography>
                   {show == "1" ? (
                     <Typography
@@ -401,7 +421,7 @@ console.log(rowData, "--rowData");
                     Fnsave(values);
                   }, 100);
                 }}
-                validationSchema={BinSchema}
+                 validationSchema={validationSchema}
                 enableReinitialize={true}
               >
                 {({
@@ -442,8 +462,8 @@ console.log(rowData, "--rowData");
                           onChange={handleChange}
                           error={!!touched.bincode && !!errors.bincode}
                           helperText={touched.bincode && errors.bincode}
-                          InputProps={{readOnly:true}}
-                          // autoFocus
+                          InputProps={{ readOnly: true }}
+                        // autoFocus
                         />
                         <TextField
                           name="binname"
@@ -458,6 +478,14 @@ console.log(rowData, "--rowData");
                           error={!!touched.binname && !!errors.binname}
                           helperText={touched.binname && errors.binname}
                           autoFocus
+                          onInvalid={(e) => {
+                            e.target.setCustomValidity(
+                              "Please fill the Bin Name"
+                            );
+                          }}
+                          onInput={(e) => {
+                            e.target.setCustomValidity("");
+                          }}
                           required
                         />
 
@@ -552,7 +580,7 @@ console.log(rowData, "--rowData");
                   FnShelvessave(values, resetForm, false);
                 }, 100);
               }}
-              //  validationSchema={ HsnSchema}
+              // validationSchema={HsnSchema}
               enableReinitialize={true}
             >
               {({
@@ -594,7 +622,7 @@ console.log(rowData, "--rowData");
                       label="Bin Code"
                       variant="standard"
                       focused
-                      required
+                      // required
                       value={values.bincode}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -726,9 +754,17 @@ console.log(rowData, "--rowData");
                         value={values.shelvescode}
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        // error={!!touched.name && !!errors.name}
-                        // helperText={touched.name && errors.name}
-
+                        error={!!touched.shelvescode && !!errors.shelvescode}
+                        helperText={touched.shelvescode && errors.shelvescode}
+                        onInvalid={(e) => {
+                          e.target.setCustomValidity(
+                            "Please fill the Shelves Code"
+                          );
+                        }}
+                        onInput={(e) => {
+                          e.target.setCustomValidity("");
+                        }}
+                        required
                         autoFocus
                       />
                       <TextField
@@ -741,9 +777,17 @@ console.log(rowData, "--rowData");
                         value={values.shelvesname}
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        // error={!!touched.name && !!errors.name}
-                        // helperText={touched.name && errors.name}
-
+                        error={!!touched.shelvesname && !!errors.shelvesname}
+                        helperText={touched.shelvesname && errors.shelvesname}
+                        onInvalid={(e) => {
+                          e.target.setCustomValidity(
+                            "Please fill the Shelves Name"
+                          );
+                        }}
+                        onInput={(e) => {
+                          e.target.setCustomValidity("");
+                        }}
+                        required
                         autoFocus
                       />
                       <TextField
@@ -756,8 +800,8 @@ console.log(rowData, "--rowData");
                         value={values.sortorder}
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        //   error={!!touched.SortOrder && !!errors.SortOrder}
-                        //   helperText={touched.SortOrder && errors.SortOrder}
+                        error={!!touched.sortorder && !!errors.sortorder}
+                        helperText={touched.sortorder && errors.sortorder}
                         sx={{ background: "" }}
                         InputProps={{
                           inputProps: {

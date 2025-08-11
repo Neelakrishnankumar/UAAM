@@ -20,7 +20,7 @@ const App = () => {
       <Routes>
         <Route path="/*" element={<Login />} />
         <Route path="/Apps/*" element={<Apps />} />
-        <Route path="/trial-comapny" element={<Trialcompany />} />
+        <Route path="/trial-company" element={<Trialcompany />} />
            <Route path="/trial-company/notification" element={<NotificationPage/>} /> 
       </Routes>
     </React.Fragment>

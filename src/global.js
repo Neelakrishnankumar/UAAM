@@ -3,10 +3,14 @@ import { createSlice } from "@reduxjs/toolkit";
 
 var APIurl ="https://uaam.beyondexs.com/api/"
 var baseurl ="https://uaam.beyondexs.com/"
-// var APIurl ="https://dvmtapi.bexatm.com/uaam/api/"
-// var baseurl ="https://dvmtapi.bexatm.com/uaam/api/"
+// // var APIurl ="https://dvmtapi.bexatm.com/uaam/api/"
+// // var baseurl ="https://dvmtapi.bexatm.com/uaam/api/"
 // var APIurl ="https://phpmigrationapi.bexatm.com/uaam/api/"
 // var baseurl ="https://phpmigrationapi.bexatm.com/"
+
+// var APIurl = "https://phpmigrationapi.bexatm.com/uaam/api/"
+// var baseurl = "https://phpmigrationapi.bexatm.com/"
+ 
 const initialState = {
    name : 'Uaam',
     listViewurl :APIurl+ 'wslistview_mysql.php',
@@ -18,9 +22,7 @@ const initialState = {
     imageNameUpdateUrl:APIurl+ 'CMController.php',
     attachmentUrl:baseurl +'uploads/attachments/',
     custprodattachmentUrl:baseurl +'uploads/custimage/',
-    fileUploadUrl:baseurl +'fileupload.php',
-
-    
+    fileUploadUrl:baseurl +'fileupload.php',   
     SalesfileuploadUrl: APIurl+ 'CsvppController.php',
      
     dcissueGetUrl:APIurl+ 'DcDetailQuanitySplitUpGetController.php',

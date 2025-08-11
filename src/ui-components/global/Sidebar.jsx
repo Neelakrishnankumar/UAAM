@@ -1037,9 +1037,9 @@ const child = {
         {
           name: "User Rights",
           id: 236,
-          url: "./TR099/Companies",
+          url: "./TR099/User Rights",
           icon: (
-            <Tooltip title="User Group">
+            <Tooltip title="User Rights">
               <Diversity3Icon color="info" />
             </Tooltip>
           ),

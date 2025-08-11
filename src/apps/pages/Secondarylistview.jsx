@@ -20,7 +20,7 @@ import SummarizeOutlinedIcon from "@mui/icons-material/SummarizeOutlined";
 import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
-
+import Swal from "sweetalert2";
 import {
   DataGrid,
   GridToolbarQuickFilter,
@@ -60,6 +60,8 @@ import {
   dataGridPageSizeOption,
   dataGridRowHeight,
 } from "../../ui-components/utils";
+import LoginIcon from '@mui/icons-material/Login';
+import FolderDeleteIcon from '@mui/icons-material/FolderDelete';
 const ListviewSecondary = () => {
   const colorMode = useContext(ColorModeContext);
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -141,13 +143,12 @@ const ListviewSecondary = () => {
   } else if (accessID == "TR079") {
     filter = `${parentID}' AND  Type='${Number}`;
   } else if (accessID == "TR097") {
-    filter = `${
-      parentID.slice(-1) == "I"
-        ? "(DcType IN ('I','B'))"
-        : parentID === "PO"
+    filter = `${parentID.slice(-1) == "I"
+      ? "(DcType IN ('I','B'))"
+      : parentID === "PO"
         ? "(DcType IN ('O','P'))"
         : "(DcType IN ('O','B'))"
-    }`;
+      }`;
   } else if (accessID == "TR102") {
     filter = `InvType='${parentID}'`;
   } else if (accessID == "TR123") {
@@ -165,9 +166,8 @@ const ListviewSecondary = () => {
   } else if (accessID == "TR118") {
     filter = "";
   } else if (accessID == "TR051") {
-    filter = `parentID='${parentID}' AND ${
-      params.remarkDec === "L" ? "(Type IN ('L'))" : "(Type NOT IN ('L'))"
-    }`;
+    filter = `parentID='${parentID}' AND ${params.remarkDec === "L" ? "(Type IN ('L'))" : "(Type NOT IN ('L'))"
+      }`;
   } else if (accessID == "TR091") {
     filter = `parentID=${params.bomID}`;
   } else if (accessID == "TR087") {
@@ -555,7 +555,27 @@ const ListviewSecondary = () => {
   }
 
   var openstackname = "Opening Stock";
-
+  const fnLogOut = (props) => {
+    Swal.fire({
+      title: `Do you want ${props}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: props,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (props === "Logout") {
+          navigate("/");
+        }
+        // if (props === "Close") {
+        //   navigate(-1);
+        // }
+      } else {
+        return;
+      }
+    });
+  };
   function CustomToolbar(listViewData) {
     function doesArrayContainNegative() {
       for (var arr of listViewData) {
@@ -1435,10 +1455,10 @@ const ListviewSecondary = () => {
                 color="#0000D1"
                 sx={{ cursor: "default" }}
                 onClick={() => {
-                  navigate("/Apps/TR014/Company",{state: rowData});
+                  navigate("/Apps/TR014/Company", { state: rowData });
                 }}
               >
-               {`Company(${rowData.CompanyName})`}
+                {`Company(${rowData.CompanyName})`}
               </Typography>
               <Typography
                 variant="h5"
@@ -1810,7 +1830,7 @@ const ListviewSecondary = () => {
               color="#0000D1"
               sx={{ cursor: "default" }}
               onClick={() => {
-                navigate("/Apps/TR014/Company", {state: rowData});
+                navigate("/Apps/TR014/Company", { state: rowData });
               }}
             >
               {`Company(${rowData.CompanyName})`}
@@ -1833,7 +1853,7 @@ const ListviewSecondary = () => {
               color="#0000D1"
               sx={{ cursor: "default" }}
               onClick={() => {
-                navigate("/Apps/TR014/Company", {state:rowData});
+                navigate("/Apps/TR014/Company", { state: rowData });
               }}
             >
               {`Company(${rowData.CompanyName})`}
@@ -1844,7 +1864,7 @@ const ListviewSecondary = () => {
               sx={{ cursor: "default" }}
               onClick={() => {
                 navigate(
-                  `/Apps/Secondarylistview/TR128/Location/${params.Number}`,{state:rowData}
+                  `/Apps/Secondarylistview/TR128/Location/${params.Number}`, { state: rowData }
                 );
               }}
             >
@@ -1867,10 +1887,10 @@ const ListviewSecondary = () => {
               color="#0000D1"
               sx={{ cursor: "default" }}
               onClick={() => {
-                navigate("/Apps/TR014/Company",{state: rowData});
+                navigate("/Apps/TR014/Company", { state: rowData });
               }}
             >
-            {`Company(${rowData.CompanyName})`}
+              {`Company(${rowData.CompanyName})`}
             </Typography>
             <Typography
               variant="h5"
@@ -1878,11 +1898,11 @@ const ListviewSecondary = () => {
               sx={{ cursor: "default" }}
               onClick={() => {
                 navigate(
-                  `/Apps/Secondarylistview/TR128/Location/${params.Number}`,{state: rowData}
+                  `/Apps/Secondarylistview/TR128/Location/${params.Number}`, { state: rowData }
                 );
               }}
             >
-             {`Location(${rowData.LocationName})`}
+              {`Location(${rowData.LocationName})`}
             </Typography>
             <Typography variant="h5" color="#0000D1" sx={{ cursor: "default" }}>
               Bin
@@ -1977,11 +1997,11 @@ const ListviewSecondary = () => {
               color="#0000D1"
               sx={{ cursor: "default" }}
               onClick={() => {
-                navigate("/Apps/TR099/Companies",{state: rowData});
+                navigate("/Apps/TR099/User Rights", { state: rowData });
               }}
             >
-                {`Companies(${rowData.UGCompany})`}
-           
+              {`Company(${rowData.UGCompany})`}
+
             </Typography>
             <Typography variant="h5" color="#0000D1" sx={{ cursor: "default" }}>
               User Groups
@@ -1998,7 +2018,7 @@ const ListviewSecondary = () => {
               color="#0000D1"
               sx={{ cursor: "default" }}
               onClick={() => {
-                navigate("/Apps/TR014/Company",{state:rowData});
+                navigate("/Apps/TR014/Company", { state: rowData });
               }}
             >
               {`Companies(${rowData.CompanyName})`}
@@ -2008,10 +2028,10 @@ const ListviewSecondary = () => {
               color="#0000D1"
               sx={{ cursor: "default" }}
               onClick={() => {
-                navigate(`/Apps/Secondarylistview/TR238/subscription/${params.Number}`, {state:rowData});
+                navigate(`/Apps/Secondarylistview/TR238/subscription/${params.Number}`, { state: rowData });
               }}
             >
-               {`Subscriptions(${rowData.SubsName})`}
+              {`Subscriptions(${rowData.SubsName})`}
             </Typography>
             <Typography variant="h5" color="#0000D1" sx={{ cursor: "default" }}>
               Users
@@ -2082,13 +2102,12 @@ const ListviewSecondary = () => {
                   <AddOutlinedIcon
                     onClick={() => {
                       navigate(
-                        `./Edit${
-                          screenName === "Remarks"
-                            ? "Delivery Chalan"
-                            : screenName
+                        `./Edit${screenName === "Remarks"
+                          ? "Delivery Chalan"
+                          : screenName
                         }/-1/A`,
                         {
-                          state: {...rowData }
+                          state: { ...rowData }
                         }
                       );
                     }}
@@ -2102,13 +2121,12 @@ const ListviewSecondary = () => {
                 <AddOutlinedIcon
                   onClick={() => {
                     navigate(
-                      `./Edit${
-                        screenName === "Remarks"
-                          ? "Delivery Chalan"
-                          : screenName
+                      `./Edit${screenName === "Remarks"
+                        ? "Delivery Chalan"
+                        : screenName
                       }/-1/A`,
                       {
-                        state: {...rowData }
+                        state: { ...rowData }
                       }
                     );
                   }}
@@ -2136,10 +2154,11 @@ const ListviewSecondary = () => {
             }}
             // slotProps={{ toolbar: { csvOptions: { allColumns: true } } }}
           />
-
-          <IconButton onClick={() => navigate("/")} color="error">
-            <LogoutOutlinedIcon />
-          </IconButton>
+          <Tooltip arrow title="Logout">
+            <IconButton onClick={() => fnLogOut("Logout")} color="error">
+              <LogoutOutlinedIcon />
+            </IconButton>
+          </Tooltip>
         </Box>
       </GridToolbarContainer>
     );
@@ -2158,7 +2177,7 @@ const ListviewSecondary = () => {
     <React.Fragment>
       {/* <Box m="5px"> */}
       <Paper elevation={4} sx={{ margin: "30px 20px 0px 20px" }}>
-      <Box
+        <Box
           m="5px 0 0 0"
           padding={2}
           height={dataGridHeight}
@@ -2203,11 +2222,11 @@ const ListviewSecondary = () => {
         >
           <DataGrid
             sx={{
-              "& .MuiDataGrid-footerContainer":{
-                height:dataGridHeaderFooterHeight,
-                minHeight:dataGridHeaderFooterHeight,
+              "& .MuiDataGrid-footerContainer": {
+                height: dataGridHeaderFooterHeight,
+                minHeight: dataGridHeaderFooterHeight,
               }
-             }}
+            }}
             rowHeight={dataGridRowHeight}
             headerHeight={dataGridHeaderFooterHeight}
             pageSize={pageSize}
@@ -2247,37 +2266,37 @@ const ListviewSecondary = () => {
                 quickFilterProps: { debounceMs: 500 },
               },
             }}
-            // getRowClassName={(params) =>
-            //   params.row.Rate > params.row.FixedRate ||
-            //   params.row.RemarkRecordID == "24" ||
-            //   params.row.Colourflag == "Y"
-            //     ? "gridcolor"
-            //     : ""
-            // }
+          // getRowClassName={(params) =>
+          //   params.row.Rate > params.row.FixedRate ||
+          //   params.row.RemarkRecordID == "24" ||
+          //   params.row.Colourflag == "Y"
+          //     ? "gridcolor"
+          //     : ""
+          // }
           />
         </Box>
       </Paper>
       {accessID == "TR238" ? (
         <Box
-        display="flex"
-        flexDirection="row"
-        padding="25px"
-        sx={{ overflowY: "auto" }}
-      >
-        
-        <Chip
-          icon={<ListAltOutlinedIcon color="primary" />}
-          label="List Of Users"
-          variant="outlined"
-          sx={{ marginLeft: "50px" }}
-        />
-         <Chip
-          icon={<AutorenewIcon color="primary" />}
-          label="Renew"
-          variant="outlined"
-          sx={{ marginLeft: "50px" }}
-        />
-      </Box>
+          display="flex"
+          flexDirection="row"
+          padding="25px"
+          sx={{ overflowY: "auto" }}
+        >
+
+          <Chip
+            icon={<ListAltOutlinedIcon color="primary" />}
+            label="List Of Users"
+            variant="outlined"
+            sx={{ marginLeft: "50px" }}
+          />
+          <Chip
+            icon={<AutorenewIcon color="primary" />}
+            label="Renew"
+            variant="outlined"
+            sx={{ marginLeft: "50px" }}
+          />
+        </Box>
       ) : accessID == "TR001" ? (
         <Box
           display="flex"
@@ -2331,15 +2350,15 @@ const ListviewSecondary = () => {
             variant="outlined"
           />
           <Chip
-            icon={<ListAltOutlinedIcon color="primary" />}
+            icon={<LoginIcon color="primary" />}
             label="Gate"
             variant="outlined"
             sx={{ marginLeft: "50px" }}
           />
           <Chip
-            icon={<ListAltOutlinedIcon color="primary" />}
+            icon={<FolderDeleteIcon color="primary" />}
             label="Bin"
-            variant="Bin"
+            variant="outlined"
             sx={{ marginLeft: "50px" }}
           />
         </Box>

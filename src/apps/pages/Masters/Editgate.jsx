@@ -38,6 +38,7 @@ import { GateSchema } from "../../Security/validation";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { formGap } from "../../../ui-components/utils";
 // import CryptoJS from "crypto-js";
+import * as Yup from 'yup';
 const Editgate = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ const Editgate = () => {
   const Finyear = sessionStorage.getItem("YearRecorid");
   const CompanyID = sessionStorage.getItem("compID");
 
-  
+
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const location = useLocation();
   const rowData = location.state || {};
@@ -66,7 +67,10 @@ const Editgate = () => {
     dispatch(getFetchData({ accessID, get: "get", recID: recid }));
   }, [location.key]);
   // *************** INITIALVALUE  *************** //
-
+  // const validationSchema = Yup.object({
+  //   name: Yup.string().required('Please fill the Name ')
+  //   .matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
+  // });
   const InitialValue = {
     code: data.Code,
     name: data.Name,
@@ -92,17 +96,17 @@ const Editgate = () => {
       LocRecordID: parentID,
       // Finyear,
       // CompanyID,
-      ReaderCode:"",
-      ReaderName:"",
-      Latitude:"",
-      Longitude:""
+      ReaderCode: "",
+      ReaderName: "",
+      Latitude: "",
+      Longitude: ""
     };
 
     const response = await dispatch(postData({ accessID, action, idata }));
     if (response.payload.Status == "Y") {
       toast.success(response.payload.Msg);
       navigate(
-        `/Apps/Secondarylistview/TR127/Gate Entry/${params.filtertype}/${params.parentID}`,{state:rowData}
+        `/Apps/Secondarylistview/TR127/Gate Entry/${params.filtertype}/${params.parentID}`, { state: rowData }
       );
     } else {
       toast.error(response.payload.Msg);
@@ -163,10 +167,10 @@ const Editgate = () => {
                 color="#0000D1"
                 sx={{ cursor: "default" }}
                 onClick={() => {
-                  navigate("/Apps/TR014/Company",{state: rowData});
+                  navigate("/Apps/TR014/Company", { state: rowData });
                 }}
               >
-               {`Company(${rowData.CompanyName})`}
+                {`Company(${rowData.CompanyName})`}
               </Typography>
               <Typography
                 variant="h5"
@@ -174,11 +178,11 @@ const Editgate = () => {
                 sx={{ cursor: "default" }}
                 onClick={() => {
                   navigate(
-                    `/Apps/Secondarylistview/TR128/Location/${params.parentID}`,{state: rowData}
+                    `/Apps/Secondarylistview/TR128/Location/${params.parentID}`, { state: rowData }
                   );
                 }}
               >
-               {`Location(${rowData.LocationName})`}
+                {`Location(${rowData.LocationName})`}
               </Typography>
               <Typography
                 variant="h5"
@@ -186,13 +190,13 @@ const Editgate = () => {
                 sx={{ cursor: "default" }}
                 onClick={() => {
                   navigate(
-                    `/Apps/Secondarylistview/TR127/Gate Entry/${params.filtertype}/${params.parentID}`,{state: rowData}
+                    `/Apps/Secondarylistview/TR127/Gate Entry/${params.filtertype}/${params.parentID}`, { state: rowData }
                   );
                 }}
               >
-   {mode === "E" ? `Gate(${rowData.GateName})` : "Gate(New)"}
-        
-               {/* {`Gate(${rowData.GateName})`} */}
+                {mode === "E" ? `Gate(${rowData.GateName})` : "Gate(New)"}
+
+                {/* {`Gate(${rowData.GateName})`} */}
               </Typography>
             </Breadcrumbs>
             {/* <Typography variant="h3">Gate</Typography> */}
@@ -222,7 +226,8 @@ const Editgate = () => {
                 Fnsave(values);
               }, 100);
             }}
-            validationSchema={GateSchema}
+            // validationSchema={GateSchema}
+            // validationSchema={validationSchema}
             enableReinitialize={true}
           >
             {({
@@ -265,10 +270,10 @@ const Editgate = () => {
                       error={!!touched.code && !!errors.code}
                       helperText={touched.code && errors.code}
                       // autoFocus
-                      InputProps={{readOnly:true}}
+                      InputProps={{ readOnly: true }}
                     />
                     <TextField
-                    required
+
                       name="name"
                       type="text"
                       id="name"
@@ -281,6 +286,15 @@ const Editgate = () => {
                       error={!!touched.name && !!errors.name}
                       helperText={touched.name && errors.name}
                       autoFocus
+                      onInvalid={(e) => {
+                          e.target.setCustomValidity(
+                            "Please fill the Name"
+                          );
+                        }}
+                        onInput={(e) => {
+                          e.target.setCustomValidity("");
+                        }}
+                     required
                     />
                     <TextField
                       name="comment"
@@ -294,7 +308,7 @@ const Editgate = () => {
                       onChange={handleChange}
                       error={!!touched.comment && !!errors.comment}
                       helperText={touched.comment && errors.comment}
-                      
+
                     />
 
                     <TextField
@@ -359,7 +373,7 @@ const Editgate = () => {
                     onClick={() => {
                       navigate(
                         // -1
-                        `/Apps/Secondarylistview/TR127/Gate Entry/${params.filtertype}/${params.parentID}`,{state:rowData}
+                        `/Apps/Secondarylistview/TR127/Gate Entry/${params.filtertype}/${params.parentID}`, { state: rowData }
                       );
                     }}
                   >

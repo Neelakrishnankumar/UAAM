@@ -106,7 +106,14 @@ const Trialcompany = () => {
       setOpenCNpopup(false);
     }
   };
-
+const generateAlphaCode = (length = 4) => {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += letters.charAt(Math.floor(Math.random() * letters.length));
+  }
+  return result;
+};
   const fnSave = async (values) => {
     const idata = {
       RecordID: recID,
@@ -123,19 +130,26 @@ const Trialcompany = () => {
       Web: values.web,
       Cst: values.cst,
       Areacode: values.areacode,
-      Iecode: values.iECode,
-      Rbicode: values.rbiCode,
-      Gst: values.gst,
-      Lut: values.Lut,
-      SortOrder: values.sortOrder,
-      License: values.license,
-      Disable: values.disable ? "Y" : "N",
       Process: values.stockClose ? "Y" : "N",
+      Gst: values.gst,
       Regularslno: values.useregular ? "Y" : "N",
-      NumberOfEmployee: values.noOfEmployees,
-      NumberOfUsers: values.noofusers,
+      
+      // License: values.license,
+      License:generateAlphaCode(),
+      Disable: "",   
+      // NumberOfEmployee: values.noOfEmployees,
+      // NumberOfUsers: values.noofusers,
+      NumberOfEmployee: "",
+      NumberOfUsers: "",
+      Iecode: "",
+      Rbicode:"",
+      Lut: "",
+      SortOrder: "",
+   
     };
+console.log(fnSave,"fnSave");
 
+    console.log("Sending to API:", idata);
 
     try {
       const response = await fetch(
@@ -211,7 +225,7 @@ const Trialcompany = () => {
                 fnSave(values);
               }, 100);
             }}
-            validationSchema={companySchema}
+            // validationSchema={companySchema}
             enableReinitialize={true}
           >
             {({
@@ -350,7 +364,7 @@ const Trialcompany = () => {
                     log
                    url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
                     />
-
+                    
                         {/* <TextField
                           label="Country"
                           variant="standard"
@@ -374,7 +388,97 @@ const Trialcompany = () => {
                           focused
                         /> */}
                       </FormControl>
+                     
+
                     </FormControl>
+                     <TextField
+                      fullWidth
+                      variant="standard"
+                      type="text"
+                      label="GST"
+                      required
+                      onInvalid={(e) => {
+                        e.target.setCustomValidity("Please Fill The GST");
+                      }}
+                      onInput={(e) => {
+                        e.target.setCustomValidity("");
+                      }}
+                      value={values.gst}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="gst"
+                      error={!!touched.gst && !!errors.gst}
+                      helperText={touched.gst && errors.gst}
+                      focused
+                      inputProps={{ maxLength: 15 }}
+                    />
+                    {/* <TextField
+                      fullWidth
+                      variant="standard"
+                      type="text"
+                      label="LUT"
+                      value={values.Lut}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="Lut"
+                      // error={!!touched.gst && !!errors.gst}
+                      // helperText={touched.gst && errors.gst}
+                      inputProps={{readOnly:true}}
+                      focused
+                    /> */}
+
+                    {/* <TextField
+                      fullWidth
+                      variant="standard"
+                      type="number"
+                      label="No Of Users"
+                      value={values.noofusers}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="noofusers"
+                      sx={{
+                        gridColumn: "span 2",
+                        input: { textAlign: "right" },
+                      }}
+                      focused
+                      onWheel={(e) => e.target.blur()}
+                    /> */}
+                  </FormControl>
+                  <FormControl sx={{ gridColumn: "span 2", gap: formGap }}>
+                    <TextField
+                      fullWidth
+                      variant="standard"
+                      type="text"
+                      label="Web URL"
+                      
+                      value={values.web}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="web"
+                      sx={{ gridColumn: "span 2" }}
+                      focused
+                    />
+
+                    <TextField
+                      fullWidth
+                      variant="standard"
+                      type="email"
+                      label="Email ID"
+                      required
+                      onInvalid={(e) => {
+                        e.target.setCustomValidity("Please Fill The Email Id");
+                      }}
+                      onInput={(e) => {
+                        e.target.setCustomValidity("");
+                      }}
+                      value={values.email}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="email"
+                      sx={{ gridColumn: "span 2" }}
+                      focused
+                      inputProps={{ maxLength: 45 }}
+                    />
                     <TextField
                       fullWidth
                       variant="standard"
@@ -427,76 +531,7 @@ const Trialcompany = () => {
                         e.target.setCustomValidity("");
                       }}
                     />
-                 
-
-                    <TextField
-                      fullWidth
-                      variant="standard"
-                      type="number"
-                      label="No Of Users"
-                      value={values.noofusers}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      name="noofusers"
-                      sx={{
-                        gridColumn: "span 2",
-                        input: { textAlign: "right" },
-                      }}
-                      focused
-                      onWheel={(e) => e.target.blur()}
-                            inputProps={{readOnly:true}}
-                    />
-
-                       <TextField
-                      fullWidth
-                      variant="standard"
-                      type="text"
-                      label="LUT"
-                      value={values.Lut}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      name="Lut"
-                      // error={!!touched.gst && !!errors.gst}
-                      // helperText={touched.gst && errors.gst}
-                      inputProps={{readOnly:true}}
-                      focused
-                    />
-                  </FormControl>
-                  <FormControl sx={{ gridColumn: "span 2", gap: formGap }}>
-                    <TextField
-                      fullWidth
-                      variant="standard"
-                      type="text"
-                      label="Web URL"
-                      value={values.web}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      name="web"
-                      sx={{ gridColumn: "span 2" }}
-                      focused
-                    />
-
-                    <TextField
-                      fullWidth
-                      variant="standard"
-                      type="email"
-                      label="Email ID"
-                      required
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The Email Id");
-                      }}
-                      onInput={(e) => {
-                        e.target.setCustomValidity("");
-                      }}
-                      value={values.email}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      name="email"
-                      sx={{ gridColumn: "span 2" }}
-                      focused
-                      inputProps={{ maxLength: 45 }}
-                    />
-                    <TextField
+                    {/* <TextField
                       fullWidth
                       variant="standard"
                       type="text"
@@ -516,9 +551,9 @@ const Trialcompany = () => {
                       helperText={touched.iECode && errors.iECode}
                       focused
                       inputProps={{ maxLength: 10 }}
-                    />
+                    /> */}
 
-                    <TextField
+                    {/* <TextField
                       fullWidth
                       variant="standard"
                       type="text"
@@ -531,30 +566,10 @@ const Trialcompany = () => {
                       // helperText={touched.rbiCode && errors.rbiCode}
                       focused
                       inputProps={{ maxLength: 5 }}
-                    />
-                    <TextField
-                      fullWidth
-                      variant="standard"
-                      type="text"
-                      label="GST"
-                      required
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The GST");
-                      }}
-                      onInput={(e) => {
-                        e.target.setCustomValidity("");
-                      }}
-                      value={values.gst}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      name="gst"
-                      error={!!touched.gst && !!errors.gst}
-                      helperText={touched.gst && errors.gst}
-                      focused
-                      inputProps={{ maxLength: 15 }}
-                    />
+                    /> */}
+                    
 
-                    <TextField
+                    {/* <TextField
                       fullWidth
                       variant="standard"
                       type="text"
@@ -565,6 +580,7 @@ const Trialcompany = () => {
                           "Please Fill The License Key"
                         );
                       }}
+                      
                       value={values.license}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -573,38 +589,13 @@ const Trialcompany = () => {
                       helperText={touched.license && errors.license}
                       focused
                       onInput={(e) => {
+                       
                         e.target.setCustomValidity(""); // Clear the custom error
                       }}
                       inputProps={{ maxLength: 4 }}
-                      //  onInput={(e) => {
-
-                      //   e.target.value = Math.max(0, parseInt(e.target.value))
-                      //     .toString()
-                      //     .slice(0, 4);
-                      //     e.target.setCustomValidity("");
-                      // }}
-                      // inputProps={{ maxLength: 4,  }}
-                    />
-
-
-                    <TextField
-                      fullWidth
-                      variant="standard"
-                      type="number"
-                      label="No Of Employees"
-                      value={values.noOfEmployees}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      name="noOfEmployees"
-                      sx={{
-                        gridColumn: "span 2",
-                        input: { textAlign: "right" },
-                      }}
-                      focused
-                      onWheel={(e) => e.target.blur()}
-                      inputProps={{readOnly:true}}
-                    />
-                      <TextField
+                      
+                    /> */}
+                    {/* <TextField
                       fullWidth
                       variant="standard"
                       type="number"
@@ -622,8 +613,26 @@ const Trialcompany = () => {
                       }}
                       focused
                       onWheel={(e) => e.target.blur()}
-                    />
-                    <Box>
+                     
+                    /> */}
+
+                    {/* <TextField
+                      fullWidth
+                      variant="standard"
+                      type="number"
+                      label="No Of Employees"
+                      value={values.noOfEmployees}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="noOfEmployees"
+                      sx={{
+                        gridColumn: "span 2",
+                        input: { textAlign: "right" },
+                      }}
+                      focused
+                      onWheel={(e) => e.target.blur()}
+                    /> */}
+                    {/* <Box>
                       <Field
                         //  size="small"
                         type="checkbox"
@@ -636,7 +645,8 @@ const Trialcompany = () => {
                       />
 
                       <FormLabel focused={false}>Disable</FormLabel>
-                    </Box>
+                      
+                    </Box> */}
                   </FormControl>
                 </Box>
                 <Box

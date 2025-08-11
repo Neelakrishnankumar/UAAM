@@ -19,6 +19,7 @@ import {
   GridToolbarContainer,
   GridToolbarExport,
 } from "@mui/x-data-grid";
+import Swal from "sweetalert2";
 import MatxCustomizer from "./Mailpdf";
 import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
 import ViewInArOutlinedIcon from "@mui/icons-material/ViewInArOutlined";
@@ -57,6 +58,8 @@ import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore
 import SearchIcon from "@mui/icons-material/Search";
 import EmailIcon from "@mui/icons-material/Email";
 import { searchData } from "../../store/reducers/Formapireducer";
+import PinDropIcon from '@mui/icons-material/PinDrop';
+import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import toast from "react-hot-toast";
 import {
   dataGridHeaderFooterHeight,
@@ -209,7 +212,27 @@ const Listview = () => {
       );
     }
   };
-
+  const fnLogOut = (props) => {
+    Swal.fire({
+      title: `Do you want ${props}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: props,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (props === "Logout") {
+          navigate("/");
+        }
+        // if (props === "Close") {
+        //   navigate(-1);
+        // }
+      } else {
+        return;
+      }
+    });
+  };
   function CustomToolbar() {
     return (
       <GridToolbarContainer
@@ -421,7 +444,7 @@ const Listview = () => {
           />
 
           <Tooltip arrow title="Logout">
-            <IconButton onClick={() => navigate("/")} color="error">
+            <IconButton onClick={() => fnLogOut("Logout")} color="error">
               <LogoutOutlinedIcon />
             </IconButton>
           </Tooltip>
@@ -620,7 +643,7 @@ const Listview = () => {
           <Box display="flex" flexDirection="row" padding="25px">
             <Chip
               icon={<ListAltOutlinedIcon color="primary" />}
-              label="List of Usergroups"
+              label="List of User Rights"
               variant="outlined"
             />
           </Box>
@@ -632,13 +655,13 @@ const Listview = () => {
               variant="outlined"
             />
               <Chip
-                icon={<ListAltOutlinedIcon color="primary" />}
+                icon={<PinDropIcon color="primary" />}
                 label="Locations"
                 variant="outlined"
                 sx={{ marginLeft: "50px" }}
               />
               <Chip
-                icon={<ListAltOutlinedIcon color="primary" />}
+                icon={<SubscriptionsIcon color="primary" />}
                 label="Subscriptions"
                 variant="outlined"
                 sx={{ marginLeft: "50px" }}
@@ -852,7 +875,7 @@ const Listview = () => {
           <Box display="flex" flexDirection="row" padding="25px">
             <Chip
               icon={<ListAltOutlinedIcon color="primary" />}
-              label="List of Usergroups"
+              label="List of User Rights"
               variant="outlined"
             />
             <Chip

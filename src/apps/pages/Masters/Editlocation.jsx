@@ -22,6 +22,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { gradeSchema } from "../../Security/validation";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
+import * as Yup from 'yup';
 import {
   fetchApidata,
   getFetchData,
@@ -71,7 +72,10 @@ const Editlocation = () => {
   // *************** INITIALVALUE  *************** //
 
   const rowData = location.state || {};
-
+  // const validationSchema = Yup.object({
+  //   name: Yup.string().required('Please fill the Name ')
+  //   .matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
+  // });
 
   const InitialValue = {
     code: data.Code,
@@ -91,7 +95,7 @@ const Editlocation = () => {
       RecordID: recID,
       Code: values.code,
       Name: values.name,
-      Address:"",
+      Address: "",
       Email: "",
       ContactPersonNum: "",
       Number: "",
@@ -111,7 +115,7 @@ const Editlocation = () => {
     if (data.payload.Status == "Y") {
       toast.success(data.payload.Msg);
 
-      navigate(`/Apps/Secondarylistview/TR128/Location/${parentID}`,{state:rowData});
+      navigate(`/Apps/Secondarylistview/TR128/Location/${parentID}`, { state: rowData });
     } else {
       toast.error(data.payload.Msg);
     }
@@ -206,7 +210,7 @@ const Editlocation = () => {
                   navigate("/Apps/TR014/Company");
                 }}
               >
-             {`Company(${rowData.CompanyName})`}
+                {`Company(${rowData.CompanyName})`}
               </Typography>
               <Typography
                 variant="h5"
@@ -218,8 +222,8 @@ const Editlocation = () => {
               >
                 {mode === "E" ? `Location(${rowData.LocationName})` : "Location(New)"}
 
-                 {/* {`Location(${rowData.LocationName})`} */}
-                 
+                {/* {`Location(${rowData.LocationName})`} */}
+
               </Typography>
 
               {/* <Typography variant="h3">Location</Typography> */}
@@ -249,7 +253,8 @@ const Editlocation = () => {
                 Fnsave(values);
               }, 100);
             }}
-            validationSchema={LocationSchema}
+            // validationSchema={LocationSchema}
+            // validationSchema={validationSchema}
             enableReinitialize={true}
           >
             {({
@@ -289,8 +294,8 @@ const Editlocation = () => {
                     error={!!touched.code && !!errors.code}
                     helperText={touched.code && errors.code}
                     sx={{ gridColumn: "span 2" }}
-                    InputProps={{readOnly:true}}
-                    // autoFocus
+                    InputProps={{ readOnly: true }}
+                  // autoFocus
                   />
                   <TextField
                     name="name"
@@ -306,6 +311,15 @@ const Editlocation = () => {
                     helperText={touched.name && errors.name}
                     sx={{ gridColumn: "span 2" }}
                     autoFocus
+                    onInvalid={(e) => {
+                          e.target.setCustomValidity(
+                            "Please fill the Name"
+                          );
+                        }}
+                        onInput={(e) => {
+                          e.target.setCustomValidity("");
+                        }}
+                     required
                   />
                   {/* <TextField
                     name="address"
@@ -348,7 +362,7 @@ const Editlocation = () => {
                         alignItems: "center",
                       }}
                     > */}
-                         {/* <SingleFormikOptimizedAutocomplete 
+                  {/* <SingleFormikOptimizedAutocomplete 
                                           label="Contact Person"
                                           id="contactperson"
                                           name="contactperson"
@@ -359,7 +373,7 @@ const Editlocation = () => {
                                           log
                                          url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2024","ScreenName":"Contact Person","Filter":"CompanyID='${CompID}'","Any":"","CompId":"4"}}`}
                                           /> */}
-                      {/* <TextField
+                  {/* <TextField
                         id="employee"
                         label="Contact Person"
                         variant="standard"
@@ -381,7 +395,7 @@ const Editlocation = () => {
                         focused
                         value={selectCPLookupData.CPlookupDesc}
                       /> */}
-                    {/* </Box>
+                  {/* </Box>
                   </FormControl> */}
                   {/* <TextField
                     name="contactnumber"
