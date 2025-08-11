@@ -2358,7 +2358,7 @@ const ListviewSecondary = () => {
           <Chip
             icon={<FolderDeleteIcon color="primary" />}
             label="Bin"
-            variant="Bin"
+            variant="outlined"
             sx={{ marginLeft: "50px" }}
           />
         </Box>
