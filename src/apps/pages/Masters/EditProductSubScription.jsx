@@ -59,6 +59,7 @@ import { LoadingButton } from "@mui/lab";
 import { useProSidebar } from "react-pro-sidebar";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import Swal from "sweetalert2";
+import * as Yup from 'yup';
 import {
   dataGridHeaderFooterHeight,
   dataGridHeight,
@@ -76,8 +77,8 @@ const EditProductSubScription = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const location = useLocation();
-const rowData = location.state || {};
-console.log(rowData, "--find rowData");
+  const rowData = location.state || {};
+  console.log(rowData, "--find rowData");
 
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const YearFlag = sessionStorage.getItem("YearFlag");
@@ -105,6 +106,10 @@ console.log(rowData, "--find rowData");
   const [uomType, setUomType] = useState("");
 
   const [openUOMPopup, setOpenUOMPopup] = useState(false);
+  const validationSchema = Yup.object({
+    NoOfemployee: Yup.string().required('Please fill the No of Employee'),
+    NoOfenduser: Yup.string().required('Please fill the No of End User'),
+  });
   // ************Lookup Function***************
   function handleShow(type) {
     if (type == "UC") {
@@ -356,8 +361,8 @@ console.log(rowData, "--find rowData");
       boMode === "A" && !del
         ? "insert"
         : boMode === "E" && del
-        ? "harddelete"
-        : "update";
+          ? "harddelete"
+          : "update";
 
     const idata = {
       RecordID: recID,
@@ -502,10 +507,10 @@ console.log(rowData, "--find rowData");
                       navigate(`/Apps/TR240/Products`,);
                     }}
                   >
-       {mode === "E" ? ` List Of Products(${rowData.Products})` : "List Of Products(New)"}
+                    {mode === "E" ? ` List Of Products(${rowData.Products})` : "List Of Products(New)"}
 
                     {/* {` List Of Products(${rowData.Products})`} */}
-                   
+
                   </Typography>
                   <Typography
                     variant="h5"
@@ -673,43 +678,43 @@ console.log(rowData, "--find rowData");
                         sx={{ gridColumn: "span 2" }}
                         focused
                         // inputProps={{ maxLength: 5 }}
-                        InputProps={{ readOnly:true}}
-                        // autoFocus
-                        // onInvalid={(e) => {
-                        //   e.target.setCustomValidity("Please Fill The Code");
-                        // }}
-                        // onInput={(e) => {
-                        //   e.target.setCustomValidity("");
-                        // }}
+                        InputProps={{ readOnly: true }}
+                      // autoFocus
+                      // onInvalid={(e) => {
+                      //   e.target.setCustomValidity("Please Fill The Code");
+                      // }}
+                      // onInput={(e) => {
+                      //   e.target.setCustomValidity("");
+                      // }}
                       />
-                   
-                        <TextField
-                          fullWidth
-                          variant="standard"
-                          type="text"
-                          value={values.description}
-                          id="description"
-                          name="description"
-                          label="Description"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          required
-                          autoFocus
-                          error={!!touched.description && !!errors.description}
-                          helperText={touched.description && errors.description}
-                          sx={{ gridColumn: "span 2" }}
-                          focused
-                          inputProps={{ maxLength: 50 }}
-                          onInvalid={(e) => {
-                            e.target.setCustomValidity(
-                              "Please Fill The Description"
-                            );
-                          }}
-                          onInput={(e) => {
-                            e.target.setCustomValidity("");
-                          }}
-                        />
-                     
+
+                      <TextField
+                        fullWidth
+                        variant="standard"
+                        type="text"
+                        value={values.description}
+                        id="description"
+                        name="description"
+                        label="Description"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        required
+                        autoFocus
+                        error={!!touched.description && !!errors.description}
+                        helperText={touched.description && errors.description}
+                        sx={{ gridColumn: "span 2" }}
+                        focused
+                        inputProps={{ maxLength: 50 }}
+                        onInvalid={(e) => {
+                          e.target.setCustomValidity(
+                            "Please fill the Description"
+                          );
+                        }}
+                        onInput={(e) => {
+                          e.target.setCustomValidity("");
+                        }}
+                      />
+
 
                       <TextField
                         fullWidth
@@ -819,7 +824,7 @@ console.log(rowData, "--find rowData");
               // onSubmit={handleFormSubmit}
               initialValues={initialValues}
               enableReinitialize={true}
-              // validationSchema={basicSchema}
+            // validationSchema={basicSchema}
             >
               {({ values, errors, touched, handleBlur, handleChange }) => (
                 <Box>
@@ -1017,7 +1022,7 @@ console.log(rowData, "--find rowData");
                             FnProductSub(values, resetForm, false);
                           }, 100);
                         }}
-                        // validationSchema={SubscriptionScma}
+                        validationSchema={validationSchema}
                         enableReinitialize={true}
                       >
                         {({
@@ -1034,10 +1039,10 @@ console.log(rowData, "--find rowData");
                             <FormControl fullWidth sx={{ gap: formGap, mt: 8 }}>
                               <TextField
                                 fullWidth
-                                 required
+                                //  required
                                 variant="standard"
                                 type="number"
-                                label="No Of Employee"
+                                label="No of Employee"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 id="NoOfemployee"
@@ -1055,17 +1060,26 @@ console.log(rowData, "--find rowData");
                                   //  background: "",
                                 }}
                                 focused
-                                // onInput = {(e) =>{
-                                // e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,14)
-                                // }}
+                                onInvalid={(e) => {
+                                  e.target.setCustomValidity(
+                                    "Please fill the No of Employee"
+                                  );
+                                }}
+                                onInput={(e) => {
+                                  e.target.setCustomValidity("");
+                                }}
+                                required
+                              // onInput = {(e) =>{
+                              // e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,14)
+                              // }}
                               />
 
                               <TextField
                                 fullWidth
-                                 required
+                                
                                 variant="standard"
                                 type="number"
-                                label="No Of End User"
+                                label="No of End User"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 id="NoOfenduser"
@@ -1082,9 +1096,18 @@ console.log(rowData, "--find rowData");
                                   //  background: "",
                                 }}
                                 focused
-                                // onInput = {(e) =>{
-                                // e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,14)
-                                // }}
+                                onInvalid={(e) => {
+                                  e.target.setCustomValidity(
+                                    "Please fill the No of End User"
+                                  );
+                                }}
+                                onInput={(e) => {
+                                  e.target.setCustomValidity("");
+                                }}
+                                required
+                              // onInput = {(e) =>{
+                              // e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,14)
+                              // }}
                               />
 
                               <TextField
@@ -1105,9 +1128,9 @@ console.log(rowData, "--find rowData");
                                   //  background: "",
                                 }}
                                 focused
-                                // onInput = {(e) =>{
-                                // e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,14)
-                                // }}
+                              // onInput = {(e) =>{
+                              // e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,14)
+                              // }}
                               />
                               <TextField
                                 fullWidth
@@ -1131,9 +1154,9 @@ console.log(rowData, "--find rowData");
                                   //  background: "",
                                 }}
                                 focused
-                                // onInput = {(e) =>{
-                                // e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,14)
-                                // }}
+                              // onInput = {(e) =>{
+                              // e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,14)
+                              // }}
                               />
                               {/* <TextField
                                                          fullWidth
@@ -1207,11 +1230,11 @@ console.log(rowData, "--find rowData");
                                   Save
                                 </Button>
                               )} */}
-                             
+
                               <Button
                                 color="error"
                                 variant="contained"
-                                disabled={boMode=="A"}
+                                disabled={boMode == "A"}
                                 onClick={() => {
                                   Swal.fire({
                                     title: `Do you want Delete?`,

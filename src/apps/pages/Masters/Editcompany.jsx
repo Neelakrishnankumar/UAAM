@@ -295,13 +295,13 @@ const Editcompany = () => {
                     // error={!!touched.code && !!errors.code}
                     // helperText={touched.code && errors.code}                      
                     // onInvalid={(e) => {
-                    //   e.target.setCustomValidity("Please Fill The Code");
+                    //   e.target.setCustomValidity("Please fill the Code");
                     // }}
                     // onInput={(e) => {
                     //   e.target.setCustomValidity("");
                     // }}
                     // onInvalid={(e) => {
-                    //   e.target.setCustomValidity("Please Fill The Code");
+                    //   e.target.setCustomValidity("Please fill the Code");
                     // }}
                     // onInput={(e) => {
                     //   e.target.setCustomValidity("");
@@ -314,7 +314,7 @@ const Editcompany = () => {
                       type="text"
                       label="Name"
                       onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The Name");
+                        e.target.setCustomValidity("Please fill the Name");
                       }}
                       onInput={(e) => {
                         e.target.setCustomValidity("");
@@ -347,7 +347,7 @@ const Editcompany = () => {
                       focused
                       required
                       onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The Address");
+                        e.target.setCustomValidity("Please fill the Address");
                       }}
                       onInput={(e) => {
                         e.target.setCustomValidity("");
@@ -418,7 +418,7 @@ const Editcompany = () => {
                       label="Pincode"
                       required
                       onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The Pincode");
+                        e.target.setCustomValidity("Please fill the Pincode");
                       }}
                       value={values.pincode}
                       onBlur={handleBlur}
@@ -444,7 +444,7 @@ const Editcompany = () => {
                       label="Phone"
                       required
                       onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The Phone");
+                        e.target.setCustomValidity("Please fill the Phone");
                       }}
                       value={values.phone}
                       onBlur={handleBlur}
@@ -516,7 +516,7 @@ const Editcompany = () => {
                       label="Email ID"
                       required
                       onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The Email Id");
+                        e.target.setCustomValidity("Please fill the Email Id");
                       }}
                       onInput={(e) => {
                         e.target.setCustomValidity("");
@@ -536,7 +536,7 @@ const Editcompany = () => {
                       label="I.E.Code"
                       // required
                       onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The I.E.Code");
+                        e.target.setCustomValidity("Please fill the I.E.Code");
                       }}
                       onInput={(e) => {
                         e.target.setCustomValidity("");
@@ -572,7 +572,7 @@ const Editcompany = () => {
                       label="GST"
                       required
                       onInvalid={(e) => {
-                        e.target.setCustomValidity("Please Fill The GST");
+                        e.target.setCustomValidity("Please fill the GST");
                       }}
                       onInput={(e) => {
                         e.target.setCustomValidity("");
@@ -595,7 +595,7 @@ const Editcompany = () => {
                       required
                       onInvalid={(e) => {
                         e.target.setCustomValidity(
-                          "Please Fill The Subscription Code"
+                          "Please fill the Subscription Code"
                         );
                       }}
                       // onInput={(e) => {

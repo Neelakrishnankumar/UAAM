@@ -69,10 +69,10 @@ const Editusergroup = () => {
   const location = useLocation();
   const rowDatastate = location.state || {};
   console.log(rowDatastate, "--rowDatastate");
-  
+
   const recID = params.id;
   const mode = params.Mode;
-  
+
   const accessID = params.accessID;
   const companyRecID = params.companyRecID;
   const [pageSize, setPageSize] = React.useState(10);
@@ -496,14 +496,14 @@ const Editusergroup = () => {
                   variant="h5"
                   color="#0000D1"
                   sx={{ cursor: "default" }}
-                  // onClick={() => {
-                  //   navigate(
-                  //     `/Apps/Secondarylistview/TR095/Usergroups/${companyRecID}`
-                  //   );
-                  // }}
+                // onClick={() => {
+                //   navigate(
+                //     `/Apps/Secondarylistview/TR095/Usergroups/${companyRecID}`
+                //   );
+                // }}
                 >
-{mode === "E" ? `User Group(${rowDatastate.Usergroup})` : "User Group(New)"}
-               
+                  {mode === "E" ? `User Group(${rowDatastate.Usergroup})` : "User Group(New)"}
+
                 </Typography>
               </Breadcrumbs>
             </Box>
@@ -524,230 +524,239 @@ const Editusergroup = () => {
         </Box>
       </Paper>
       {/* {!getLoading && data && rowData ? ( */}
-        <Paper elevation={3} sx={{ margin: "10px" }}>
-          <Box>
-            <Formik
-              initialValues={userGroupInitialValue}
-              onSubmit={(values, { resetForm }) => {
-                setTimeout(() => {
-                  userGroupSavefn(values, resetForm);
-                }, 100);
-              }}
-              enableReinitialize={true}
-            >
-              {({
-                errors,
-                touched,
-                handleBlur,
-                handleChange,
-                isSubmitting,
-                values,
-                handleSubmit,
-                resetForm,
-              }) => (
-                <form onSubmit={handleSubmit}>
-                  <Box
-                    display="grid"
-                    gridTemplateColumns="repeat(4 , minMax(0,1fr))"
-                    gap={formGap}
-                    padding={1}
+      <Paper elevation={3} sx={{ margin: "10px" }}>
+        <Box>
+          <Formik
+            initialValues={userGroupInitialValue}
+            onSubmit={(values, { resetForm }) => {
+              setTimeout(() => {
+                userGroupSavefn(values, resetForm);
+              }, 100);
+            }}
+            enableReinitialize={true}
+          >
+            {({
+              errors,
+              touched,
+              handleBlur,
+              handleChange,
+              isSubmitting,
+              values,
+              handleSubmit,
+              resetForm,
+            }) => (
+              <form onSubmit={handleSubmit}>
+                <Box
+                  display="grid"
+                  gridTemplateColumns="repeat(4 , minMax(0,1fr))"
+                  gap={formGap}
+                  padding={1}
+                  sx={{
+                    "& > div": {
+                      gridColumn: isNonMobile ? undefined : "span 4",
+                    },
+                  }}
+                >
+                  <TextField
+                    name="code"
+                    type="text"
+                    id="code"
+                    label="Code"
+                    placeholder="Auto"
+                    value={values.code}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    variant="standard"
+                    focused
+                    sx={{ gridColumn: "span 2" }}
+                    InputProps={{ readOnly: true }}
+                  />
+                  <TextField
+                    name="name"
+                    type="text"
+                    id="name"
+                    label="Name"
+                    value={values.name}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    variant="standard"
+                    focused
+                    required
+                    sx={{ gridColumn: "span 2" }}
+                    autoFocus
+                    onInvalid={(e) => {
+                      e.target.setCustomValidity(
+                        "Please fill the Name"
+                      );
+                    }}
+                    onInput={(e) => {
+                      e.target.setCustomValidity("");
+                    }}
+                  
+                  />
+                  <TextField
+                    name="comments"
+                    type="text"
+                    id="comments"
+                    value={values.comments}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    label="Comments"
+                    variant="standard"
+                    focused
+                    sx={{ gridColumn: "span 2" }}
+                  />
+                  <TextField
+                    name="sortOrder"
+                    type="number"
+                    id="sortOrder"
+                    value={values.sortOrder}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    label="Sort Order"
+                    variant="standard"
+                    focused
+                    onWheel={(e) => e.target.blur()}
                     sx={{
-                      "& > div": {
-                        gridColumn: isNonMobile ? undefined : "span 4",
-                      },
+                      gridColumn: "span 2",
+                      input: { textAlign: "right" },
+                      background: "",
+                    }}
+                  />
+                  <Box sx={{ gridColumn: "span 2" }}>
+                    <Field
+                      type="checkbox"
+                      name="disable"
+                      id="disable"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      as={Checkbox}
+                      label="Disable"
+                    />
+                    <FormLabel focused={false}>Disable</FormLabel>
+                  </Box>
+                </Box>
+                <Box>
+                  <Box m="5px">
+                    <Box
+                      m="5px 0 0 0"
+                      height={dataGridHeight}
+                      // height="65vh"
+                      sx={{
+                        "& .MuiDataGrid-root": {
+                          border: "none",
+                        },
+                        "& .MuiDataGrid-cell": {
+                          borderBottom: "none",
+                        },
+                        "& .name-column--cell": {
+                          color: colors.greenAccent[300],
+                        },
+                        "& .MuiDataGrid-columnHeaders": {
+                          backgroundColor: colors.blueAccent[800],
+                          borderBottom: "none",
+                        },
+                        "& .MuiDataGrid-virtualScroller": {
+                          backgroundColor: colors.primary[400],
+                        },
+                        "& .MuiDataGrid-footerContainer": {
+                          borderTop: "none",
+                          backgroundColor: colors.blueAccent[800],
+                        },
+                        "& .MuiCheckbox-root": {
+                          color: `${colors.greenAccent[200]} !important`,
+                        },
+                        "& .odd-row": {
+                          backgroundColor: "",
+                          color: "", // Color for odd rows
+                        },
+                        "& .even-row": {
+                          backgroundColor: "#c4f5f2",
+                          color: "", // Color for even rows
+                        },
+                      }}
+                    >
+                      {rowData ? (
+                        <DataGrid
+                          sx={{
+                            "& .MuiDataGrid-footerContainer": {
+                              height: dataGridHeaderFooterHeight,
+                              minHeight: dataGridHeaderFooterHeight,
+                            },
+                          }}
+                          rows={rowData}
+                          columns={column}
+                          loading={exploreLoading}
+                          disableSelectionOnClick
+                          getRowId={(row) => row.RecordID}
+                          headerHeight={dataGridHeaderFooterHeight}
+                          pageSize={dataGridPageSize}
+                          onPageSizeChange={(newPageSize) =>
+                            setPageSize(newPageSize)
+                          }
+                          rowsPerPageOptions={dataGridPageSizeOption}
+                          pagination
+                          // pageSize={pageSize}
+                          // onPageSizeChange={(newPageSize) =>
+                          //   setPageSize(newPageSize)
+                          // }
+                          // rowsPerPageOptions={[5, 10, 20]}
+                          // pagination
+                          components={{
+                            Toolbar: CustomToolbar,
+                          }}
+                          componentsProps={{
+                            toolbar: {
+                              showQuickFilter: true,
+                              quickFilterProps: { debounceMs: 500 },
+                            },
+                          }}
+                          getRowClassName={(params) =>
+                            params.indexRelativeToCurrentPage % 2 === 0
+                              ? "odd-row"
+                              : "even-row"
+                          }
+                          rowHeight={30}
+                        />
+                      ) : (
+                        "Loding..."
+                      )}
+                    </Box>
+                  </Box>
+                </Box>
+
+                <Box
+                  display="flex"
+                  padding={1}
+                  justifyContent="end"
+                  mt="20px"
+                  gap="20px"
+                >
+                  <LoadingButton
+                    loading={isLoading}
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                  >
+                    SAVE
+                  </LoadingButton>
+                  <Button
+                    variant="contained"
+                    color="warning"
+                    onClick={() => {
+                      navigate(
+                        -1
+                        // `/Apps/Secondarylistview/TR095/Usergroups/${companyRecID}`
+                      );
                     }}
                   >
-                    <TextField
-                      name="code"
-                      type="text"
-                      id="code"
-                      label="Code"
-                      placeholder="Auto"
-                      value={values.code}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      variant="standard"
-                      focused
-                      sx={{ gridColumn: "span 2" }}
-                      InputProps={{readOnly:true}}
-                    />
-                    <TextField
-                      name="name"
-                      type="text"
-                      id="name"
-                      label="Name"
-                      value={values.name}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      variant="standard"
-                      focused
-                        required
-                      sx={{ gridColumn: "span 2" }}
-                      autoFocus
-                    />
-                    <TextField
-                      name="comments"
-                      type="text"
-                      id="comments"
-                      value={values.comments}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      label="Comments"
-                      variant="standard"
-                      focused
-                      sx={{ gridColumn: "span 2" }}
-                    />
-                    <TextField
-                      name="sortOrder"
-                      type="number"
-                      id="sortOrder"
-                      value={values.sortOrder}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      label="Sort Order"
-                      variant="standard"
-                      focused
-                      onWheel={(e) => e.target.blur()}
-                      sx={{
-                        gridColumn: "span 2",
-                        input: { textAlign: "right" },
-                        background: "",
-                      }}
-                    />
-                    <Box sx={{ gridColumn: "span 2" }}>
-                      <Field
-                        type="checkbox"
-                        name="disable"
-                        id="disable"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        as={Checkbox}
-                        label="Disable"
-                      />
-                      <FormLabel focused={false}>Disable</FormLabel>
-                    </Box>
-                  </Box>
-                  <Box>
-                    <Box m="5px">
-                      <Box
-                        m="5px 0 0 0"
-                        height={dataGridHeight}
-                        // height="65vh"
-                        sx={{
-                          "& .MuiDataGrid-root": {
-                            border: "none",
-                          },
-                          "& .MuiDataGrid-cell": {
-                            borderBottom: "none",
-                          },
-                          "& .name-column--cell": {
-                            color: colors.greenAccent[300],
-                          },
-                          "& .MuiDataGrid-columnHeaders": {
-                            backgroundColor: colors.blueAccent[800],
-                            borderBottom: "none",
-                          },
-                          "& .MuiDataGrid-virtualScroller": {
-                            backgroundColor: colors.primary[400],
-                          },
-                          "& .MuiDataGrid-footerContainer": {
-                            borderTop: "none",
-                            backgroundColor: colors.blueAccent[800],
-                          },
-                          "& .MuiCheckbox-root": {
-                            color: `${colors.greenAccent[200]} !important`,
-                          },
-                          "& .odd-row": {
-                            backgroundColor: "",
-                            color: "", // Color for odd rows
-                          },
-                          "& .even-row": {
-                            backgroundColor: "#c4f5f2",
-                            color: "", // Color for even rows
-                          },
-                        }}
-                      >
-                        {rowData ? (
-                          <DataGrid
-                            sx={{
-                              "& .MuiDataGrid-footerContainer": {
-                                height: dataGridHeaderFooterHeight,
-                                minHeight: dataGridHeaderFooterHeight,
-                              },
-                            }}
-                            rows={rowData}
-                            columns={column}
-                            loading={exploreLoading}
-                            disableSelectionOnClick
-                            getRowId={(row) => row.RecordID}
-                            headerHeight={dataGridHeaderFooterHeight}
-                            pageSize={dataGridPageSize}
-                            onPageSizeChange={(newPageSize) =>
-                              setPageSize(newPageSize)
-                            }
-                            rowsPerPageOptions={dataGridPageSizeOption}
-                            pagination
-                            // pageSize={pageSize}
-                            // onPageSizeChange={(newPageSize) =>
-                            //   setPageSize(newPageSize)
-                            // }
-                            // rowsPerPageOptions={[5, 10, 20]}
-                            // pagination
-                            components={{
-                              Toolbar: CustomToolbar,
-                            }}
-                            componentsProps={{
-                              toolbar: {
-                                showQuickFilter: true,
-                                quickFilterProps: { debounceMs: 500 },
-                              },
-                            }}
-                            getRowClassName={(params) =>
-                              params.indexRelativeToCurrentPage % 2 === 0
-                                ? "odd-row"
-                                : "even-row"
-                            }
-                            rowHeight={30}
-                          />
-                        ) : (
-                          "Loding..."
-                        )}
-                      </Box>
-                    </Box>
-                  </Box>
-
-                  <Box
-                    display="flex"
-                    padding={1}
-                    justifyContent="end"
-                    mt="20px"
-                    gap="20px"
-                  >
-                    <LoadingButton
-                      loading={isLoading}
-                      variant="contained"
-                      color="secondary"
-                      type="submit"
-                    >
-                      SAVE
-                    </LoadingButton>
-                    <Button
-                      variant="contained"
-                      color="warning"
-                      onClick={() => {
-                        navigate(
-                          -1
-                          // `/Apps/Secondarylistview/TR095/Usergroups/${companyRecID}`
-                        );
-                      }}
-                    >
-                      CANCEL
-                    </Button>
-                  </Box>
-                </form>
-              )}
-            </Formik>
-            {/* <Popup
+                    CANCEL
+                  </Button>
+                </Box>
+              </form>
+            )}
+          </Formik>
+          {/* <Popup
           title="Company"
           openPopup={openUCpopup}
           setOpenPopup={setOpenUCpopup}
@@ -758,8 +767,8 @@ const Editusergroup = () => {
             childToParent={childToParent}
           />
         </Popup> */}
-          </Box>
-        </Paper>
+        </Box>
+      </Paper>
       {/* ) : (
         "Loading..."
       )} */}

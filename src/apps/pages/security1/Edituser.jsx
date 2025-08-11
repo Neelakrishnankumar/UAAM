@@ -27,6 +27,7 @@ import {
   postApidata,
   postData,
 } from "../../../store/reducers/Formapireducer";
+import * as Yup from "yup";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Popup from "../popup";
 import { useProSidebar } from "react-pro-sidebar";
@@ -58,6 +59,24 @@ const Edituser = () => {
   useEffect(() => {
     dispatch(getFetchData({ accessID, get: "get", recID }));
   }, [location.key]);
+  const validationSchema = Yup.object({
+    name: Yup.string()
+      .required('Please fill the Name'),
+    // .matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
+
+    password: Yup.string()
+      .required('Please fill the Password'),
+    // .max(8, 'Password cannot exceed 8 characters'),
+
+    comfirmpassword: Yup.string()
+      .required('Please fill the confirm password')
+      .oneOf([Yup.ref('password'), null], 'Password and Confirm Password must be the same'),
+    // .max(8, 'Confirm Password cannot exceed 8 characters'),
+    usergroup: Yup.object()
+      .nullable()
+      .required("Please select the User Group"),
+  });
+
   const initialValue = {
     code: data.Code,
     name: data.Name1,
@@ -74,10 +93,10 @@ const Edituser = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const fnSave = async (values) => {
     var action = mode === "A" ? "insert" : "update";
-    if (values.password != values.comfirmpassword) {
-      toast.error("The confirm password confirmation does not match");
-      return;
-    }
+    // if (values.password != values.comfirmpassword) {
+    //   toast.error("The confirm password confirmation does not match");
+    //   return;
+    // }
     var isCheck = "N";
     if (values.disable == true) {
       isCheck = "Y";
@@ -256,7 +275,7 @@ const Edituser = () => {
               fnSave(values, resetForm);
             }, 100);
           }}
-          validationSchema={UserSchema}
+          validationSchema={validationSchema}
           enableReinitialize={true}
         >
           {({
@@ -300,11 +319,12 @@ const Edituser = () => {
                 // autoFocus
                 />
                 <TextField
-                  required
+                  // required
                   name="name"
                   type="text"
                   id="name"
                   label="Name"
+
                   variant="standard"
                   focused
                   sx={{ gridColumn: "span 2" }}
@@ -314,28 +334,46 @@ const Edituser = () => {
                   error={!!touched.name && !!errors.name}
                   helperText={touched.name && errors.name}
                   autoFocus
+                  onInvalid={(e) => {
+                    e.target.setCustomValidity(
+                      "Please fill the Name"
+                    );
+                  }}
+                  onInput={(e) => {
+                    e.target.setCustomValidity("");
+                  }}
+                  required
                 />
                 <FormControl sx={{ gridColumn: "span 2", display: "flex" }}>
-                  <FormControl
+                  {/* <FormControl
                     sx={{
                       display: "flex",
                       flexDirection: "row",
                       alignItems: "center",
                     }}
-                  >
-                    <Productautocomplete
-                      label="User Group"
-                      id="usergroup"
-                      name="usergroup"
-                      value={values.usergroup}
-                     
-                      onChange={(newValue) => {
-                        setFieldValue("usergroup", newValue)
-                      }}
-                      
-                      url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2039","ScreenName":"UserGroup","Filter":"CompanyID='${companyRecID}'","Any":"","CompId":"4"}}`}
-                    />
-                    {/* <TextField
+                  > */}
+                  <Productautocomplete
+                    label={
+                      <span>
+                        User Group <span style={{ color: 'red', fontSize: '20px' }}>*</span>
+                      </span>
+                    }
+                    id="usergroup"
+                    name="usergroup"
+                    value={values.usergroup}
+
+                    onChange={(newValue) => {
+                      setFieldValue("usergroup", newValue)
+                    }}
+
+                    url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2039","ScreenName":"UserGroup","Filter":"CompanyID='${companyRecID}'","Any":"","CompId":"4"}}`}
+                  />
+                  {touched.usergroup && errors.usergroup && (
+                    <div style={{ color: "red", fontSize: "10px", marginTop: "2px" }}>
+                      {errors.usergroup}
+                    </div>
+                  )}
+                  {/* <TextField
                         id="outlined-basic"
                         label="ID"
                         variant="standard"
@@ -369,7 +407,7 @@ const Edituser = () => {
                         inputProps={{ tabIndex: "-1" }}
                         focused
                       /> */}
-                  </FormControl>
+                  {/* </FormControl> */}
                 </FormControl>
                 <TextField
                   name="password"
@@ -378,7 +416,7 @@ const Edituser = () => {
                   label="Password"
                   variant="standard"
                   focused
-                  required
+                  // required
                   sx={{ gridColumn: "span 2" }}
                   onFocus={() => setFieldTouched("password", true)}
                   onBlur={handleBlur}
@@ -387,6 +425,15 @@ const Edituser = () => {
                   error={touched.password && !!errors.password} // Show error only if touched
                   helperText={touched.password ? errors.password : ""} // Show text only when touched
                   inputProps={{ maxLength: 8 }}
+                   onInvalid={(e) => {
+                    e.target.setCustomValidity(
+                      "Please fill the Password"
+                    );
+                  }}
+                  onInput={(e) => {
+                    e.target.setCustomValidity("");
+                  }}
+                  required
                 />
 
                 <TextField
@@ -396,7 +443,7 @@ const Edituser = () => {
                   label="Confirm Password"
                   variant="standard"
                   focused
-                  required
+                  // required
                   sx={{ gridColumn: "span 2" }}
                   onFocus={() => setFieldTouched("comfirmpassword", true)}
                   onBlur={handleBlur}
@@ -407,6 +454,15 @@ const Edituser = () => {
                     touched.comfirmpassword ? errors.comfirmpassword : ""
                   } // Show text only when touched
                   inputProps={{ maxLength: 8 }}
+                   onInvalid={(e) => {
+                    e.target.setCustomValidity(
+                      "Please fill the Confirm Password"
+                    );
+                  }}
+                  onInput={(e) => {
+                    e.target.setCustomValidity("");
+                  }}
+                  required
                 />
 
                 <TextField

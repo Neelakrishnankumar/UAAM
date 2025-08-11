@@ -77,28 +77,33 @@ const Editbin = () => {
 
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const location = useLocation();
-const rowData = location.state || {};
-console.log(rowData, "--rowData");
+  const rowData = location.state || {};
+  console.log(rowData, "--rowData");
 
   const [pageSize, setPageSize] = React.useState(10);
   useEffect(() => {
     dispatch(getFetchData({ accessID, get: "get", recID }));
   }, [location.key]);
+  const validationSchema = Yup.object({
+    binname: Yup.string().required('Please fill the Bin Name')
+      .matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
+  });
   const colors = tokens(theme.palette.mode);
 
   // *************** INITIALVALUE  *************** //
-const HsnSchema = Yup.object().shape({
-  shelvescode: Yup.string()
-    .trim()
-    .required("Shelves Code is required"),
-  shelvesname: Yup.string()
-    .trim()
-    .required("Shelves Name is required"),
-  sortorder: Yup.number()
-    .nullable()
-    .transform((_, val) => (val ? Number(val) : null)),
-  // add other validations as needed
-});
+  const HsnSchema = Yup.object().shape({
+    shelvescode: Yup.string()
+      .trim()
+      .required("Please fill the Shelves Code"),
+    shelvesname: Yup.string()
+      .trim()
+      .required("Please fill the Shelves Name")
+      .matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
+    sortorder: Yup.number()
+      .nullable()
+      .transform((_, val) => (val ? Number(val) : null)),
+    // add other validations as needed
+  });
   const InitialValue = {
     bincode: data.Code,
     binname: data.Name,
@@ -128,7 +133,7 @@ const HsnSchema = Yup.object().shape({
     if (data.payload.Status == "Y") {
       toast.success(data.payload.Msg);
       navigate(
-        `/Apps/Secondarylistview/TR129/Bins/${params.filtertype}/${params.parentID}`,{state:rowData}
+        `/Apps/Secondarylistview/TR129/Bins/${params.filtertype}/${params.parentID}`, { state: rowData }
       );
     } else {
       toast.error(data.payload.Msg);
@@ -243,8 +248,8 @@ const HsnSchema = Yup.object().shape({
       Mode === "A" && !del
         ? "insert"
         : Mode === "E" && del
-        ? "harddelete"
-        : "update";
+          ? "harddelete"
+          : "update";
     const idata = {
       RecordID: shelvesdata.RecordID,
       Code: values.shelvescode,
@@ -326,7 +331,7 @@ const HsnSchema = Yup.object().shape({
                     color="#0000D1"
                     sx={{ cursor: "default" }}
                     onClick={() => {
-                      navigate("/Apps/TR014/Company",{state: rowData});
+                      navigate("/Apps/TR014/Company", { state: rowData });
                     }}
                   >
                     {`Company(${rowData.CompanyName})`}
@@ -337,11 +342,11 @@ const HsnSchema = Yup.object().shape({
                     sx={{ cursor: "default" }}
                     onClick={() => {
                       navigate(
-                        `/Apps/Secondarylistview/TR128/Location/${params.parentID}`,{state: rowData}
+                        `/Apps/Secondarylistview/TR128/Location/${params.parentID}`, { state: rowData }
                       );
                     }}
                   >
-                   {`Location(${rowData.LocationName})`}
+                    {`Location(${rowData.LocationName})`}
                   </Typography>
                   <Typography
                     variant="h5"
@@ -349,11 +354,14 @@ const HsnSchema = Yup.object().shape({
                     sx={{ cursor: "default" }}
                     onClick={() => {
                       navigate(
-                        `/Apps/Secondarylistview/TR129/Bins/${params.filtertype}/${params.parentID}`,{state: rowData}
+                        `/Apps/Secondarylistview/TR129/Bins/${params.filtertype}/${params.parentID}`, { state: rowData }
                       );
                     }}
                   >
-                   {`Bin(${rowData.bin})`}
+                    {mode === "E"
+                      ? `Bin(${rowData.bin})`
+                      : "Bin(New)"}
+                    {/* {`Bin(${rowData.bin})`} */}
                   </Typography>
                   {show == "1" ? (
                     <Typography
@@ -413,7 +421,7 @@ const HsnSchema = Yup.object().shape({
                     Fnsave(values);
                   }, 100);
                 }}
-                validationSchema={BinSchema}
+                 validationSchema={validationSchema}
                 enableReinitialize={true}
               >
                 {({
@@ -454,8 +462,8 @@ const HsnSchema = Yup.object().shape({
                           onChange={handleChange}
                           error={!!touched.bincode && !!errors.bincode}
                           helperText={touched.bincode && errors.bincode}
-                          InputProps={{readOnly:true}}
-                          // autoFocus
+                          InputProps={{ readOnly: true }}
+                        // autoFocus
                         />
                         <TextField
                           name="binname"
@@ -470,6 +478,14 @@ const HsnSchema = Yup.object().shape({
                           error={!!touched.binname && !!errors.binname}
                           helperText={touched.binname && errors.binname}
                           autoFocus
+                          onInvalid={(e) => {
+                            e.target.setCustomValidity(
+                              "Please fill the Bin Name"
+                            );
+                          }}
+                          onInput={(e) => {
+                            e.target.setCustomValidity("");
+                          }}
                           required
                         />
 
@@ -564,7 +580,7 @@ const HsnSchema = Yup.object().shape({
                   FnShelvessave(values, resetForm, false);
                 }, 100);
               }}
-                validationSchema={ HsnSchema}
+              // validationSchema={HsnSchema}
               enableReinitialize={true}
             >
               {({
@@ -606,7 +622,7 @@ const HsnSchema = Yup.object().shape({
                       label="Bin Code"
                       variant="standard"
                       focused
-                      required
+                      // required
                       value={values.bincode}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -740,7 +756,15 @@ const HsnSchema = Yup.object().shape({
                         onChange={handleChange}
                         error={!!touched.shelvescode && !!errors.shelvescode}
                         helperText={touched.shelvescode && errors.shelvescode}
-
+                        onInvalid={(e) => {
+                          e.target.setCustomValidity(
+                            "Please fill the Shelves Code"
+                          );
+                        }}
+                        onInput={(e) => {
+                          e.target.setCustomValidity("");
+                        }}
+                        required
                         autoFocus
                       />
                       <TextField
@@ -755,7 +779,15 @@ const HsnSchema = Yup.object().shape({
                         onChange={handleChange}
                         error={!!touched.shelvesname && !!errors.shelvesname}
                         helperText={touched.shelvesname && errors.shelvesname}
-
+                        onInvalid={(e) => {
+                          e.target.setCustomValidity(
+                            "Please fill the Shelves Name"
+                          );
+                        }}
+                        onInput={(e) => {
+                          e.target.setCustomValidity("");
+                        }}
+                        required
                         autoFocus
                       />
                       <TextField
@@ -768,8 +800,8 @@ const HsnSchema = Yup.object().shape({
                         value={values.sortorder}
                         onBlur={handleBlur}
                         onChange={handleChange}
-                          error={!!touched.sortorder && !!errors.sortorder}
-                          helperText={touched.sortorder && errors.sortorder}
+                        error={!!touched.sortorder && !!errors.sortorder}
+                        helperText={touched.sortorder && errors.sortorder}
                         sx={{ background: "" }}
                         InputProps={{
                           inputProps: {

@@ -41,8 +41,8 @@ import Popup from "../popup";
 import Listviewpopup from "../Lookup";
 import { formGap } from "../../../ui-components/utils";
 import store from "../../..";
-import { SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
-
+import { Productautocomplete, SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
+import * as Yup from "yup";
 // import CryptoJS from "crypto-js";
 
 const Editsubscription = () => {
@@ -164,7 +164,18 @@ const Editsubscription = () => {
       setOpenSubPopup(false);
     }
   };
+  const validationSchema = Yup.object({
+    productid: Yup.object()
+      .nullable()
+      .required("Please fill the Product Code"),
 
+    subscriptionperiod: Yup.string().required('Please fill the Subscription Period '),
+    productsubscription: Yup.object()
+      .nullable()
+      .required("Please fill the Product Subscription"),
+    subscriptionStartDate: Yup.string().required('Please fill the Subscription Start date '),
+
+  });
   const [subfromdate, Setsubfromdate] = useState("");
   const [subEnddate, SetsubEnddate] = useState("");
   const [subperiod, Setsubperiod] = useState("");
@@ -230,18 +241,18 @@ const Editsubscription = () => {
       mode == "A"
         ? null
         : {
-            Code: data.OurProductCode,
-            Name: data.OurProductDescription,
-            RecordID: data.OurProductID,
-          },
+          Code: data.OurProductCode,
+          Name: data.OurProductDescription,
+          RecordID: data.OurProductID,
+        },
     productsubscription:
       mode == "A"
         ? null
         : {
-            Code: data.ProductSubscriptionCode,
-            Name: data.ProductSubscriptionName,
-            RecordID: data.ProdSubscriptionID,
-          },
+          Code: data.ProductSubscriptionCode,
+          Name: data.ProductSubscriptionName,
+          RecordID: data.ProdSubscriptionID,
+        },
   };
 
   const Fnsave = async (values) => {
@@ -384,6 +395,7 @@ const Editsubscription = () => {
               }, 100);
             }}
             //  validationSchema={ DesignationSchema}
+          validationSchema={validationSchema}
             enableReinitialize={true}
           >
             {({
@@ -412,50 +424,68 @@ const Editsubscription = () => {
                     fullWidth
                     sx={{ gridColumn: "span 2", gap: formGap }}
                   >
-                    <FormControl
+                    {/* <FormControl
                       sx={{
                         display: "flex",
                         flexDirection: "row",
                         alignItems: "center",
                       }}
-                    >
-                      <SingleFormikOptimizedAutocomplete
-                        disabled={mode == "R"}
-                        label="Product Code"
-                        id="productid"
-                        name="productid"
-                        required
-                        value={values.productid}
-                        onChange={async (e, newValue) => {
-                          setFieldValue("productid", newValue);
+                    > */}
+                    <SingleFormikOptimizedAutocomplete
+                      disabled={mode == "R"}
+                      label={
+                        <span>
+                          Product Code <span style={{ color: 'red', fontSize: '20px' }}>*</span>
+                        </span>
+                      }
+                      id="productid"
+                      name="productid"
+                      required
+                      value={values.productid}
+                      onInvalid={(e) => {
+                        e.target.setCustomValidity(
+                          "Please fill the Product Code"
+                        );
+                      }}
+                      onInput={(e) => {
+                        e.target.setCustomValidity("");
+                      }}
+                      onChange={async (e, newValue) => {
+                        setFieldValue("productid", newValue);
 
-                          if (params.Mode == "A" && newValue) {
-                            const res = await dispatch(
-                              subScriptionIdGet({
-                                CompanyID: paramscompID,
-                                ProductID: newValue.RecordID,
-                              })
+                        if (params.Mode == "A" && newValue) {
+                          const res = await dispatch(
+                            subScriptionIdGet({
+                              CompanyID: paramscompID,
+                              ProductID: newValue.RecordID,
+                            })
+                          );
+                          if (res.payload.Status == "Y") {
+                            navigate(
+                              `/Apps/Secondarylistview/TR238/subscription/${params.filtertype}/Editsubscription/${res.payload.SubscriptionID}/R`
                             );
-                            if (res.payload.Status == "Y") {
-                              navigate(
-                                `/Apps/Secondarylistview/TR238/subscription/${params.filtertype}/Editsubscription/${res.payload.SubscriptionID}/R`
-                              );
-                              // dispatch(getFetchData({ accessID, get: "get", recID:res.payload.SubscriptionID }));
-                            }
+                            // dispatch(getFetchData({ accessID, get: "get", recID:res.payload.SubscriptionID }));
                           }
-                        }}
-                        log
-                        url={`${
-                          store.getState().globalurl.listViewurl
+                        }
+                      }}
+                     
+                      log
+                      url={`${store.getState().globalurl.listViewurl
                         }?data={"Query":{"AccessID":"2098","ScreenName":"Product ID","Filter":"","Any":"","CompId":"4"}}`}
-                      />
-                    </FormControl>
+                    />
+                    {touched.productid && errors.productid && (
+                      <div style={{ color: "red", fontSize: "9px", marginTop: "-2px" }}>
+                        {errors.productid}
+                      </div>
+                    )}
+                    {/* </FormControl> */}
                     <TextField
                       required
                       name="subscriptionStartDate"
                       type="date"
                       id="subscriptionStartDate"
-                      label="Subscription Start Date"
+                      label=
+                      "Subscription Start Date"
                       variant="standard"
                       focused
                       // onChange={(e) => handleChangesub(e, Setsubfromdate)}
@@ -464,12 +494,20 @@ const Editsubscription = () => {
                       onBlur={handleBlur}
                       onChange={handleChange}
                       error={
-                        !!touched.subscriptionPeriod &&
-                        !!errors.subscriptionPeriod
+                        !!touched.subscriptionStartDate &&
+                        !!errors.subscriptionStartDate
                       }
                       helperText={
-                        touched.subscriptionPeriod && errors.subscriptionPeriod
+                        touched.subscriptionStartDate && errors.subscriptionStartDate
                       }
+                      onInvalid={(e) => {
+                        e.target.setCustomValidity(
+                          "Please fill the Subscription Start Date"
+                        );
+                      }}
+                      onInput={(e) => {
+                        e.target.setCustomValidity("");
+                      }}
                       autoFocus
                     />
 
@@ -479,11 +517,20 @@ const Editsubscription = () => {
                       type="number"
                       id="subscriptionperiod"
                       label="Subscription Period (in months)"
+
                       variant="standard"
                       focused
                       // onChange={(e) => SubPeriodOnchange(e, Setsubperiod)}
                       // value={subperiod}
                       value={values.subscriptionperiod}
+                      onInvalid={(e) => {
+                        e.target.setCustomValidity(
+                          "Please fill the Subscription Period (in months)"
+                        );
+                      }}
+                      onInput={(e) => {
+                        e.target.setCustomValidity("");
+                      }}
                       onBlur={handleBlur}
                       onChange={(e) => {
                         const { name, value } = e.target;
@@ -548,68 +595,60 @@ const Editsubscription = () => {
                     fullWidth
                     sx={{ gridColumn: "span 2", gap: formGap }}
                   >
-                    <FormControl
+                    {/* <FormControl
                       sx={{
                         display: "flex",
                         flexDirection: "row",
                         alignItems: "center",
                       }}
-                    >
-                      {/* <TextField
-                      label="Product Subscription"
-                      variant="standard"
-                      value={selectProdsubLookupData.ProdsubCode}
-                      focused
-                      // required
-                      inputProps={{ tabIndex: "-1" }}
-                     
-                    />
-                    <IconButton
-                      sx={{ height: 40, width: 40 }}
-                      onClick={() => handleShow("PRODSUB")}
-                    
-                    >
-                      <img src="https://img.icons8.com/color/48/null/details-popup.png" />
-                    </IconButton>
+                    > */}
 
-                    <TextField
-              
-                      variant="standard"
-                      value={selectProdsubLookupData.ProdsubDesc}
-                      fullWidth
-                      inputProps={{ tabIndex: "-1" }}
-                      focused
-                    /> */}
-
-                      <SingleFormikOptimizedAutocomplete
-                        label="Product Subscription"
-                        id="productsubscription"
-                        name="productsubscription"
-                        value={values.productsubscription}
-                        onChange={async (e, newValue) => {
-                          setFieldValue("productsubscription", newValue);
-                          if (newValue) {
-                            if (params.Mode == "R") {
-                              const res = await dispatch(
-                                subScriptionCheck({
-                                  oldSubcriptionID: data.ProdSubscriptionID,
-                                  NewSubcriptionID: newValue.RecordID,
-                                })
-                              );
-                              console.log(res, "res");
-                              const type = res.payload.Type || "Y";
-                              setSubType(type);
-                            }
+                    <SingleFormikOptimizedAutocomplete
+                      // label="Product Subscription"
+                      label={
+                        <span>
+                          Product Subscription <span style={{ color: 'red', fontSize: '20px' }}>*</span>
+                        </span>
+                      }
+                      id="productsubscription"
+                      name="productsubscription"
+                      value={values.productsubscription}
+                      onChange={async (e, newValue) => {
+                        setFieldValue("productsubscription", newValue);
+                        if (newValue) {
+                          if (params.Mode == "R") {
+                            const res = await dispatch(
+                              subScriptionCheck({
+                                oldSubcriptionID: data.ProdSubscriptionID,
+                                NewSubcriptionID: newValue.RecordID,
+                              })
+                            );
+                            console.log(res, "res");
+                            const type = res.payload.Type || "Y";
+                            setSubType(type);
                           }
-                        }}
-                        log
-                        url={`${
-                          store.getState().globalurl.listViewurl
-                        }?data={"Query":{"AccessID":"2099","ScreenName":"Product Subscription","Filter":"parentID='${
-                          values.productid ? values.productid.RecordID : 0
+                        }
+                      }}
+                      onInvalid={(e) => {
+                        e.target.setCustomValidity(
+                          "Please fill the Product Subscription"
+                        );
+                      }}
+                      onInput={(e) => {
+                        e.target.setCustomValidity("");
+                      }}
+                      log
+                      url={`${store.getState().globalurl.listViewurl
+                        }?data={"Query":{"AccessID":"2099","ScreenName":"Product Subscription","Filter":"parentID='${values.productid ? values.productid.RecordID : 0
                         }'","Any":"","CompId":"4"}}`}
-                      />
-                    </FormControl>
+                    />
+                    {touched.productsubscription && errors.productsubscription && (
+                      <div style={{ color: "red", fontSize: "9px", marginTop: "-2px" }}>
+                        {errors.productsubscription}
+                      </div>
+                    )}
+
+                    {/* </FormControl> */}
                     <TextField
                       name="subscriptionEndDate"
                       type="date"
@@ -675,7 +714,7 @@ const Editsubscription = () => {
                     variant="contained"
                     onClick={() =>
                       navigate(
-                        `/Apps/Secondarylistview/TR238/subscription/${params.filtertype}`,{state: rowData}
+                        `/Apps/Secondarylistview/TR238/subscription/${params.filtertype}`, { state: rowData }
                       )
                     }
                   >
@@ -694,8 +733,8 @@ const Editsubscription = () => {
               accessID="2098"
               screenName="Products"
               childToParent={childToParent}
-              // filterName={"CompanyID"}
-              // filterValue={CompID}
+            // filterName={"CompanyID"}
+            // filterValue={CompID}
             />
           </Popup>
           <Popup
