@@ -1,8 +1,8 @@
 
 import { createSlice } from "@reduxjs/toolkit";
 
-var APIurl ="https://uaam.beyondexs.com/api/"
-var baseurl ="https://uaam.beyondexs.com/"
+// var APIurl ="https://uaam.beyondexs.com/api/"
+// var baseurl ="https://uaam.beyondexs.com/"
 // // var APIurl ="https://dvmtapi.bexatm.com/uaam/api/"
 // // var baseurl ="https://dvmtapi.bexatm.com/uaam/api/"
 // var APIurl ="https://phpmigrationapi.bexatm.com/uaam/api/"
