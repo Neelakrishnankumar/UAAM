@@ -376,9 +376,15 @@ const Editcompany = () => {
                         }}
                       >
                         <SingleFormikOptimizedAutocomplete
-                          label="Country"
+                          label={
+                            <>
+                              Country<span style={{ color: "red" }}> * </span>
+                            </>
+                          }
+                          // label="Country"
                           id="country"
                           name="country"
+                          
                           value={values.country}
                           onChange={(e, newValue) => {
                             setFieldValue("country", newValue)
@@ -386,6 +392,11 @@ const Editcompany = () => {
                           log
                           url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
                         />
+                         {/* {touched.country && errors.country && (
+                          <div style={{ color: "red", fontSize: "12px", marginTop: "2px" }}>
+                            {errors.country}
+                          </div>
+                        )} */}
                       </FormControl>
                       {/* <TextField
                           label="Country"
@@ -466,21 +477,6 @@ const Editcompany = () => {
                     <TextField
                       fullWidth
                       variant="standard"
-                      type="text"
-                      label="LUT"
-                      value={values.Lut}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      name="Lut"
-                      // error={!!touched.gst && !!errors.gst}
-                      // helperText={touched.gst && errors.gst}
-                      inputProps={{ readOnly: true }}
-                      focused
-                    />
-
-                    <TextField
-                      fullWidth
-                      variant="standard"
                       type="number"
                       label="No Of Users"
                       value={values.noofusers}
@@ -494,6 +490,22 @@ const Editcompany = () => {
                       focused
                       onWheel={(e) => e.target.blur()}
                     />
+                    <TextField
+                      fullWidth
+                      variant="standard"
+                      type="text"
+                      label="LUT"
+                      value={values.Lut}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="Lut"
+                      // error={!!touched.gst && !!errors.gst}
+                      // helperText={touched.gst && errors.gst}
+                      inputProps={{ readOnly: true }}
+                      focused
+                    />
+
+                    
                   </FormControl>
                   <FormControl sx={{ gridColumn: "span 2", gap: formGap }}>
                     <TextField

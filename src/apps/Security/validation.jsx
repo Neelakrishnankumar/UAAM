@@ -53,9 +53,9 @@ export const companySchema = yup.object().shape({
     .number()
     .min(10000, "Not valid Pin Code")
     .max(999999, "Not valid Pin Code"),
-    // country: Yup.object()
-    // .required('Please select a country')
-    // .nullable(),
+    country: Yup.object()
+    .required('Please select a country')
+    .nullable(),
     // license: yup
     // .number()
     // .min(10000, "Not Valid Subscription Code")
