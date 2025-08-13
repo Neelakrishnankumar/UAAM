@@ -2152,7 +2152,7 @@ const ListviewSecondary = () => {
             csvOptions={{
               fileName: `${screenName}`,
             }}
-            slotProps={{ toolbar: { csvOptions: { allColumns: true } } }}
+            // slotProps={{ toolbar: { csvOptions: { allColumns: true } } }}
           />
           <Tooltip arrow title="Logout">
             <IconButton onClick={() => fnLogOut("Logout")} color="error">

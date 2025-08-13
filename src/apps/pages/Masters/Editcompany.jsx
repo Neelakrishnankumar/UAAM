@@ -378,7 +378,7 @@ const Editcompany = () => {
                         <SingleFormikOptimizedAutocomplete
                           label={
                             <>
-                              Country<span style={{ color: "red" }}> * </span>
+                              Country<span style={{ color: "red" ,fontSize:"20px"}}> * </span>
                             </>
                           }
                           // label="Country"
