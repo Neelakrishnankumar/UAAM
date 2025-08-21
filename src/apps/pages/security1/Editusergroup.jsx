@@ -272,12 +272,20 @@ const Editusergroup = () => {
     );
   }
   const column = [
+    // {
+    //   field: "SLNO",
+    //   headerName: "SL#",
+    //   width: 50,
+    // },
     {
-      field: "SLNO",
+      field: "slno",
       headerName: "SL#",
       width: 50,
+      sortable: false,
+      filterable: false,
+      valueGetter: (params) =>
+        `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`
     },
-
     {
       field: "SM_CAPTION1",
       headerName: "Screen Name",
@@ -592,7 +600,7 @@ const Editusergroup = () => {
                     onInput={(e) => {
                       e.target.setCustomValidity("");
                     }}
-                  
+
                   />
                   <TextField
                     name="comments"

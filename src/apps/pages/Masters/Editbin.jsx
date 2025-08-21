@@ -164,14 +164,39 @@ const Editbin = () => {
 
   // search
 
-  const VISIBLE_FIELDS = ["SLNO", "Code", "Name", "action"];
-  const columns = React.useMemo(
-    () =>
-      explorelistViewcolumn.filter((column) =>
-        VISIBLE_FIELDS.includes(column.field)
-      ),
-    [explorelistViewcolumn]
-  );
+  const VISIBLE_FIELDS = ["slno", "Code", "Name", "action"];
+  // const columns = React.useMemo(
+  //   () =>
+  //     explorelistViewcolumn.filter((column) =>
+  //       VISIBLE_FIELDS.includes(column.field)
+  //     ),
+  //   [explorelistViewcolumn]
+  // );
+    const columns = React.useMemo(() => {
+   
+    let visibleColumns = explorelistViewcolumn.filter((column) =>
+      VISIBLE_FIELDS.includes(column.field)
+    );
+
+    
+    if (VISIBLE_FIELDS.includes("slno")) {
+      const slnoColumn = {
+        field: "slno",
+        headerName: "SL#",
+        width: 50,
+        sortable: false,
+        filterable: false,
+        valueGetter: (params) =>
+          `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`,
+      };
+
+     
+      visibleColumns = [slnoColumn, ...visibleColumns];
+    }
+
+    return visibleColumns;
+  }, [explorelistViewcolumn, VISIBLE_FIELDS]);
+
 
   /******************Employee values assign a state variale******************** */
   const selectCellData = ({ rowData, mode, field }) => {

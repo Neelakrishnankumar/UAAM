@@ -41,7 +41,7 @@ import Popup from "../popup";
 import Listviewpopup from "../Lookup";
 import { formGap } from "../../../ui-components/utils";
 import store from "../../..";
-import { Productautocomplete, SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
+import { CheckinAutocomplete, Productautocomplete, SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
 import * as Yup from "yup";
 // import CryptoJS from "crypto-js";
 
@@ -395,7 +395,7 @@ const Editsubscription = () => {
               }, 100);
             }}
             //  validationSchema={ DesignationSchema}
-          validationSchema={validationSchema}
+            validationSchema={validationSchema}
             enableReinitialize={true}
           >
             {({
@@ -433,45 +433,35 @@ const Editsubscription = () => {
                     > */}
                     <SingleFormikOptimizedAutocomplete
                       disabled={mode == "R"}
-                      label={
-                        <span>
-                          Product Code <span style={{ color: 'red', fontSize: '20px' }}>*</span>
-                        </span>
-                      }
+                      label="Product Code"
                       id="productid"
                       name="productid"
                       required
                       value={values.productid}
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity(
-                          "Please fill the Product Code"
-                        );
-                      }}
-                      onInput={(e) => {
-                        e.target.setCustomValidity("");
-                      }}
+                      error={!!touched.productid && !!errors.productid}
+                      helperText={touched.productid && errors.productid}
                       onChange={async (e, newValue) => {
                         setFieldValue("productid", newValue);
-
-                        if (params.Mode == "A" && newValue) {
+                       
+                    if (params.Mode == "A" && newValue) {
                           const res = await dispatch(
-                            subScriptionIdGet({
-                              CompanyID: paramscompID,
-                              ProductID: newValue.RecordID,
+                    subScriptionIdGet({
+                      CompanyID: paramscompID,
+                    ProductID: newValue.RecordID,
                             })
-                          );
-                          if (res.payload.Status == "Y") {
-                            navigate(
-                              `/Apps/Secondarylistview/TR238/subscription/${params.filtertype}/Editsubscription/${res.payload.SubscriptionID}/R`
-                            );
-                            // dispatch(getFetchData({ accessID, get: "get", recID:res.payload.SubscriptionID }));
+                    );
+                    if (res.payload.Status == "Y") {
+                      navigate(
+                        `/Apps/Secondarylistview/TR238/subscription/${params.filtertype}/Editsubscription/${res.payload.SubscriptionID}/R`
+                      );
+                            // dispatch(getFetchData({accessID, get: "get", recID:res.payload.SubscriptionID }));
                           }
                         }
                       }}
-                     
-                      log
-                      url={`${store.getState().globalurl.listViewurl
-                        }?data={"Query":{"AccessID":"2098","ScreenName":"Product ID","Filter":"","Any":"","CompId":"4"}}`}
+
+                    log
+
+                    url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2098","ScreenName":"Product ID","Filter":"","Any":"","CompId":"4"}}`}
                     />
                     {touched.productid && errors.productid && (
                       <div style={{ color: "red", fontSize: "9px", marginTop: "-2px" }}>
@@ -629,14 +619,7 @@ const Editsubscription = () => {
                           }
                         }
                       }}
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity(
-                          "Please fill the Product Subscription"
-                        );
-                      }}
-                      onInput={(e) => {
-                        e.target.setCustomValidity("");
-                      }}
+                    
                       log
                       url={`${store.getState().globalurl.listViewurl
                         }?data={"Query":{"AccessID":"2099","ScreenName":"Product Subscription","Filter":"parentID='${values.productid ? values.productid.RecordID : 0
