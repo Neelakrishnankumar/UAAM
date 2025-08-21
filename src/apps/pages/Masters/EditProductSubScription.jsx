@@ -245,20 +245,44 @@ const EditProductSubScription = () => {
   /****************************Search ***********/
 
   const VISIBLE_FIELDS = [
-    "SLNO",
+    "slno",
     "NoOfEmployee",
     "NoOfEndUser",
     "Price",
     "OfferPrice",
     "action",
   ];
-  const columns = React.useMemo(
-    () =>
-      explorelistViewcolumn.filter((column) =>
+  // const columns = React.useMemo(
+  //   () =>
+  //     explorelistViewcolumn.filter((column) =>
+  //       VISIBLE_FIELDS.includes(column.field)
+  //     ),
+  //   [explorelistViewcolumn]
+  // );
+    const columns = React.useMemo(() => {
+     
+      let visibleColumns = explorelistViewcolumn.filter((column) =>
         VISIBLE_FIELDS.includes(column.field)
-      ),
-    [explorelistViewcolumn]
-  );
+      );
+  
+      
+      if (VISIBLE_FIELDS.includes("slno")) {
+        const slnoColumn = {
+          field: "slno",
+          headerName: "SL#",
+          width: 50,
+          sortable: false,
+          filterable: false,
+          valueGetter: (params) =>
+            `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`,
+        };
+  
+       
+        visibleColumns = [slnoColumn, ...visibleColumns];
+      }
+  
+      return visibleColumns;
+    }, [explorelistViewcolumn, VISIBLE_FIELDS]);
 
   const ref = useRef();
   //  console.log("🚀 ~ file: Edituoms.jsx:248 ~ Edituom ~ ref:", ref)
