@@ -1,0 +1,47 @@
+{
+    "Company": {
+        "address": "Please fill the Address",
+        "name": "Please fill the Name",
+        "country": "Please fill the Country",
+        "email": "Please fill the Email",
+        "pincode": "Please fill the Pincode",
+        "gst": "Please fill the GST",
+        "phone": "Please fill the Phone",
+        "license": "Please fill the Subscription Code",
+        "iECode": "Invalid I.E Code",
+        "rbiCode": "Invalid RBI Code"
+    },
+    "Location": {
+        "name": "Please fill the Name"
+    },
+    "Gate": {
+        "name": "Please fill the Name"
+    },
+    "Bin": {
+        "name": "Please fill the Name",
+        "shelvescode": "Please fill the Shelves Name",
+        "shelvesname": "Please fill the Shelves Code"
+    },
+    "Products": {
+        "description": "Please fill the Description",
+        "NoOfemployee": "Please fill the No of Employee",
+        "NoOfenduser": "Please fill the No of End User",
+        "price": "Please fill the Price",
+        "offerprice": "Please fill the Offer Price"
+    },
+    "Usergroup": {
+        "name": "Please fill the Name"
+    },
+    "Users": {
+        "usergroup": "Please fill the Usergroup",
+        "name": "Please fill the Name",
+        "password": "Please fill the Password",
+        "comfirmpassword": "Please fill the Confirm Password"
+    },
+    "Subscription": {
+        "productsubscription": "Please fill the Product Subscription",
+        "subscriptionStartDate": "Please fill the Subscription Start Date",
+        "subscriptionperiod": "Please fill the Subscription Period (in months)",
+        "productid": "Please fill the Product Code"
+    }
+}

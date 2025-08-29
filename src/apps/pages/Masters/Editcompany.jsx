@@ -30,7 +30,7 @@ import { useProSidebar } from "react-pro-sidebar";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { screenRightsData } from "../../../store/reducers/screenRightsreducer";
 import { formGap } from "../../../ui-components/utils";
-import { SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
+import { CheckinAutocomplete, SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
 import store from "../../..";
 
 // ***********************************************
@@ -49,11 +49,78 @@ const Editcompany = () => {
   const Year = sessionStorage.getItem("year");
   const Finyear = sessionStorage.getItem("YearRecorid");
   const CompanyID = sessionStorage.getItem("compID");
-
+  const [errorMsgData, setErrorMsgData] = useState(null);
+  const [validationSchema, setValidationSchema] = useState(null);
   let recID = params.id;
   let mode = params.Mode;
   let accessID = params.accessID;
+  useEffect(() => {
+    fetch(process.env.PUBLIC_URL + "/validationcms.json")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch validationcms.json");
+        return res.json();
+      })
+      .then((data) => {
+        setErrorMsgData(data);
+        // const schema = Yup.object().shape({
+        //   address: Yup.string().required(data.Company.address),
+        //   name: Yup.string().required(data.Company.name),
+        //   country: Yup.object().required(data.Company.country).nullable(),
+        //   email: Yup.string().required(data.Company.email),
+        //   pincode: Yup.string().required(data.Company.pincode),
+        //   license: Yup.string().required(data.Company.license),
 
+        //   gst: Yup.string().required(data.Company.gst),
+        //   phone: Yup.string().required(data.Company.phone),
+        // });
+        let schemaFields1 = {
+          address: Yup.string().required(data.Company.address),
+          name: Yup.string().required(data.Company.name),
+          country: Yup.object().required(data.Company.country).nullable(),
+          email: Yup.string()
+            .required(data.Company.email)
+            .matches(
+              /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              "Invalid Email format"
+            ),
+
+          pincode: Yup.string()
+            .required(data.Company.pincode)
+            .matches(/^\d{6}$/, "Invalid Pincode"),
+          license: Yup.string().required(data.Company.license),
+          gst: Yup.string()
+            .required(data.Company.gst)
+            .matches(
+              /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
+              "Invalid GST number"
+            ),
+
+          phone: Yup.string()
+            .required(data.Company.phone)
+            .matches(/^[6-9]\d{9}$/, "Invalid Phone Number"),
+        };
+
+
+        // IE Code
+        schemaFields1.iECode = Yup.string()
+          .nullable()
+          .notRequired()
+          .transform((value) => (value === "" ? null : value))
+          .matches(/^[A-Za-z0-9]{10}$/, data.Company.iECode);
+
+        // RBI Code
+        schemaFields1.rbiCode = Yup.string()
+          .nullable()
+          .notRequired()
+          .transform((value) => (value === "" ? null : value))
+          .matches(/^[A-Za-z0-9]{7,11}$/, data.Company.rbiCode);
+
+
+        const schema1 = Yup.object().shape(schemaFields1);
+        setValidationSchema(schema1);
+      })
+      .catch((err) => console.error("Error loading validationcms.json:", err));
+  }, []);
   useEffect(() => {
     //dispatch(screenRightsData(accessID));
 
@@ -247,7 +314,7 @@ const Editcompany = () => {
                 fnSave(values);
               }, 100);
             }}
-            validationSchema={companySchema}
+            validationSchema={validationSchema}
             enableReinitialize={true}
           >
             {({
@@ -312,13 +379,17 @@ const Editcompany = () => {
                       fullWidth
                       variant="standard"
                       type="text"
-                      label="Name"
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity("Please fill the Name");
-                      }}
-                      onInput={(e) => {
-                        e.target.setCustomValidity("");
-                      }}
+                      label={
+                        <>
+                          Name <span style={{ color: 'red', fontSize: '20px' }}>*</span>
+                        </>
+                      }
+                      // onInvalid={(e) => {
+                      //   e.target.setCustomValidity("Please fill the Name");
+                      // }}
+                      // onInput={(e) => {
+                      //   e.target.setCustomValidity("");
+                      // }}
                       value={values.name}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -327,7 +398,7 @@ const Editcompany = () => {
                       helperText={touched.name && errors.name}
                       sx={{ gridColumn: "span 2" }}
                       focused
-                      required
+                      // required
                       inputProps={{ maxLength: 50 }}
                       autoFocus
                     />
@@ -336,7 +407,11 @@ const Editcompany = () => {
                       fullWidth
                       variant="standard"
                       type="text"
-                      label="Address"
+                      label={
+                        <>
+                          Address <span style={{ color: 'red', fontSize: '20px' }}>*</span>
+                        </>
+                      }
                       value={values.address}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -345,13 +420,13 @@ const Editcompany = () => {
                       helperText={touched.address && errors.address}
                       sx={{ gridColumn: "span 2" }}
                       focused
-                      required
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity("Please fill the Address");
-                      }}
-                      onInput={(e) => {
-                        e.target.setCustomValidity("");
-                      }}
+                      // required
+                      // onInvalid={(e) => {
+                      //   e.target.setCustomValidity("Please fill the Address");
+                      // }}
+                      // onInput={(e) => {
+                      //   e.target.setCustomValidity("");
+                      // }}
                       inputProps={{ maxLength: 500 }}
                       multiline
                     />
@@ -375,24 +450,25 @@ const Editcompany = () => {
                           alignItems: "center",
                         }}
                       >
-                        <SingleFormikOptimizedAutocomplete
+                        <CheckinAutocomplete
                           label={
                             <>
-                              Country<span style={{ color: "red" ,fontSize:"20px"}}> * </span>
+                              Country<span style={{ color: "red", fontSize: "20px" }}> * </span>
                             </>
                           }
                           // label="Country"
                           id="country"
                           name="country"
-                          
                           value={values.country}
+                          error={!!touched.country && !!errors.country}
+                          helperText={touched.country && errors.country}
                           onChange={(e, newValue) => {
                             setFieldValue("country", newValue)
                           }}
-                          log
+                          // log
                           url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
                         />
-                         {/* {touched.country && errors.country && (
+                        {/* {touched.country && errors.country && (
                           <div style={{ color: "red", fontSize: "12px", marginTop: "2px" }}>
                             {errors.country}
                           </div>
@@ -426,11 +502,15 @@ const Editcompany = () => {
                       fullWidth
                       variant="standard"
                       type="number"
-                      label="Pincode"
-                      required
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity("Please fill the Pincode");
-                      }}
+                      label={
+                        <>
+                          Pincode<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                        </>
+                      }
+                      // required
+                      // onInvalid={(e) => {
+                      //   e.target.setCustomValidity("Please fill the Pincode");
+                      // }}
                       value={values.pincode}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -452,11 +532,15 @@ const Editcompany = () => {
                       fullWidth
                       variant="standard"
                       type="number"
-                      label="Phone"
-                      required
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity("Please fill the Phone");
-                      }}
+                      label={
+                        <>
+                          Phone<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                        </>
+                      }
+                      // required
+                      // onInvalid={(e) => {
+                      //   e.target.setCustomValidity("Please fill the Phone");
+                      // }}
                       value={values.phone}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -469,7 +553,7 @@ const Editcompany = () => {
                       onInput={(e) => {
                         e.target.value = Math.max(0, parseInt(e.target.value))
                           .toString()
-                          .slice(0, 11);
+                          .slice(0, 10);
 
                         e.target.setCustomValidity("");
                       }}
@@ -505,7 +589,7 @@ const Editcompany = () => {
                       focused
                     />
 
-                    
+
                   </FormControl>
                   <FormControl sx={{ gridColumn: "span 2", gap: formGap }}>
                     <TextField
@@ -525,34 +609,40 @@ const Editcompany = () => {
                       fullWidth
                       variant="standard"
                       type="email"
-                      label="Email ID"
-                      required
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity("Please fill the Email Id");
-                      }}
-                      onInput={(e) => {
-                        e.target.setCustomValidity("");
-                      }}
+                      label={
+                        <>
+                          Email ID<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                        </>
+                      }
+                      // required
+                      // onInvalid={(e) => {
+                      //   e.target.setCustomValidity("Please fill the Email Id");
+                      // }}
+                      // onInput={(e) => {
+                      //   e.target.setCustomValidity("");
+                      // }}
                       value={values.email}
                       onBlur={handleBlur}
                       onChange={handleChange}
+                      error={!!touched.email && !!errors.email}
+                      helperText={touched.email && errors.email}
                       name="email"
                       sx={{ gridColumn: "span 2" }}
                       focused
                       inputProps={{ maxLength: 45 }}
                     />
-                    <TextField
+                    {/* <TextField
                       fullWidth
                       variant="standard"
                       type="text"
                       label="I.E.Code"
                       // required
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity("Please fill the I.E.Code");
-                      }}
-                      onInput={(e) => {
-                        e.target.setCustomValidity("");
-                      }}
+                      // onInvalid={(e) => {
+                      //   e.target.setCustomValidity("Please fill the I.E.Code");
+                      // }}
+                      // onInput={(e) => {
+                      //   e.target.setCustomValidity("");
+                      // }}
                       value={values.iECode}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -560,9 +650,23 @@ const Editcompany = () => {
                       error={!!touched.iECode && !!errors.iECode}
                       helperText={touched.iECode && errors.iECode}
                       focused
-                      inputProps={{ maxLength: 10 }}
+                    // inputProps={{ maxLength: 10 }}
+                    /> */}
+                    <TextField
+                      fullWidth
+                      variant="standard"
+                      type="text"
+                      id="iECode"
+                      name="iECode"
+                      value={values.iECode}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      label="I.E.Code"
+                      focused
+                      onWheel={(e) => e.target.blur()}
+                      error={!!touched.iECode && !!errors.iECode}
+                      helperText={touched.iECode && errors.iECode}
                     />
-
                     <TextField
                       fullWidth
                       variant="standard"
@@ -572,23 +676,27 @@ const Editcompany = () => {
                       onBlur={handleBlur}
                       onChange={handleChange}
                       name="rbiCode"
-                      // error={!!touched.rbiCode && !!errors.rbiCode}
-                      // helperText={touched.rbiCode && errors.rbiCode}
+                      error={!!touched.rbiCode && !!errors.rbiCode}
+                      helperText={touched.rbiCode && errors.rbiCode}
                       focused
-                      inputProps={{ maxLength: 5 }}
+                      // inputProps={{ maxLength: 5 }}
                     />
                     <TextField
                       fullWidth
                       variant="standard"
                       type="text"
-                      label="GST"
-                      required
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity("Please fill the GST");
-                      }}
-                      onInput={(e) => {
-                        e.target.setCustomValidity("");
-                      }}
+                      label={
+                        <>
+                          GST<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                        </>
+                      }
+                      // required
+                      // onInvalid={(e) => {
+                      //   e.target.setCustomValidity("Please fill the GST");
+                      // }}
+                      // onInput={(e) => {
+                      //   e.target.setCustomValidity("");
+                      // }}
                       value={values.gst}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -603,13 +711,17 @@ const Editcompany = () => {
                       fullWidth
                       variant="standard"
                       type="text"
-                      label="Subscription Code"
-                      required
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity(
-                          "Please fill the Subscription Code"
-                        );
-                      }}
+                      label={
+                        <>
+                          Subscription Code<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                        </>
+                      }
+                      // required
+                      // onInvalid={(e) => {
+                      //   e.target.setCustomValidity(
+                      //     "Please fill the Subscription Code"
+                      //   );
+                      // }}
                       // onInput={(e) => {
                       //   e.target.setCustomValidity("");
                       // }}
@@ -639,7 +751,7 @@ const Editcompany = () => {
                     // }}
                     // inputProps={{ maxLength: 4,  }}
                     />
-                   
+
 
                     <TextField
                       fullWidth
@@ -657,7 +769,7 @@ const Editcompany = () => {
                       focused
                       onWheel={(e) => e.target.blur()}
                     />
-                     <TextField
+                    <TextField
                       fullWidth
                       variant="standard"
                       type="number"
