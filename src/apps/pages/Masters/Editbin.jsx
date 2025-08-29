@@ -81,29 +81,54 @@ const Editbin = () => {
   console.log(rowData, "--rowData");
 
   const [pageSize, setPageSize] = React.useState(10);
+  const [errorMsgData, setErrorMsgData] = useState(null);
+  const [validationSchema, setValidationSchema] = useState(null);
+  const [validationSchema1, setValidationSchema1] = useState(null);
+  useEffect(() => {
+    fetch(process.env.PUBLIC_URL + "/validationcms.json")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch validationcms.json");
+        return res.json();
+      })
+      .then((data) => {
+        setErrorMsgData(data);
+
+        const schema = Yup.object().shape({
+          binname: Yup.string().required(data.Bin.name),
+        });
+        setValidationSchema(schema);
+        const schema1 = Yup.object().shape({
+          shelvesname: Yup.string().required(data.Bin.shelvesname),
+          shelvescode: Yup.string().required(data.Bin.shelvescode),
+
+        });
+        setValidationSchema1(schema1);
+      })
+      .catch((err) => console.error("Error loading validationcms.json:", err));
+  }, []);
   useEffect(() => {
     dispatch(getFetchData({ accessID, get: "get", recID }));
   }, [location.key]);
-  const validationSchema = Yup.object({
-    binname: Yup.string().required('Please fill the Bin Name')
-      .matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
-  });
+  // const validationSchema = Yup.object({
+  //   binname: Yup.string().required('Please fill the Bin Name')
+  //     .matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
+  // });
   const colors = tokens(theme.palette.mode);
 
   // *************** INITIALVALUE  *************** //
-  const HsnSchema = Yup.object().shape({
-    shelvescode: Yup.string()
-      .trim()
-      .required("Please fill the Shelves Code"),
-    shelvesname: Yup.string()
-      .trim()
-      .required("Please fill the Shelves Name")
-      .matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
-    sortorder: Yup.number()
-      .nullable()
-      .transform((_, val) => (val ? Number(val) : null)),
-    // add other validations as needed
-  });
+  // const HsnSchema = Yup.object().shape({
+  //   shelvescode: Yup.string()
+  //     .trim()
+  //     .required("Please fill the Shelves Code"),
+  //   shelvesname: Yup.string()
+  //     .trim()
+  //     .required("Please fill the Shelves Name")
+  //     .matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
+  //   sortorder: Yup.number()
+  //     .nullable()
+  //     .transform((_, val) => (val ? Number(val) : null)),
+  //   // add other validations as needed
+  // });
   const InitialValue = {
     bincode: data.Code,
     binname: data.Name,
@@ -121,7 +146,7 @@ const Editbin = () => {
       RecordID: recID,
       Code: values.bincode,
       Name: values.binname,
-      SortOrder: values.sortorder,
+      SortOrder: values.sortorder || 0,
       Disable: isCheck,
       LocationRecordID: parentID,
       // Finyear,
@@ -172,13 +197,13 @@ const Editbin = () => {
   //     ),
   //   [explorelistViewcolumn]
   // );
-    const columns = React.useMemo(() => {
-   
+  const columns = React.useMemo(() => {
+
     let visibleColumns = explorelistViewcolumn.filter((column) =>
       VISIBLE_FIELDS.includes(column.field)
     );
 
-    
+
     if (VISIBLE_FIELDS.includes("slno")) {
       const slnoColumn = {
         field: "slno",
@@ -190,7 +215,7 @@ const Editbin = () => {
           `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`,
       };
 
-     
+
       visibleColumns = [slnoColumn, ...visibleColumns];
     }
 
@@ -279,7 +304,7 @@ const Editbin = () => {
       RecordID: shelvesdata.RecordID,
       Code: values.shelvescode,
       Name: values.shelvesname,
-      SortOrder: values.sortorder,
+      SortOrder: values.sortorder || 0,
       BinsRecordID: recID,
       Disable: "N",
     };
@@ -446,7 +471,7 @@ const Editbin = () => {
                     Fnsave(values);
                   }, 100);
                 }}
-                 validationSchema={validationSchema}
+                validationSchema={validationSchema}
                 enableReinitialize={true}
               >
                 {({
@@ -494,7 +519,11 @@ const Editbin = () => {
                           name="binname"
                           type="text"
                           id="binname"
-                          label="Bin Name"
+                          label={
+                            <>
+                              Bin Name<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                            </>
+                          }
                           variant="standard"
                           focused
                           value={values.binname}
@@ -503,15 +532,15 @@ const Editbin = () => {
                           error={!!touched.binname && !!errors.binname}
                           helperText={touched.binname && errors.binname}
                           autoFocus
-                          onInvalid={(e) => {
-                            e.target.setCustomValidity(
-                              "Please fill the Bin Name"
-                            );
-                          }}
-                          onInput={(e) => {
-                            e.target.setCustomValidity("");
-                          }}
-                          required
+                        // onInvalid={(e) => {
+                        //   e.target.setCustomValidity(
+                        //     "Please fill the Bin Name"
+                        //   );
+                        // }}
+                        // onInput={(e) => {
+                        //   e.target.setCustomValidity("");
+                        // }}
+                        // required
                         />
 
                         <TextField
@@ -605,7 +634,7 @@ const Editbin = () => {
                   FnShelvessave(values, resetForm, false);
                 }, 100);
               }}
-              // validationSchema={HsnSchema}
+              validationSchema={validationSchema1}
               enableReinitialize={true}
             >
               {({
@@ -773,7 +802,11 @@ const Editbin = () => {
                         name="shelvescode"
                         type="text"
                         id="shelvescode"
-                        label="Shelves Code"
+                        label={
+                          <>
+                            Shelves Code<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                          </>
+                        }
                         variant="standard"
                         focused
                         value={values.shelvescode}
@@ -781,22 +814,26 @@ const Editbin = () => {
                         onChange={handleChange}
                         error={!!touched.shelvescode && !!errors.shelvescode}
                         helperText={touched.shelvescode && errors.shelvescode}
-                        onInvalid={(e) => {
-                          e.target.setCustomValidity(
-                            "Please fill the Shelves Code"
-                          );
-                        }}
-                        onInput={(e) => {
-                          e.target.setCustomValidity("");
-                        }}
-                        required
+                        // onInvalid={(e) => {
+                        //   e.target.setCustomValidity(
+                        //     "Please fill the Shelves Code"
+                        //   );
+                        // }}
+                        // onInput={(e) => {
+                        //   e.target.setCustomValidity("");
+                        // }}
+                        // required
                         autoFocus
                       />
                       <TextField
                         name="shelvesname"
                         type="text"
                         id="shelvesname"
-                        label="Shelves Name"
+                        label={
+                          <>
+                            shelves Name<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                          </>
+                        }
                         variant="standard"
                         focused
                         value={values.shelvesname}
@@ -804,15 +841,15 @@ const Editbin = () => {
                         onChange={handleChange}
                         error={!!touched.shelvesname && !!errors.shelvesname}
                         helperText={touched.shelvesname && errors.shelvesname}
-                        onInvalid={(e) => {
-                          e.target.setCustomValidity(
-                            "Please fill the Shelves Name"
-                          );
-                        }}
-                        onInput={(e) => {
-                          e.target.setCustomValidity("");
-                        }}
-                        required
+                        // onInvalid={(e) => {
+                        //   e.target.setCustomValidity(
+                        //     "Please fill the Shelves Name"
+                        //   );
+                        // }}
+                        // onInput={(e) => {
+                        //   e.target.setCustomValidity("");
+                        // }}
+                        // required
                         autoFocus
                       />
                       <TextField

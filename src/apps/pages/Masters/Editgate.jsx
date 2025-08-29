@@ -63,6 +63,25 @@ const Editgate = () => {
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const location = useLocation();
   const rowData = location.state || {};
+  const [errorMsgData, setErrorMsgData] = useState(null);
+  const [validationSchema, setValidationSchema] = useState(null);
+  
+  useEffect(() => {
+    fetch(process.env.PUBLIC_URL + "/validationcms.json")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch validationcms.json");
+        return res.json();
+      })
+      .then((data) => {
+        setErrorMsgData(data);
+
+        const schema1 = Yup.object().shape({
+          name: Yup.string().required(data.Gate.name),
+        });
+        setValidationSchema(schema1);
+      })
+      .catch((err) => console.error("Error loading validationcms.json:", err));
+  }, []);
   useEffect(() => {
     dispatch(getFetchData({ accessID, get: "get", recID: recid }));
   }, [location.key]);
@@ -227,7 +246,7 @@ const Editgate = () => {
               }, 100);
             }}
             // validationSchema={GateSchema}
-            // validationSchema={validationSchema}
+            validationSchema={validationSchema}
             enableReinitialize={true}
           >
             {({
@@ -277,7 +296,11 @@ const Editgate = () => {
                       name="name"
                       type="text"
                       id="name"
-                      label="Name"
+                      label={
+                        <>
+                          Name<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                        </>
+                      }
                       variant="standard"
                       focused
                       value={values.name}
@@ -286,15 +309,16 @@ const Editgate = () => {
                       error={!!touched.name && !!errors.name}
                       helperText={touched.name && errors.name}
                       autoFocus
-                      onInvalid={(e) => {
-                          e.target.setCustomValidity(
-                            "Please fill the Name"
-                          );
-                        }}
-                        onInput={(e) => {
-                          e.target.setCustomValidity("");
-                        }}
-                     required
+                    //   onInvalid={(e) => {
+                    //       e.target.setCustomValidity(
+                    //         "Please fill the Name"
+                    //       );
+                    //     }}
+                    //     onInput={(e) => {
+                    //       e.target.setCustomValidity("");
+                    //     }}
+                    //  required
+                    // 
                     />
                     <TextField
                       name="comment"

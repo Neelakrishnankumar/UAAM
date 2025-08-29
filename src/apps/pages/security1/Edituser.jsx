@@ -36,7 +36,7 @@ import Listviewpopup from "../Lookup";
 import { UserSchema } from "../../Security/validation";
 import { formGap } from "../../../ui-components/utils";
 import store from "../../..";
-import { Productautocomplete, SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
+import { CheckinAutocomplete, Productautocomplete, SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
 const Edituser = () => {
   const dispatch = useDispatch();
   const params = useParams();
@@ -59,24 +59,46 @@ const Edituser = () => {
   useEffect(() => {
     dispatch(getFetchData({ accessID, get: "get", recID }));
   }, [location.key]);
-  const validationSchema = Yup.object({
-    name: Yup.string()
-      .required('Please fill the Name'),
-    // .matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
+  // const validationSchema = Yup.object({
+  //   name: Yup.string()
+  //     .required('Please fill the Name'),
+  //   // .matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
 
-    password: Yup.string()
-      .required('Please fill the Password'),
-    // .max(8, 'Password cannot exceed 8 characters'),
+  //   password: Yup.string()
+  //     .required('Please fill the Password'),
+  //   // .max(8, 'Password cannot exceed 8 characters'),
 
-    comfirmpassword: Yup.string()
-      .required('Please fill the confirm password')
-      .oneOf([Yup.ref('password'), null], 'Password and Confirm Password must be the same'),
-    // .max(8, 'Confirm Password cannot exceed 8 characters'),
-    usergroup: Yup.object()
-      .nullable()
-      .required("Please select the User Group"),
-  });
+  //   comfirmpassword: Yup.string()
+  //     .required('Please fill the confirm password')
+  //     .oneOf([Yup.ref('password'), null], 'Password and Confirm Password must be the same'),
+  //   // .max(8, 'Confirm Password cannot exceed 8 characters'),
+  //   usergroup: Yup.object()
+  //     .nullable()
+  //     .required("Please select the User Group"),
+  // });
+  const [errorMsgData, setErrorMsgData] = useState(null);
+  const [validationSchema, setValidationSchema] = useState(null);
+  useEffect(() => {
+    fetch(process.env.PUBLIC_URL + "/validationcms.json")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch validationcms.json");
+        return res.json();
+      })
+      .then((data) => {
+        setErrorMsgData(data);
 
+        const schema1 = Yup.object().shape({
+          name: Yup.string().required(data.Users.name),
+          password: Yup.string().required(data.Users.password),
+          comfirmpassword: Yup.string()
+            .required(data.Users.comfirmpassword)
+            .oneOf([Yup.ref("password"), null], "Password and Confirm Password must match"),
+          usergroup: Yup.object().required(data.Users.usergroup).nullable(),
+        });
+        setValidationSchema(schema1);
+      })
+      .catch((err) => console.error("Error loading validationcms.json:", err));
+  }, []);
   const initialValue = {
     code: data.Code,
     name: data.Name1,
@@ -134,37 +156,37 @@ const Edituser = () => {
       setLoading(false);
     }
   };
-  const [isPopupData, setisPopupdata] = React.useState(false);
-  const [selectUGLookupData, setselectUGLookupData] = React.useState({
-    UGlookupRecordid: "",
-    UGlookupCode: "",
-    UGlookupDesc: "",
-  });
-  if (isPopupData == false) {
-    selectUGLookupData.UGlookupRecordid = data.GrpID;
-    selectUGLookupData.UGlookupCode = data.GroupCode;
-    selectUGLookupData.UGlookupDesc = data.GroupName;
-  }
-  const [openUGPopup, setOpenUGPopup] = useState(false);
-  function handleShow(type) {
-    if (type == "UG") {
-      setOpenUGPopup(true);
-    }
-  }
+  // const [isPopupData, setisPopupdata] = React.useState(false);
+  // const [selectUGLookupData, setselectUGLookupData] = React.useState({
+  //   UGlookupRecordid: "",
+  //   UGlookupCode: "",
+  //   UGlookupDesc: "",
+  // });
+  // if (isPopupData == false) {
+  //   selectUGLookupData.UGlookupRecordid = data.GrpID;
+  //   selectUGLookupData.UGlookupCode = data.GroupCode;
+  //   selectUGLookupData.UGlookupDesc = data.GroupName;
+  // }
+  // const [openUGPopup, setOpenUGPopup] = useState(false);
+  // function handleShow(type) {
+  //   if (type == "UG") {
+  //     setOpenUGPopup(true);
+  //   }
+  // }
   //************************** Lookup value assign type based Function *****************/
-  const childToParent = (childdata, type) => {
-    console.log("type---" + type);
-    console.log("Data---" + JSON.stringify(childdata));
-    if (type == "UserGroup") {
-      setisPopupdata(true);
-      setselectUGLookupData({
-        UGlookupRecordid: childdata.RecordID,
-        UGlookupCode: childdata.Code,
-        UGlookupDesc: childdata.Name,
-      });
-      setOpenUGPopup(false);
-    }
-  };
+  // const childToParent = (childdata, type) => {
+  //   console.log("type---" + type);
+  //   console.log("Data---" + JSON.stringify(childdata));
+  //   if (type == "UserGroup") {
+  //     setisPopupdata(true);
+  //     setselectUGLookupData({
+  //       UGlookupRecordid: childdata.RecordID,
+  //       UGlookupCode: childdata.Code,
+  //       UGlookupDesc: childdata.Name,
+  //     });
+  //     setOpenUGPopup(false);
+  //   }
+  // };
   const ref = useRef(null);
   const fnLogOut = (props) => {
     //   if(Object.keys(ref.current.touched).length === 0){
@@ -323,7 +345,11 @@ const Edituser = () => {
                   name="name"
                   type="text"
                   id="name"
-                  label="Name"
+                  label={
+                    <>
+                      Name<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                    </>
+                  }
 
                   variant="standard"
                   focused
@@ -334,15 +360,15 @@ const Edituser = () => {
                   error={!!touched.name && !!errors.name}
                   helperText={touched.name && errors.name}
                   autoFocus
-                  onInvalid={(e) => {
-                    e.target.setCustomValidity(
-                      "Please fill the Name"
-                    );
-                  }}
-                  onInput={(e) => {
-                    e.target.setCustomValidity("");
-                  }}
-                  required
+                // onInvalid={(e) => {
+                //   e.target.setCustomValidity(
+                //     "Please fill the Name"
+                //   );
+                // }}
+                // onInput={(e) => {
+                //   e.target.setCustomValidity("");
+                // }}
+                // required
                 />
                 <FormControl sx={{ gridColumn: "span 2", display: "flex" }}>
                   {/* <FormControl
@@ -352,27 +378,37 @@ const Edituser = () => {
                       alignItems: "center",
                     }}
                   > */}
-                  <Productautocomplete
+                  <CheckinAutocomplete
                     label={
                       <span>
-                        User Group <span style={{ color: 'red', fontSize: '20px' }}>*</span>
+                        User Group <span style={{ color: "red", fontSize: "20px" }}>*</span>
                       </span>
                     }
                     id="usergroup"
                     name="usergroup"
-                    value={values.usergroup}
-
-                    onChange={(newValue) => {
-                      setFieldValue("usergroup", newValue)
+                    value={values.usergroup || null} 
+                    onChange={(event, newValue) => {
+                      setFieldValue("usergroup", newValue);
                     }}
-
+                    error={!!touched.usergroup && !!errors.usergroup}
+                    helperText={touched.usergroup && errors.usergroup}
+                    getOptionLabel={(option) =>
+                      option ? `${option.Code} || ${option.Name}` : "" 
+                    }
+                    isOptionEqualToValue={(option, value) =>
+                      option.RecordID === value.RecordID
+                    }
+                    
                     url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2039","ScreenName":"UserGroup","Filter":"CompanyID='${companyRecID}'","Any":"","CompId":"4"}}`}
                   />
-                  {touched.usergroup && errors.usergroup && (
+
+
+
+                  {/* {touched.usergroup && errors.usergroup && (
                     <div style={{ color: "red", fontSize: "10px", marginTop: "2px" }}>
                       {errors.usergroup}
                     </div>
-                  )}
+                  )} */}
                   {/* <TextField
                         id="outlined-basic"
                         label="ID"
@@ -413,7 +449,11 @@ const Edituser = () => {
                   name="password"
                   type="password"
                   id="password"
-                  label="Password"
+                  label={
+                    <>
+                      Password<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                    </>
+                  }
                   variant="standard"
                   focused
                   // required
@@ -422,25 +462,29 @@ const Edituser = () => {
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.password}
-                  error={touched.password && !!errors.password} // Show error only if touched
-                  helperText={touched.password ? errors.password : ""} // Show text only when touched
+                  error={!!touched.password && !!errors.password}
+                  helperText={touched.password && errors.password}
                   inputProps={{ maxLength: 8 }}
-                   onInvalid={(e) => {
-                    e.target.setCustomValidity(
-                      "Please fill the Password"
-                    );
-                  }}
-                  onInput={(e) => {
-                    e.target.setCustomValidity("");
-                  }}
-                  required
+                //  onInvalid={(e) => {
+                //   e.target.setCustomValidity(
+                //     "Please fill the Password"
+                //   );
+                // }}
+                // onInput={(e) => {
+                //   e.target.setCustomValidity("");
+                // }}
+                // required
                 />
 
                 <TextField
                   name="comfirmpassword"
                   type="password"
                   id="comfirmpassword"
-                  label="Confirm Password"
+                  label={
+                    <>
+                      Confirm Password<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                    </>
+                  }
                   variant="standard"
                   focused
                   // required
@@ -454,15 +498,15 @@ const Edituser = () => {
                     touched.comfirmpassword ? errors.comfirmpassword : ""
                   } // Show text only when touched
                   inputProps={{ maxLength: 8 }}
-                   onInvalid={(e) => {
-                    e.target.setCustomValidity(
-                      "Please fill the Confirm Password"
-                    );
-                  }}
-                  onInput={(e) => {
-                    e.target.setCustomValidity("");
-                  }}
-                  required
+                //  onInvalid={(e) => {
+                //   e.target.setCustomValidity(
+                //     "Please fill the Confirm Password"
+                //   );
+                // }}
+                // onInput={(e) => {
+                //   e.target.setCustomValidity("");
+                // }}
+                // required
                 />
 
                 <TextField
@@ -554,7 +598,7 @@ const Edituser = () => {
             </form>
           )}
         </Formik>
-        <Popup
+        {/* <Popup
           title="UserGroup"
           openPopup={openUGPopup}
           setOpenPopup={setOpenUGPopup}
@@ -566,7 +610,7 @@ const Edituser = () => {
             filterName={"CompanyID"}
             filterValue={companyRecID}
           />
-        </Popup>
+        </Popup> */}
         {/* </Box> */}
       </Paper>
       {/* ) : (

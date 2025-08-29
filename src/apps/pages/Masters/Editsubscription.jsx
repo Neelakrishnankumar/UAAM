@@ -72,6 +72,28 @@ const Editsubscription = () => {
   const CompanyID = sessionStorage.getItem("compID");
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const location = useLocation();
+  const [errorMsgData, setErrorMsgData] = useState(null);
+  const [validationSchema, setValidationSchema] = useState(null);
+  useEffect(() => {
+    fetch(process.env.PUBLIC_URL + "/validationcms.json")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch validationcms.json");
+        return res.json();
+      })
+      .then((data) => {
+        setErrorMsgData(data);
+
+        const schema = Yup.object().shape({
+          productsubscription: Yup.object().required(data.Subscription.productsubscription).nullable(),
+          subscriptionStartDate: Yup.string().required(data.Subscription.subscriptionStartDate),
+          subscriptionperiod: Yup.string().required(data.Subscription.subscriptionperiod),
+          productid: Yup.object().required(data.Subscription.productid).nullable(),
+        });
+        setValidationSchema(schema);
+
+      })
+      .catch((err) => console.error("Error loading validationcms.json:", err));
+  }, []);
   useEffect(() => {
     dispatch(getFetchData({ accessID, get: "get", recID }));
   }, [location.key]);
@@ -164,18 +186,18 @@ const Editsubscription = () => {
       setOpenSubPopup(false);
     }
   };
-  const validationSchema = Yup.object({
-    productid: Yup.object()
-      .nullable()
-      .required("Please fill the Product Code"),
+  // const validationSchema = Yup.object({
+  //   productid: Yup.object()
+  //     .nullable()
+  //     .required("Please fill the Product Code"),
 
-    subscriptionperiod: Yup.string().required('Please fill the Subscription Period '),
-    productsubscription: Yup.object()
-      .nullable()
-      .required("Please fill the Product Subscription"),
-    subscriptionStartDate: Yup.string().required('Please fill the Subscription Start date '),
+  //   subscriptionperiod: Yup.string().required('Please fill the Subscription Period '),
+  //   productsubscription: Yup.object()
+  //     .nullable()
+  //     .required("Please fill the Product Subscription"),
+  //   subscriptionStartDate: Yup.string().required('Please fill the Subscription Start date '),
 
-  });
+  // });
   const [subfromdate, Setsubfromdate] = useState("");
   const [subEnddate, SetsubEnddate] = useState("");
   const [subperiod, Setsubperiod] = useState("");
@@ -431,51 +453,59 @@ const Editsubscription = () => {
                         alignItems: "center",
                       }}
                     > */}
-                    <SingleFormikOptimizedAutocomplete
+                    <CheckinAutocomplete
                       disabled={mode == "R"}
-                      label="Product Code"
+                      label={
+                          <>
+                            Product Code<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                          </>
+                        }
                       id="productid"
                       name="productid"
-                      required
+                      // required
                       value={values.productid}
                       error={!!touched.productid && !!errors.productid}
                       helperText={touched.productid && errors.productid}
                       onChange={async (e, newValue) => {
                         setFieldValue("productid", newValue);
-                       
-                    if (params.Mode == "A" && newValue) {
+
+                        if (params.Mode == "A" && newValue) {
                           const res = await dispatch(
-                    subScriptionIdGet({
-                      CompanyID: paramscompID,
-                    ProductID: newValue.RecordID,
+                            subScriptionIdGet({
+                              CompanyID: paramscompID,
+                              ProductID: newValue.RecordID,
                             })
-                    );
-                    if (res.payload.Status == "Y") {
-                      navigate(
-                        `/Apps/Secondarylistview/TR238/subscription/${params.filtertype}/Editsubscription/${res.payload.SubscriptionID}/R`
-                      );
+                          );
+                          if (res.payload.Status == "Y") {
+                            navigate(
+                              `/Apps/Secondarylistview/TR238/subscription/${params.filtertype}/Editsubscription/${res.payload.SubscriptionID}/R`
+                            );
                             // dispatch(getFetchData({accessID, get: "get", recID:res.payload.SubscriptionID }));
                           }
                         }
                       }}
 
-                    log
+                      log
 
-                    url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2098","ScreenName":"Product ID","Filter":"","Any":"","CompId":"4"}}`}
+                      url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2098","ScreenName":"Product ID","Filter":"","Any":"","CompId":"4"}}`}
                     />
-                    {touched.productid && errors.productid && (
+                    {/* {touched.productid && errors.productid && (
                       <div style={{ color: "red", fontSize: "9px", marginTop: "-2px" }}>
                         {errors.productid}
                       </div>
-                    )}
+                    )} */}
                     {/* </FormControl> */}
                     <TextField
-                      required
+                      // required
                       name="subscriptionStartDate"
                       type="date"
                       id="subscriptionStartDate"
                       label=
-                      "Subscription Start Date"
+                      {
+                          <>
+                           Subscription Start Date<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                          </>
+                        }
                       variant="standard"
                       focused
                       // onChange={(e) => handleChangesub(e, Setsubfromdate)}
@@ -490,37 +520,34 @@ const Editsubscription = () => {
                       helperText={
                         touched.subscriptionStartDate && errors.subscriptionStartDate
                       }
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity(
-                          "Please fill the Subscription Start Date"
-                        );
-                      }}
-                      onInput={(e) => {
-                        e.target.setCustomValidity("");
-                      }}
+                      // onInvalid={(e) => {
+                      //   e.target.setCustomValidity(
+                      //     "Please fill the Subscription Start Date"
+                      //   );
+                      // }}
+                      // onInput={(e) => {
+                      //   e.target.setCustomValidity("");
+                      // }}
                       autoFocus
                     />
 
                     <TextField
-                      required
+                      // required
                       name="subscriptionperiod"
                       type="number"
                       id="subscriptionperiod"
-                      label="Subscription Period (in months)"
+                      label={
+                          <>
+                           Subscription Period (in months)<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                          </>
+                        }
 
                       variant="standard"
                       focused
                       // onChange={(e) => SubPeriodOnchange(e, Setsubperiod)}
                       // value={subperiod}
                       value={values.subscriptionperiod}
-                      onInvalid={(e) => {
-                        e.target.setCustomValidity(
-                          "Please fill the Subscription Period (in months)"
-                        );
-                      }}
-                      onInput={(e) => {
-                        e.target.setCustomValidity("");
-                      }}
+
                       onBlur={handleBlur}
                       onChange={(e) => {
                         const { name, value } = e.target;
@@ -593,7 +620,8 @@ const Editsubscription = () => {
                       }}
                     > */}
 
-                    <SingleFormikOptimizedAutocomplete
+                    <CheckinAutocomplete
+
                       // label="Product Subscription"
                       label={
                         <span>
@@ -619,17 +647,18 @@ const Editsubscription = () => {
                           }
                         }
                       }}
-                    
+                      error={!!touched.productsubscription && !!errors.productsubscription}
+                      helperText={touched.productsubscription && errors.productsubscription}
                       log
                       url={`${store.getState().globalurl.listViewurl
                         }?data={"Query":{"AccessID":"2099","ScreenName":"Product Subscription","Filter":"parentID='${values.productid ? values.productid.RecordID : 0
                         }'","Any":"","CompId":"4"}}`}
                     />
-                    {touched.productsubscription && errors.productsubscription && (
+                    {/* {touched.productsubscription && errors.productsubscription && (
                       <div style={{ color: "red", fontSize: "9px", marginTop: "-2px" }}>
                         {errors.productsubscription}
                       </div>
-                    )}
+                    )} */}
 
                     {/* </FormControl> */}
                     <TextField

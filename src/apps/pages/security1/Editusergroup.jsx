@@ -21,6 +21,7 @@ import ResetTvIcon from "@mui/icons-material/ResetTv";
 import Swal from "sweetalert2";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { tokens } from "../../../Theme";
+import * as Yup from "yup";
 import {
   DataGrid,
   GridToolbarContainer,
@@ -99,7 +100,25 @@ const Editusergroup = () => {
   // const YearRecorid = sessionStorage.getItem("YearRecorid");
   const Finyear = sessionStorage.getItem("YearRecorid");
   const CompanyID = sessionStorage.getItem("compID");
+  const [errorMsgData, setErrorMsgData] = useState(null);
+  const [validationSchema, setValidationSchema] = useState(null);
+  useEffect(() => {
+    fetch(process.env.PUBLIC_URL + "/validationcms.json")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch validationcms.json");
+        return res.json();
+      })
+      .then((data) => {
+        setErrorMsgData(data);
 
+
+        const schema1 = Yup.object().shape({
+          name: Yup.string().required(data.Usergroup.name),
+        });
+        setValidationSchema(schema1);
+      })
+      .catch((err) => console.error("Error loading validationcms.json:", err));
+  }, []);
   function handleConfirmChange1(event, clickedRow) {
     const updatedData = rowData.map((x) => {
       if ("0" === clickedRow.SM_RECID) {
@@ -542,6 +561,7 @@ const Editusergroup = () => {
               }, 100);
             }}
             enableReinitialize={true}
+            validationSchema={validationSchema}
           >
             {({
               errors,
@@ -583,23 +603,29 @@ const Editusergroup = () => {
                     name="name"
                     type="text"
                     id="name"
-                    label="Name"
+                    label={
+                      <>
+                        Name<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                      </>
+                    }
                     value={values.name}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     variant="standard"
                     focused
-                    required
+                    // required
                     sx={{ gridColumn: "span 2" }}
                     autoFocus
-                    onInvalid={(e) => {
-                      e.target.setCustomValidity(
-                        "Please fill the Name"
-                      );
-                    }}
-                    onInput={(e) => {
-                      e.target.setCustomValidity("");
-                    }}
+                    error={!!touched.name && !!errors.name}
+                    helperText={touched.name && errors.name}
+                    // onInvalid={(e) => {
+                    //   e.target.setCustomValidity(
+                    //     "Please fill the Name"
+                    //   );
+                    // }}
+                    // onInput={(e) => {
+                    //   e.target.setCustomValidity("");
+                    // }}
 
                   />
                   <TextField

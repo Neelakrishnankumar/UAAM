@@ -106,10 +106,37 @@ const EditProductSubScription = () => {
   const [uomType, setUomType] = useState("");
 
   const [openUOMPopup, setOpenUOMPopup] = useState(false);
-  const validationSchema = Yup.object({
-    NoOfemployee: Yup.string().required('Please fill the No of Employee'),
-    NoOfenduser: Yup.string().required('Please fill the No of End User'),
-  });
+  // const validationSchema = Yup.object({
+  //   NoOfemployee: Yup.string().required('Please fill the No of Employee'),
+  //   NoOfenduser: Yup.string().required('Please fill the No of End User'),
+  // });
+  const [errorMsgData, setErrorMsgData] = useState(null);
+  const [validationSchema, setValidationSchema] = useState(null);
+  const [validationSchema2, setValidationSchema2] = useState(null);
+  useEffect(() => {
+    fetch(process.env.PUBLIC_URL + "/validationcms.json")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch validationcms.json");
+        return res.json();
+      })
+      .then((data) => {
+        setErrorMsgData(data);
+
+
+        const schema1 = Yup.object().shape({
+          description: Yup.string().required(data.Products.description),
+        });
+        setValidationSchema(schema1);
+        const schema2 = Yup.object().shape({
+          NoOfemployee: Yup.string().required(data.Products.NoOfemployee),
+          NoOfenduser: Yup.string().required(data.Products.NoOfenduser),
+          price: Yup.string().required(data.Products.price),
+          offerprice: Yup.string().required(data.Products.offerprice),
+        });
+        setValidationSchema2(schema2);
+      })
+      .catch((err) => console.error("Error loading validationcms.json:", err));
+  }, []);
   // ************Lookup Function***************
   function handleShow(type) {
     if (type == "UC") {
@@ -166,7 +193,7 @@ const EditProductSubScription = () => {
       //   YearID: Year,
       //   Type: typeUom,
       Code: values.code || "",
-      SortOrder: values.sortOrder,
+      SortOrder: values.sortOrder || 0,
       Disable: values.checkbox == true ? "Y" : "N",
       //   MinorDescription: typeUom == "C" ? values.MinorDescription : "N",
       //   Finyear,
@@ -259,30 +286,30 @@ const EditProductSubScription = () => {
   //     ),
   //   [explorelistViewcolumn]
   // );
-    const columns = React.useMemo(() => {
-     
-      let visibleColumns = explorelistViewcolumn.filter((column) =>
-        VISIBLE_FIELDS.includes(column.field)
-      );
-  
-      
-      if (VISIBLE_FIELDS.includes("slno")) {
-        const slnoColumn = {
-          field: "slno",
-          headerName: "SL#",
-          width: 50,
-          sortable: false,
-          filterable: false,
-          valueGetter: (params) =>
-            `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`,
-        };
-  
-       
-        visibleColumns = [slnoColumn, ...visibleColumns];
-      }
-  
-      return visibleColumns;
-    }, [explorelistViewcolumn, VISIBLE_FIELDS]);
+  const columns = React.useMemo(() => {
+
+    let visibleColumns = explorelistViewcolumn.filter((column) =>
+      VISIBLE_FIELDS.includes(column.field)
+    );
+
+
+    if (VISIBLE_FIELDS.includes("slno")) {
+      const slnoColumn = {
+        field: "slno",
+        headerName: "SL#",
+        width: 50,
+        sortable: false,
+        filterable: false,
+        valueGetter: (params) =>
+          `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`,
+      };
+
+
+      visibleColumns = [slnoColumn, ...visibleColumns];
+    }
+
+    return visibleColumns;
+  }, [explorelistViewcolumn, VISIBLE_FIELDS]);
 
   const ref = useRef();
   //  console.log("🚀 ~ file: Edituoms.jsx:248 ~ Edituom ~ ref:", ref)
@@ -658,7 +685,7 @@ const EditProductSubScription = () => {
                   fnSave(values);
                 }, 100);
               }}
-              // validationSchema={SubscriptionScma}
+              validationSchema={validationSchema}
               enableReinitialize={true}
             >
               {({
@@ -719,24 +746,28 @@ const EditProductSubScription = () => {
                         value={values.description}
                         id="description"
                         name="description"
-                        label="Description"
+                        label={
+                          <>
+                            Description<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                          </>
+                        }
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        required
+                        // required
                         autoFocus
                         error={!!touched.description && !!errors.description}
                         helperText={touched.description && errors.description}
                         sx={{ gridColumn: "span 2" }}
                         focused
                         inputProps={{ maxLength: 50 }}
-                        onInvalid={(e) => {
-                          e.target.setCustomValidity(
-                            "Please fill the Description"
-                          );
-                        }}
-                        onInput={(e) => {
-                          e.target.setCustomValidity("");
-                        }}
+                      // onInvalid={(e) => {
+                      //   e.target.setCustomValidity(
+                      //     "Please fill the Description"
+                      //   );
+                      // }}
+                      // onInput={(e) => {
+                      //   e.target.setCustomValidity("");
+                      // }}
                       />
 
 
@@ -1046,7 +1077,7 @@ const EditProductSubScription = () => {
                             FnProductSub(values, resetForm, false);
                           }, 100);
                         }}
-                        validationSchema={validationSchema}
+                        validationSchema={validationSchema2}
                         enableReinitialize={true}
                       >
                         {({
@@ -1066,7 +1097,11 @@ const EditProductSubScription = () => {
                                 //  required
                                 variant="standard"
                                 type="number"
-                                label="No of Employee"
+                                label={
+                                  <>
+                                    No of Employee<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                                  </>
+                                }
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 id="NoOfemployee"
@@ -1084,15 +1119,15 @@ const EditProductSubScription = () => {
                                   //  background: "",
                                 }}
                                 focused
-                                onInvalid={(e) => {
-                                  e.target.setCustomValidity(
-                                    "Please fill the No of Employee"
-                                  );
-                                }}
-                                onInput={(e) => {
-                                  e.target.setCustomValidity("");
-                                }}
-                                required
+                              // onInvalid={(e) => {
+                              //   e.target.setCustomValidity(
+                              //     "Please fill the No of Employee"
+                              //   );
+                              // }}
+                              // onInput={(e) => {
+                              //   e.target.setCustomValidity("");
+                              // }}
+                              // required
                               // onInput = {(e) =>{
                               // e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,14)
                               // }}
@@ -1100,10 +1135,14 @@ const EditProductSubScription = () => {
 
                               <TextField
                                 fullWidth
-                                
+
                                 variant="standard"
                                 type="number"
-                                label="No of End User"
+                                label={
+                                  <>
+                                    No of End User<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                                  </>
+                                }
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 id="NoOfenduser"
@@ -1120,18 +1159,7 @@ const EditProductSubScription = () => {
                                   //  background: "",
                                 }}
                                 focused
-                                onInvalid={(e) => {
-                                  e.target.setCustomValidity(
-                                    "Please fill the No of End User"
-                                  );
-                                }}
-                                onInput={(e) => {
-                                  e.target.setCustomValidity("");
-                                }}
-                                required
-                              // onInput = {(e) =>{
-                              // e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,14)
-                              // }}
+
                               />
 
                               <TextField
@@ -1139,7 +1167,11 @@ const EditProductSubScription = () => {
                                 //  required
                                 variant="standard"
                                 type="number"
-                                label="Price"
+                                label={
+                                  <>
+                                    Price<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                                  </>
+                                }
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 id="price"
@@ -1161,7 +1193,11 @@ const EditProductSubScription = () => {
                                 //  required
                                 variant="standard"
                                 type="number"
-                                label="Offer Price"
+                                label={
+                                  <>
+                                    Offer Price<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                                  </>
+                                }
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 id="offerprice"

@@ -100,7 +100,7 @@ export const Productautocomplete = ({
         const response = await axios.get(url, {
           headers: {
             Authorization:
-            "eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJzdWIiOiJCZXhAMTIzIiwibmFtZSI6IkJleCIsImFkbWluIjp0cnVlLCJleHAiOjE2Njk5ODQzNDl9.uxE3r3X4lqV_WKrRKRPXd-Jub9BnVcCXqCtLL4I0fpU",
+              "eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJzdWIiOiJCZXhAMTIzIiwibmFtZSI6IkJleCIsImFkbWluIjp0cnVlLCJleHAiOjE2Njk5ODQzNDl9.uxE3r3X4lqV_WKrRKRPXd-Jub9BnVcCXqCtLL4I0fpU",
           },
         });
         const data = response.data.Data.rows || [];
@@ -163,7 +163,7 @@ export const Productautocomplete = ({
 
 export const SingleFormikOptimizedAutocomplete = ({
   value = null,
-  onChange = () => {},
+  onChange = () => { },
   url,
   height = 20,
   ...props
@@ -241,7 +241,7 @@ export const SingleFormikOptimizedAutocomplete = ({
 
 export const SingleFormikOptimizedAutocompleteName_Code = ({
   value = null,
-  onChange = () => {},
+  onChange = () => { },
   url,
   height = 20,
   ...props
@@ -319,7 +319,7 @@ export const SingleFormikOptimizedAutocompleteName_Code = ({
 export const SingleFormikOptimizedAutocompleteName_CodeListListView_carton = ({
   data,
   value = null,
-  onChange = () => {},
+  onChange = () => { },
   url,
   height = 20,
   ...props
@@ -394,7 +394,7 @@ export const SingleFormikOptimizedAutocompleteName_CodeListListView_carton = ({
 
 export const SingleFormikOptimizedAutocompleteName_CodeListListView = ({
   value = null,
-  onChange = () => {},
+  onChange = () => { },
   url,
   height = 20,
   ...props
@@ -468,79 +468,81 @@ export const SingleFormikOptimizedAutocompleteName_CodeListListView = ({
   );
 };
 export const CheckinAutocomplete = ({
-    value = null,
-    onChange,
-    url,
-    height = 20,
-    defaultValue,
-    ...props
-  }) => {
-    const [options, setOptions] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        if (!url) return;
-        setLoading(true);
-        try {
-          const response = await axios.get(url, {
-            headers: {
-              Authorization: "eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJzdWIiOiJCZXhAMTIzIiwibmFtZSI6IkJleCIsImFkbWluIjp0cnVlLCJleHAiOjE2Njk5ODQzNDl9.uxE3r3X4lqV_WKrRKRPXd-Jub9BnVcCXqCtLL4I0fpU",
-            },
-          });
-          const data = response.data.Data.rows || [];
-          setOptions(data);
-        } catch (err) {
-          setOptions([]);
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchData();
-    }, [url]);
+  value = null,
+  onChange,
+  url,
+  height = 20,
+  defaultValue,
+  ...props
+}) => {
+  const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    return (
-      <Autocomplete
-        size="small"
-        fullWidth
-        limitTags={1}
-        options={options}
-        loading={loading}
-        value={value}
-        isOptionEqualToValue={(option, value) => option.Name === value.Name}
-        onChange={(event, newValue) => onChange(newValue)}
-        getOptionLabel={(option) => option.Name}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label={props.label || "Select Options"}
-            // error={!!error}
-            // helperText={error}
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!url) return;
+      setLoading(true);
+      try {
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: "eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJzdWIiOiJCZXhAMTIzIiwibmFtZSI6IkJleCIsImFkbWluIjp0cnVlLCJleHAiOjE2Njk5ODQzNDl9.uxE3r3X4lqV_WKrRKRPXd-Jub9BnVcCXqCtLL4I0fpU",
+          },
+        });
+        const data = response.data.Data.rows || [];
+        setOptions(data);
+      } catch (err) {
+        setOptions([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-            {...props}
-            variant="standard"
-            focused
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <>
-                  {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                  {params.InputProps.endAdornment}
-                </>
-              ),
-            }}
-          />
-        )}
-        {...props}
-      />
-    );
-  };
+    fetchData();
+  }, [url]);
+
+  return (
+    <Autocomplete
+      size="small"
+      fullWidth
+      limitTags={1}
+      options={options}
+      loading={loading}
+      value={value}
+      isOptionEqualToValue={(option, value) => option.Name === value.Name}
+      // onChange={(event, newValue) => onChange(newValue)}
+      // getOptionLabel={(option) => option.Name}
+       onChange={onChange}
+      getOptionLabel={(option) => `${option.Code} || ${option.Name}`}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={props.label || "Select Options"}
+          // error={!!error}
+          // helperText={error}
+
+          {...props}
+          variant="standard"
+          focused
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <>
+                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                {params.InputProps.endAdornment}
+              </>
+            ),
+          }}
+        />
+      )}
+      {...props}
+    />
+  );
+};
 export const SingleFormikOptimizedAutocompleteName_CodeListListView_Product = ({
   data,
   value = null,
-  onChange = () => {},
+  onChange = () => { },
   url,
   height = 20,
   ...props
@@ -704,7 +706,7 @@ export function MultiFormikOptimizedAutocomplete({
 
 export const InvoiceOrderSingleFormikOptimizedAutocomplete = ({
   value = null,
-  onChange = () => {},
+  onChange = () => { },
   url,
   height = 20,
   ...props
@@ -779,7 +781,7 @@ export const InvoiceOrderSingleFormikOptimizedAutocomplete = ({
 
 export const SingleFormikOptimizedDescAutocomplete = ({
   value = null,
-  onChange = () => {},
+  onChange = () => { },
   url,
   height = 20,
   ...props
@@ -856,7 +858,7 @@ export const SingleFormikOptimizedDescAutocomplete = ({
 
 export const SingleFormikOptimizedCodeAutocomplete = ({
   value = null,
-  onChange = () => {},
+  onChange = () => { },
   url,
   height = 20,
   ...props
