@@ -20,24 +20,45 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getFetchData, postData } from "../../../store/reducers/Formapireducer";
 import { toast } from "react-hot-toast";
-import Listviewpopup from "../Lookup";
-import Popup from "../popup";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import { companySchema } from "../../Security/validation";
 import ResetTvIcon from "@mui/icons-material/ResetTv";
 import { LoadingButton } from "@mui/lab";
 import { useProSidebar } from "react-pro-sidebar";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import { screenRightsData } from "../../../store/reducers/screenRightsreducer";
 import { formGap } from "../../../ui-components/utils";
 import { SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
 import store from "../../..";
 
-// ***********************************************
-// Developer:Priya
-// Purpose: Create Company
+export const companySchema = Yup.object().shape({
+  address: Yup.string().max(500, "Address must be 500 character "),
+  phone: Yup.string().max(10, "Not Valid Phone Number"),
+  pincode: Yup
+    .number()
+    .min(10000, "Not valid Pin Code")
+    .max(999999, "Not valid Pin Code"),
+    country: Yup.object()
+    .required('Please select a country')
+    .nullable(),
+    license: Yup.string()
+    .matches(/^[a-zA-Z0-9]{4}$/, "Please enter alphabets only, exactly 4 characters") // Only letters and digits, 4 characters long
+    .test('contains-both', 'The code must contain both letters and numbers', value => {
+      return /[a-zA-Z]/.test(value) && /\d/.test(value); // Must contain both letters and numbers
+    }),
+  iECode: Yup
+    .string()
+    .matches(/^[-_ a-zA-Z0-9]+$/, "Please enter alphabets only")
+    .min(10, "I.E.Code must be 10 character"),
+  gst: Yup
+    .string()
+    .matches(/^[-_ a-zA-Z0-9]+$/, "Only Numeric and Alphabets ")
+    .min(15, "GST must be 15 character"),
+  email: Yup.string().email("Please enter a valid Email"),
+  name: Yup
+    .string()
+    .max(50)
+    .matches(/^[A-Za-z\s\.'-]+$/, "Please enter alphabets only"),
+});
 
-// ***********************************************
 
 const Editcompany = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -55,19 +76,15 @@ const Editcompany = () => {
   let accessID = params.accessID;
 
   useEffect(() => {
-    //dispatch(screenRightsData(accessID));
-
     dispatch(getFetchData({ accessID, get: "get", recID }));
   }, [location.key]);
+  
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const Data = useSelector((state) => state.formApi.Data);
   const getLoading = useSelector((state) => state.formApi.getLoading);
   const isLoading = useSelector((state) => state.formApi.postLoading);
-
   const rowData = location.state || {};
 
-  // const { UGA_ADD, UGA_VIEW, UGA_MOD, UGA_DEL, UGA_PROCESS, UGA_PRIN } =
-  //   useSelector((state) => state.screenRights.data);
 
   const initialValues = {
     code: Data.Code,
@@ -92,51 +109,22 @@ const Editcompany = () => {
     useregular: Data.Regularslno === "Y" ? true : false,
     noOfEmployees: Data.NumberOfEmployee,
     noofusers: Data.NumberOfUsers,
-    country: Data.CnRecordID ? { RecordID: Data.CnRecordID, Code: Data.CountryCode, Name: Data.CountryName } : null
-
+    country: Data.CnRecordID
+      ? {
+          RecordID: Data.CnRecordID,
+          Code: Data.CountryCode,
+          Name: Data.CountryName,
+        }
+      : null,
   };
-  /*************************LOOKUP DATA*********************/
-  const [openCNpopup, setOpenCNpopup] = useState(false);
 
-  function handleShow(type) {
-    if (type == "CN") {
-      setOpenCNpopup(true);
-    }
-  }
-  const [isPopupData, setisPopupdata] = React.useState(false);
-  const [selectcnLookupData, setselectcnLookupData] = React.useState({
-    CNlookupRecordid: "",
-    CNlookupCode: "",
-    CNlookupDesc: "",
-  });
-
-  if (isPopupData == false) {
-    selectcnLookupData.CNlookupRecordid = Data.CnRecordID;
-    selectcnLookupData.CNlookupCode = Data.CountryCode;
-    selectcnLookupData.CNlookupDesc = Data.CountryName;
-  }
-  const childToParent = (childdata, type) => {
-    if (type == "Country") {
-      setisPopupdata(true);
-      setselectcnLookupData({
-        CNlookupCode: childdata.Code,
-        CNlookupRecordid: childdata.RecordID,
-        CNlookupDesc: childdata.Name,
-      });
-      setOpenCNpopup(false);
-    } else {
-    }
-  };
   /*************************SAVE FUCTION*********************/
   const fnSave = async (values) => {
     var idata = {
       RecordID: recID,
       CnRecordID: values.country.RecordID || 0,
-      CountryCode: values.country.Code || '',
-      CountryName: values.country.Name || '',
-      // CnRecordID: selectcnLookupData.CNlookupRecordid,
-      // CountryCode: selectcnLookupData.CNlookupCode,
-      // CountryName: selectcnLookupData.CNlookupDesc,
+      CountryCode: values.country.Code || "",
+      CountryName: values.country.Name || "",
       Code: values.code,
       Name: values.name,
       Email: values.email,
@@ -153,23 +141,15 @@ const Editcompany = () => {
       Lut: values.Lut,
       SortOrder: values.sortOrder,
       License: values.license,
-      // YearID: Year,
       Disable: values.disable === true ? "Y" : "N",
       Process: values.stockClose === true ? "Y" : "N",
       Regularslno: values.useregular === true ? "Y" : "N",
-      // Finyear,
-      // CompanyID,
       NumberOfEmployee: values.noOfEmployees,
       NumberOfUsers: values.noofusers,
     };
-    console.log(idata, "savedata");
     let action = mode === "A" ? "insert" : "update";
     const data = await dispatch(postData({ accessID, action, idata }));
     if (data.payload.Status == "Y") {
-      sessionStorage.setItem(
-        "stockflag",
-        values.stockClose === true ? "Y" : "N"
-      );
       toast.success(data.payload.Msg);
       navigate(`/Apps/TR014/Company`);
     } else {
@@ -198,7 +178,6 @@ const Editcompany = () => {
     });
   };
 
-
   return (
     <Box>
       {getLoading ? <LinearProgress /> : false}
@@ -216,10 +195,9 @@ const Editcompany = () => {
               </IconButton>
             )}
             <Typography variant="h3">
-
-              {mode === "E" ? `Company(${rowData.CompanyName})` : "Company(New)"}
-
-
+              {mode === "E"
+                ? `Company(${rowData.CompanyName})`
+                : "Company(New)"}
             </Typography>
           </Box>
 
@@ -239,7 +217,6 @@ const Editcompany = () => {
       </Paper>
       {!getLoading ? (
         <Paper elevation={3} sx={{ margin: "10px" }}>
-          {/* <Box m="20px"> */}
           <Formik
             initialValues={initialValues}
             onSubmit={(values, setSubmitting) => {
@@ -279,7 +256,6 @@ const Editcompany = () => {
                     {/* {JSON.stringify(errors)} */}
                     <TextField
                       fullWidth
-                      // placeholder="Auto"
                       variant="standard"
                       type="text"
                       label="Code"
@@ -292,20 +268,6 @@ const Editcompany = () => {
                       InputProps={{ readOnly: true }}
                       name="code"
                       autoFocus
-                    // error={!!touched.code && !!errors.code}
-                    // helperText={touched.code && errors.code}                      
-                    // onInvalid={(e) => {
-                    //   e.target.setCustomValidity("Please fill the Code");
-                    // }}
-                    // onInput={(e) => {
-                    //   e.target.setCustomValidity("");
-                    // }}
-                    // onInvalid={(e) => {
-                    //   e.target.setCustomValidity("Please fill the Code");
-                    // }}
-                    // onInput={(e) => {
-                    //   e.target.setCustomValidity("");
-                    // }}
                     />
 
                     <TextField
@@ -355,13 +317,6 @@ const Editcompany = () => {
                       inputProps={{ maxLength: 500 }}
                       multiline
                     />
-                    {/* <TextField
-                      label="ID"
-                      variant="standard"
-                      value={selectcnLookupData.CNlookupRecordid}
-                      focused
-                      sx={{ display: "none" }}
-                    /> */}
                     <FormControl
                       sx={{
                         gridColumn: "span 2",
@@ -378,49 +333,25 @@ const Editcompany = () => {
                         <SingleFormikOptimizedAutocomplete
                           label={
                             <>
-                              Country<span style={{ color: "red" ,fontSize:"20px"}}> * </span>
+                              Country
+                              <span style={{ color: "red", fontSize: "20px" }}>
+                                {" "}
+                                *{" "}
+                              </span>
                             </>
                           }
-                          // label="Country"
                           id="country"
                           name="country"
-                          
                           value={values.country}
                           onChange={(e, newValue) => {
-                            setFieldValue("country", newValue)
+                            setFieldValue("country", newValue);
                           }}
                           log
-                          url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
+                          url={`${
+                            store.getState().globalurl.listViewurl
+                          }?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
                         />
-                         {/* {touched.country && errors.country && (
-                          <div style={{ color: "red", fontSize: "12px", marginTop: "2px" }}>
-                            {errors.country}
-                          </div>
-                        )} */}
                       </FormControl>
-                      {/* <TextField
-                          label="Country"
-                          variant="standard"
-                          value={selectcnLookupData.CNlookupCode}
-                          focused
-                          required
-                          inputProps={{ tabIndex: "-1" }}
-                        />
-                        <IconButton
-                          sx={{ height: 40, width: 40 }}
-                          onClick={() => handleShow("CN")}
-                        >
-                          <img src="https://img.icons8.com/color/48/null/details-popup.png" />
-                        </IconButton>
-
-                        <TextField
-                          variant="standard"
-                          value={selectcnLookupData.CNlookupDesc}
-                          fullWidth
-                          inputProps={{ tabIndex: "-1" }}
-                          focused
-                        /> */}
-
                     </FormControl>
                     <TextField
                       fullWidth
@@ -465,7 +396,6 @@ const Editcompany = () => {
                       focused
                       error={!!touched.phone && !!errors.phone}
                       helperText={touched.phone && errors.phone}
-                      // inputProps={{maxLength: 10}}
                       onInput={(e) => {
                         e.target.value = Math.max(0, parseInt(e.target.value))
                           .toString()
@@ -499,13 +429,9 @@ const Editcompany = () => {
                       onBlur={handleBlur}
                       onChange={handleChange}
                       name="Lut"
-                      // error={!!touched.gst && !!errors.gst}
-                      // helperText={touched.gst && errors.gst}
                       inputProps={{ readOnly: true }}
                       focused
                     />
-
-                    
                   </FormControl>
                   <FormControl sx={{ gridColumn: "span 2", gap: formGap }}>
                     <TextField
@@ -546,7 +472,6 @@ const Editcompany = () => {
                       variant="standard"
                       type="text"
                       label="I.E.Code"
-                      // required
                       onInvalid={(e) => {
                         e.target.setCustomValidity("Please fill the I.E.Code");
                       }}
@@ -572,8 +497,6 @@ const Editcompany = () => {
                       onBlur={handleBlur}
                       onChange={handleChange}
                       name="rbiCode"
-                      // error={!!touched.rbiCode && !!errors.rbiCode}
-                      // helperText={touched.rbiCode && errors.rbiCode}
                       focused
                       inputProps={{ maxLength: 5 }}
                     />
@@ -610,9 +533,6 @@ const Editcompany = () => {
                           "Please fill the Subscription Code"
                         );
                       }}
-                      // onInput={(e) => {
-                      //   e.target.setCustomValidity("");
-                      // }}
                       value={values.license}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -621,25 +541,10 @@ const Editcompany = () => {
                       helperText={touched.license && errors.license}
                       focused
                       onInput={(e) => {
-                        // Ensure only numeric input is allowed and trim to 4 digits
-                        // let value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-                        // if (value.length > 4) {
-                        //   value = value.slice(0, 4); // Limit to 4 digits
-                        // }
-                        // e.target.value = value;
                         e.target.setCustomValidity(""); // Clear the custom error
                       }}
                       inputProps={{ maxLength: 4 }}
-                    //  onInput={(e) => {
-
-                    //   e.target.value = Math.max(0, parseInt(e.target.value))
-                    //     .toString()
-                    //     .slice(0, 4);
-                    //     e.target.setCustomValidity("");
-                    // }}
-                    // inputProps={{ maxLength: 4,  }}
                     />
-                   
 
                     <TextField
                       fullWidth
@@ -657,7 +562,7 @@ const Editcompany = () => {
                       focused
                       onWheel={(e) => e.target.blur()}
                     />
-                     <TextField
+                    <TextField
                       fullWidth
                       variant="standard"
                       type="number"
@@ -675,11 +580,6 @@ const Editcompany = () => {
                       }}
                       focused
                       onWheel={(e) => e.target.blur()}
-                    // onInput={(e) => {
-                    //   e.target.value = Math.max(0, parseInt(e.target.value))
-                    //     .toString()
-                    //     .slice(0, 11);
-                    // }}
                     />
                     <Box>
                       <Field
@@ -694,28 +594,6 @@ const Editcompany = () => {
                       />
 
                       <FormLabel focused={false}>Disable</FormLabel>
-                      {/* <Field
-                        type="checkbox"
-                        name="stockClose"
-                        id="stockClose"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        as={Checkbox}
-                        label="stockClose"
-                      />
-                      <FormLabel focused={false}>Opening Stock Close</FormLabel>
-                      <Field
-                        type="checkbox"
-                        name="useregular"
-                        id="useregular"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        as={Checkbox}
-                        label="useregular"
-                      />
-                      <FormLabel focused={false}>
-                        Use Regular Serial Number
-                      </FormLabel> */}
                     </Box>
                   </FormControl>
                 </Box>
@@ -753,18 +631,6 @@ const Editcompany = () => {
       ) : (
         false
       )}
-
-      <Popup
-        title="Country"
-        openPopup={openCNpopup}
-        setOpenPopup={setOpenCNpopup}
-      >
-        <Listviewpopup
-          accessID="2003"
-          screenName="Country"
-          childToParent={childToParent}
-        />
-      </Popup>
     </Box>
   );
 };
