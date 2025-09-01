@@ -45,10 +45,8 @@ export const valid = Yup.object().shape({
 // });
 
 export const companySchema = yup.object().shape({
-  // code:yup.string().matches(/^[-_ a-zA-Z0-9]+$/, "Only Numeric and Alphabets ").min(3).max(5),
   address: yup.string().max(500, "Address must be 500 character "),
-   phone: yup.string().max(10, "Not Valid Phone Number"),
-  // phone:yup.number().min(10),
+  phone: yup.string().max(10, "Not Valid Phone Number"),
   pincode: yup
     .number()
     .min(10000, "Not valid Pin Code")
@@ -56,51 +54,19 @@ export const companySchema = yup.object().shape({
     country: Yup.object()
     .required('Please select a country')
     .nullable(),
-    // license: yup
-    // .number()
-    // .min(10000, "Not Valid Subscription Code")
-    // .max(999999, "Not Valid Subscription Code"),
-
-    // license: yup
-    // .string()
-    // .matches(/^[-_ a-zA-Z0-9]+$/, "Only Numeric and Alphabets ")
-    // .min(4, "Subscription Code must be 4 character"),
     license: Yup.string()
     .matches(/^[a-zA-Z0-9]{4}$/, "Please enter alphabets only, exactly 4 characters") // Only letters and digits, 4 characters long
     .test('contains-both', 'The code must contain both letters and numbers', value => {
       return /[a-zA-Z]/.test(value) && /\d/.test(value); // Must contain both letters and numbers
     }),
-    // license: yup
-    // .number()
-    // .positive("Not Valid Subscription Code") // Ensures positive numbers
-    // .test("len", "Not Valid Subscription Code", (value) => {
-    //   if (value) {
-    //     return value.toString().length >= 4; // Ensures at least 4 digits
-    //   }
-    //   return true; // Allow empty value
-    // })
-    // .min(10000, "Not Valid Subscription Code") // Ensures the value has at least 5 digits
-    // .max(999999, "Not Valid Subscription Code"),
   iECode: yup
     .string()
     .matches(/^[-_ a-zA-Z0-9]+$/, "Please enter alphabets only")
     .min(10, "I.E.Code must be 10 character"),
-  // rbiCode: yup
-  //   .string()
-  //   .min(5, "RBI Code must be 5 character")
-  //   .matches(/^[-_ a-zA-Z0-9]+$/, "Only Numeric and Alphabets "),
   gst: yup
     .string()
     .matches(/^[-_ a-zA-Z0-9]+$/, "Only Numeric and Alphabets ")
     .min(15, "GST must be 15 character"),
-
-  // web: yup
-  //   .string()
-  //   .matches(
-  //     /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-  //     "Enter a valid url!"
-  //   ),
-  // fax: yup.string().min(11, "fax must be 11 character"),
   email: yup.string().email("Please enter a valid Email"),
   name: yup
     .string()

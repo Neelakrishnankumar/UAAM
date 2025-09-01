@@ -147,7 +147,7 @@ const generateAlphaCode = (length = 4) => {
       SortOrder: "",
    
     };
-console.log(fnSave,"fnSave");
+
 
     console.log("Sending to API:", idata);
 
