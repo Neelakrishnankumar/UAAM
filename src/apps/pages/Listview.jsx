@@ -19,6 +19,7 @@ import {
   GridToolbarContainer,
   GridToolbarExport,
 } from "@mui/x-data-grid";
+
 import Swal from "sweetalert2";
 import MatxCustomizer from "./Mailpdf";
 import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
@@ -39,7 +40,7 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { fnCsvFileUpload } from "../../store/reducers/Imguploadreducer";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import { screenRightsData } from "../../store/reducers/screenRightsreducer";
@@ -114,6 +115,19 @@ const Listview = () => {
   const [uploadFile, setUploadFile] = useState();
   const compID = sessionStorage.getItem("compID");
   const YearRecorid = sessionStorage.getItem("YearRecorid");
+  const [errorMsgData, setErrorMsgData] = useState(null);
+
+  useEffect(() => {
+    fetch(process.env.PUBLIC_URL + "/validationcms.json")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch validationcms.json");
+        return res.json();
+      })
+      .then((data) => {
+        setErrorMsgData(data);
+      })
+      .catch((err) => console.error("Error loading validationcms.json:", err));
+  }, []);
   // console.log(
   //   "🚀 ~ file: Listview.jsx:58 ~ Listview ~ listViewcolumn",
   //   listViewcolumn
@@ -154,16 +168,16 @@ const Listview = () => {
   //   () => listViewcolumn.filter(filterByID),
   //   [listViewcolumn]
   // );
-    const columns = React.useMemo(
-    () => listViewcolumn.filter(filterByID) ? [   {
-    field: "slno",
-    headerName: "SL#",
-    width: 50,
-    sortable: false,
-    filterable: false,
-    valueGetter: (params) =>
-      `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`
-  },   ,...listViewcolumn.filter(filterByID)] :[],
+  const columns = React.useMemo(
+    () => listViewcolumn.filter(filterByID) ? [{
+      field: "slno",
+      headerName: "SL#",
+      width: 50,
+      sortable: false,
+      filterable: false,
+      valueGetter: (params) =>
+        `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`
+    }, , ...listViewcolumn.filter(filterByID)] : [],
     [listViewcolumn]
   );
   // console.log("🚀 ~ file: Listview.jsx:88 ~ Listview ~ columns:", columns)
@@ -226,7 +240,7 @@ const Listview = () => {
   };
   const fnLogOut = (props) => {
     Swal.fire({
-      title: `Do you want ${props}?`,
+      title: errorMsgData.Warningmsg[props],
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -373,8 +387,7 @@ const Listview = () => {
                 <AddOutlinedIcon
                   onClick={() => {
                     navigate(
-                      `./Edit${screenName}/-1/A${
-                        accessID === "TR010" ? "/0" : ""
+                      `./Edit${screenName}/-1/A${accessID === "TR010" ? "/0" : ""
                       }`,
                       {
                         state: {
@@ -566,11 +579,11 @@ const Listview = () => {
         >
           <DataGrid
             sx={{
-              "& .MuiDataGrid-footerContainer":{
-                height:dataGridHeaderFooterHeight,
-                minHeight:dataGridHeaderFooterHeight,
+              "& .MuiDataGrid-footerContainer": {
+                height: dataGridHeaderFooterHeight,
+                minHeight: dataGridHeaderFooterHeight,
               }
-             }}
+            }}
             key={accessID}
             rows={rows}
             // columns={UGA_MOD || UGA_VIEW ? columns : columnShow}
@@ -659,29 +672,29 @@ const Listview = () => {
               variant="outlined"
             />
           </Box>
-          ) : accessID == "TR014" ? (
-            <Box display="flex" flexDirection="row" padding="25px">
-              <Chip
+        ) : accessID == "TR014" ? (
+          <Box display="flex" flexDirection="row" padding="25px">
+            <Chip
               icon={<EditIcon color="primary" />}
               label="Edit"
               variant="outlined"
             />
-              <Chip
-                icon={<PinDropIcon color="primary" />}
-                label="Locations"
-                variant="outlined"
-                sx={{ marginLeft: "50px" }}
-              />
-              <Chip
-                icon={<SubscriptionsIcon color="primary" />}
-                label="Subscriptions"
-                variant="outlined"
-                sx={{ marginLeft: "50px" }}
-              />
-            </Box>
-   
-    
-    ) : accessID == "TR009" ? (
+            <Chip
+              icon={<PinDropIcon color="primary" />}
+              label="Locations"
+              variant="outlined"
+              sx={{ marginLeft: "50px" }}
+            />
+            <Chip
+              icon={<SubscriptionsIcon color="primary" />}
+              label="Subscriptions"
+              variant="outlined"
+              sx={{ marginLeft: "50px" }}
+            />
+          </Box>
+
+
+        ) : accessID == "TR009" ? (
           <Box display="flex" flexDirection="row" padding="25px">
             <Chip
               icon={<EditIcon color="primary" />}

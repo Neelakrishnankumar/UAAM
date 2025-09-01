@@ -199,7 +199,7 @@ const Edituser = () => {
     //       return
     //  }
     Swal.fire({
-      title: `Do you want ${props}?`,
+      title: errorMsgData.Warningmsg[props],
       // text:data.payload.Msg,
       icon: "warning",
       showCancelButton: true,
@@ -282,7 +282,12 @@ const Edituser = () => {
               </IconButton>
             </Tooltip>
             <IconButton>
-              <LogoutOutlinedIcon color="error" />
+              <Tooltip title="Logout">
+              <LogoutOutlinedIcon
+                onClick={() => fnLogOut("Logout")}
+                color="error"
+              />
+              </Tooltip>
             </IconButton>
           </Box>
         </Box>
@@ -386,19 +391,19 @@ const Edituser = () => {
                     }
                     id="usergroup"
                     name="usergroup"
-                    value={values.usergroup || null} 
+                    value={values.usergroup || null}
                     onChange={(event, newValue) => {
                       setFieldValue("usergroup", newValue);
                     }}
                     error={!!touched.usergroup && !!errors.usergroup}
                     helperText={touched.usergroup && errors.usergroup}
                     getOptionLabel={(option) =>
-                      option ? `${option.Code} || ${option.Name}` : "" 
+                      option ? `${option.Code} || ${option.Name}` : ""
                     }
                     isOptionEqualToValue={(option, value) =>
                       option.RecordID === value.RecordID
                     }
-                    
+
                     url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2039","ScreenName":"UserGroup","Filter":"CompanyID='${companyRecID}'","Any":"","CompId":"4"}}`}
                   />
 

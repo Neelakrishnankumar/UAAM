@@ -39,6 +39,7 @@ import {
   productionColorlookupOpen,
   productionlookupOpen,
 } from "../../store/reducers/Listviewapireducer";
+import { useState,useEffect } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { useProSidebar } from "react-pro-sidebar";
@@ -102,7 +103,19 @@ const ListviewSecondary = () => {
   var remarkDec = params.remarkDec;
   var CompanyID = `${parentID}'`;
   const { toggleSidebar, broken, rtl } = useProSidebar();
+  const [errorMsgData, setErrorMsgData] = useState(null);
 
+  useEffect(() => {
+    fetch(process.env.PUBLIC_URL + "/validationcms.json")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch validationcms.json");
+        return res.json();
+      })
+      .then((data) => {
+        setErrorMsgData(data);
+      })
+      .catch((err) => console.error("Error loading validationcms.json:", err));
+  }, []);
 
   const rowData = location.state || {};
 
@@ -238,8 +251,8 @@ const ListviewSecondary = () => {
   //   () => listViewcolumn.filter(filterByID),
   //   [listViewcolumn]
   // );
-   const columns = React.useMemo(
-      () => listViewcolumn.filter(filterByID) ? [   {
+  const columns = React.useMemo(
+    () => listViewcolumn.filter(filterByID) ? [{
       field: "slno",
       headerName: "SL#",
       width: 50,
@@ -247,9 +260,9 @@ const ListviewSecondary = () => {
       filterable: false,
       valueGetter: (params) =>
         `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`
-    },   ,...listViewcolumn.filter(filterByID)] :[],
-      [listViewcolumn]
-    );
+    }, , ...listViewcolumn.filter(filterByID)] : [],
+    [listViewcolumn]
+  );
 
   var apprval = "";
   var hderName = `Production Card(${params.Number})`;
@@ -569,7 +582,7 @@ const ListviewSecondary = () => {
   var openstackname = "Opening Stock";
   const fnLogOut = (props) => {
     Swal.fire({
-      title: `Do you want ${props}?`,
+      title: errorMsgData.Warningmsg[props],
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -2164,7 +2177,7 @@ const ListviewSecondary = () => {
             csvOptions={{
               fileName: `${screenName}`,
             }}
-            // slotProps={{ toolbar: { csvOptions: { allColumns: true } } }}
+          // slotProps={{ toolbar: { csvOptions: { allColumns: true } } }}
           />
           <Tooltip arrow title="Logout">
             <IconButton onClick={() => fnLogOut("Logout")} color="error">
