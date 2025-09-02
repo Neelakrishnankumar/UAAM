@@ -1,47 +1,47 @@
 {
     "Company": {
-        "address": "Please fill the Address",
-        "name": "Please fill the Name",
-        "country": "Please fill the Country",
-        "email": "Please fill the Email",
-        "pincode": "Please fill the Pincode",
-        "gst": "Please fill the GST",
-        "phone": "Please fill the Phone",
-        "license": "Please fill the Subscription Code",
+        "address": "Please Enter the Address",
+        "name": "Please Enter the Name",
+        "country": "Please Enter the Country",
+        "email": "Please Enter the Email",
+        "pincode": "Please Enter the Pincode",
+        "gst": "Please Enter the GST",
+        "phone": "Please Enter the Phone",
+        "license": "Please Enter the Subscription Code",
         "iECode": "Invalid I.E Code",
         "rbiCode": "Invalid RBI Code"
     },
     "Location": {
-        "name": "Please fill the Name"
+        "name": "Please Enter the Name"
     },
     "Gate": {
-        "name": "Please fill the Name"
+        "name": "Please Enter the Name"
     },
     "Bin": {
-        "name": "Please fill the Name",
-        "shelvescode": "Please fill the Shelves Name",
-        "shelvesname": "Please fill the Shelves Code"
+        "name": "Please Enter the Name",
+        "shelvescode": "Please Enter the Shelves Name",
+        "shelvesname": "Please Enter the Shelves Code"
     },
     "Products": {
-        "description": "Please fill the Description",
-        "NoOfemployee": "Please fill the No of Employee",
-        "NoOfenduser": "Please fill the No of End User",
-        "price": "Please fill the Price",
-        "offerprice": "Please fill the Offer Price"
+        "description": "Please Enter the Description",
+        "NoOfemployee": "Please Enter the No of Employee",
+        "NoOfenduser": "Please Enter the No of End User",
+        "price": "Please Enter the Price",
+        "offerprice": "Please Enter the Offer Price"
     },
     "Usergroup": {
-        "name": "Please fill the Name"
+        "name": "Please Enter the Name"
     },
     "Users": {
-        "usergroup": "Please fill the Usergroup",
-        "name": "Please fill the Name",
-        "password": "Please fill the Password",
-        "comfirmpassword": "Please fill the Confirm Password"
+        "usergroup": "Please Enter the Usergroup",
+        "name": "Please Enter the Name",
+        "password": "Please Enter the Password",
+        "comfirmpassword": "Please Enter the Confirm Password"
     },
     "Subscription": {
-        "productsubscription": "Please fill the Product Subscription",
-        "subscriptionStartDate": "Please fill the Subscription Start Date",
-        "subscriptionperiod": "Please fill the Subscription Period (in months)",
-        "productid": "Please fill the Product Code"
+        "productsubscription": "Please Enter the Product Subscription",
+        "subscriptionStartDate": "Please Enter the Subscription Start Date",
+        "subscriptionperiod": "Please Enter the Subscription Period (in months)",
+        "productid": "Please Enter the Product Code"
     }
 }
