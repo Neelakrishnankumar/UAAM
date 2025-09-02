@@ -329,7 +329,7 @@ const Editbin = () => {
 
   const fnLogOut = (props) => {
     Swal.fire({
-      title: `Do you want ${props}?`,
+      title: errorMsgData.Warningmsg[props],
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -911,7 +911,7 @@ const Editbin = () => {
                       variant="contained"
                       onClick={() => {
                         Swal.fire({
-                          title: `Do you want Delete?`,
+                          title: errorMsgData.Warningmsg.Delete,
                           icon: "warning",
                           showCancelButton: true,
                           confirmButtonColor: "#3085d6",

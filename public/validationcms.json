@@ -43,5 +43,10 @@
         "subscriptionStartDate": "Please Enter the Subscription Start Date",
         "subscriptionperiod": "Please Enter the Subscription Period (in months)",
         "productid": "Please Enter the Product Code"
+    },
+    "Warningmsg": {
+        "Logout": "Do you really want to Log Out?",
+        "Close": "Do you want to Close?",
+        "Delete": "Do you want to Delete?"
     }
 }
