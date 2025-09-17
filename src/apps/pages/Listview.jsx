@@ -168,18 +168,39 @@ const Listview = () => {
   //   () => listViewcolumn.filter(filterByID),
   //   [listViewcolumn]
   // );
+  // const columns = React.useMemo(
+  //   () => listViewcolumn.filter(filterByID) ? [{
+  //     field: "slno",
+  //     headerName: "SL#",
+  //     width: 50,
+  //     sortable: false,
+  //     filterable: false,
+  //     valueGetter: (params) =>
+  //       `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`
+  //   }, , ...listViewcolumn.filter(filterByID)] : [],
+  //   [listViewcolumn]
+  // );
   const columns = React.useMemo(
-    () => listViewcolumn.filter(filterByID) ? [{
-      field: "slno",
-      headerName: "SL#",
-      width: 50,
-      sortable: false,
-      filterable: false,
-      valueGetter: (params) =>
-        `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`
-    }, , ...listViewcolumn.filter(filterByID)] : [],
-    [listViewcolumn]
-  );
+  () =>
+    listViewcolumn.filter(filterByID)
+      ? [
+          {
+            field: "slno",
+            headerName: "SL#",
+            width: 50,
+            sortable: false,
+            filterable: false,
+            valueGetter: (params) =>
+              page * pageSize +
+              params.api.getRowIndexRelativeToVisibleRows(params.id) +
+              1,
+          },
+          ...listViewcolumn.filter(filterByID),
+        ]
+      : [],
+  [listViewcolumn, page, pageSize] // include page & pageSize as deps
+);
+
   // console.log("🚀 ~ file: Listview.jsx:88 ~ Listview ~ columns:", columns)
 
   const columnShow = React.useMemo(
@@ -596,8 +617,8 @@ const Listview = () => {
             pageSize={pageSize}
             page={page}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={dataGridPageSizeOption}
-            // rowsPerPageOptions={[5, 10, 15, 20]}
+            // rowsPerPageOptions={dataGridPageSizeOption}
+            rowsPerPageOptions={[5, 10, 15, 20, 25]}
             onPageChange={(pageno) => handlePagechange(pageno)}
             components={{
               Toolbar: CustomToolbar,

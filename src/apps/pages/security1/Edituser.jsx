@@ -88,7 +88,9 @@ const Edituser = () => {
         setErrorMsgData(data);
 
         const schema1 = Yup.object().shape({
-          name: Yup.string().required(data.Users.name),
+          name: Yup.string()
+            .required(data.Users.name)
+            .matches(/^\S+$/, data.Users.NameNoSpace),
           password: Yup.string().required(data.Users.password),
           comfirmpassword: Yup.string()
             .required(data.Users.comfirmpassword)
@@ -283,10 +285,10 @@ const Edituser = () => {
             </Tooltip>
             <IconButton>
               <Tooltip title="Logout">
-              <LogoutOutlinedIcon
-                onClick={() => fnLogOut("Logout")}
-                color="error"
-              />
+                <LogoutOutlinedIcon
+                  onClick={() => fnLogOut("Logout")}
+                  color="error"
+                />
               </Tooltip>
             </IconButton>
           </Box>
@@ -365,15 +367,7 @@ const Edituser = () => {
                   error={!!touched.name && !!errors.name}
                   helperText={touched.name && errors.name}
                   autoFocus
-                // onInvalid={(e) => {
-                //   e.target.setCustomValidity(
-                //     "Please fill the Name"
-                //   );
-                // }}
-                // onInput={(e) => {
-                //   e.target.setCustomValidity("");
-                // }}
-                // required
+
                 />
                 <FormControl sx={{ gridColumn: "span 2", display: "flex" }}>
                   {/* <FormControl
