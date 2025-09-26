@@ -263,6 +263,18 @@ const ListviewSecondary = () => {
   //   }, , ...listViewcolumn.filter(filterByID)] : [],
   //   [listViewcolumn]
   // );
+  // const columns = React.useMemo(
+  //   () => listViewcolumn.filter(filterByID) ? [{
+  //     field: "slno",
+  //     headerName: "SL#",
+  //     width: 50,
+  //     sortable: false,
+  //     filterable: false,
+  //     valueGetter: (params) =>
+  //       `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`
+  //   }, , ...listViewcolumn.filter(filterByID)] : [],
+  //   [listViewcolumn]
+  // );
   const columns = React.useMemo(
     () =>
       listViewcolumn.filter(filterByID)

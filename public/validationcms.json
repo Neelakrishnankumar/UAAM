@@ -19,8 +19,8 @@
     },
     "Bin": {
         "name": "Please Enter the Name",
-        "shelvescode": "Please Enter the Shelves Name",
-        "shelvesname": "Please Enter the Shelves Code"
+        "shelvescode": "Please Enter the Shelves Code",
+        "shelvesname": "Please Enter the Shelves Name"
     },
     "Products": {
         "description": "Please Enter the Description",
@@ -35,6 +35,7 @@
     "Users": {
         "usergroup": "Please Enter the Usergroup",
         "name": "Please Enter the Name",
+        "NameNoSpace": "User Name cannot contain spaces",
         "password": "Please Enter the Password",
         "comfirmpassword": "Please Enter the Confirm Password"
     },

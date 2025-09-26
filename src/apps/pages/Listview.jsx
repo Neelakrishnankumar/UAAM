@@ -180,7 +180,6 @@ const Listview = () => {
   //   }, , ...listViewcolumn.filter(filterByID)] : [],
   //   [listViewcolumn]
   // );
-  // console.log("🚀 ~ file: Listview.jsx:88 ~ Listview ~ columns:", columns)
   const columns = React.useMemo(
     () =>
       listViewcolumn.filter(filterByID)
@@ -615,8 +614,8 @@ const Listview = () => {
             pageSize={pageSize}
             page={page}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={dataGridPageSizeOption}
-            // rowsPerPageOptions={[5, 10, 15, 20]}
+            // rowsPerPageOptions={dataGridPageSizeOption}
+            rowsPerPageOptions={[5, 10, 15, 20, 25]}
             onPageChange={(pageno) => handlePagechange(pageno)}
             components={{
               Toolbar: CustomToolbar,
