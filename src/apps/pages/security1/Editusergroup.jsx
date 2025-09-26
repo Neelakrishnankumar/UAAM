@@ -70,13 +70,14 @@ const Editusergroup = () => {
   const location = useLocation();
   const rowDatastate = location.state || {};
   console.log(rowDatastate, "--rowDatastate");
+  const [page, setPage] = useState(0);
 
   const recID = params.id;
   const mode = params.Mode;
 
   const accessID = params.accessID;
   const companyRecID = params.companyRecID;
-  const [pageSize, setPageSize] = React.useState(10);
+  const [pageSize, setPageSize] = React.useState(20);
 
   // console.log("🚀 ~ file: Editusergroup.jsx:65 ~ Editusergroup ~ Year:", Year)
 
@@ -296,14 +297,34 @@ const Editusergroup = () => {
     //   headerName: "SL#",
     //   width: 50,
     // },
+    // {
+    //   field: "slno",
+    //   headerName: "SL#",
+    //   width: 50,
+    //   sortable: false,
+    //   filterable: false,
+    //   valueGetter: (params) =>
+    //     `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`
+    // },
     {
       field: "slno",
       headerName: "SL#",
-      width: 50,
+      width: 60,
       sortable: false,
       filterable: false,
-      valueGetter: (params) =>
-        `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`
+      disableColumnMenu: true,
+      valueGetter: (params) => {
+        const index = params.api.getRowIndexRelativeToVisibleRows(params.id);
+
+        const totalVisibleRows = params.api.getAllRowIds().length;
+        const totalAllRows = params.api.getRowsCount();
+
+        if (totalVisibleRows < totalAllRows) {
+          return index + 1;
+        } else {
+          return page * pageSize + index + 1;
+        }
+      },
     },
     {
       field: "SM_CAPTION1",
@@ -618,14 +639,14 @@ const Editusergroup = () => {
                     autoFocus
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
-                    // onInvalid={(e) => {
-                    //   e.target.setCustomValidity(
-                    //     "Please fill the Name"
-                    //   );
-                    // }}
-                    // onInput={(e) => {
-                    //   e.target.setCustomValidity("");
-                    // }}
+                  // onInvalid={(e) => {
+                  //   e.target.setCustomValidity(
+                  //     "Please fill the Name"
+                  //   );
+                  // }}
+                  // onInput={(e) => {
+                  //   e.target.setCustomValidity("");
+                  // }}
 
                   />
                   <TextField
@@ -724,10 +745,10 @@ const Editusergroup = () => {
                           disableSelectionOnClick
                           getRowId={(row) => row.RecordID}
                           headerHeight={dataGridHeaderFooterHeight}
-                          pageSize={dataGridPageSize}
-                          onPageSizeChange={(newPageSize) =>
-                            setPageSize(newPageSize)
-                          }
+                          pageSize={pageSize}
+                          page={page}
+                          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                          onPageChange={(newPage) => setPage(newPage)}
                           rowsPerPageOptions={dataGridPageSizeOption}
                           pagination
                           // pageSize={pageSize}
