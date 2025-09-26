@@ -79,8 +79,11 @@ const Editbin = () => {
   const location = useLocation();
   const rowData = location.state || {};
   console.log(rowData, "--rowData");
-
+  var secondaryCurrentPage = parseInt(
+      sessionStorage.getItem("secondaryCurrentPage")
+    );
   const [pageSize, setPageSize] = React.useState(10);
+  const [page, setPage] = React.useState(secondaryCurrentPage);
   const [errorMsgData, setErrorMsgData] = useState(null);
   const [validationSchema, setValidationSchema] = useState(null);
   const [validationSchema1, setValidationSchema1] = useState(null);
@@ -114,7 +117,10 @@ const Editbin = () => {
   //     .matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
   // });
   const colors = tokens(theme.palette.mode);
-
+ const handlePagechange = (pageno) => {
+    setPage(pageno);
+    sessionStorage.setItem("secondaryCurrentPage", pageno);
+  };
   // *************** INITIALVALUE  *************** //
   // const HsnSchema = Yup.object().shape({
   //   shelvescode: Yup.string()
@@ -197,32 +203,54 @@ const Editbin = () => {
   //     ),
   //   [explorelistViewcolumn]
   // );
-  const columns = React.useMemo(() => {
+  // const columns = React.useMemo(() => {
 
+  //   let visibleColumns = explorelistViewcolumn.filter((column) =>
+  //     VISIBLE_FIELDS.includes(column.field)
+  //   );
+
+
+  //   if (VISIBLE_FIELDS.includes("slno")) {
+  //     const slnoColumn = {
+  //       field: "slno",
+  //       headerName: "SL#",
+  //       width: 50,
+  //       sortable: false,
+  //       filterable: false,
+  //       valueGetter: (params) =>
+  //         `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`,
+  //     };
+
+
+  //     visibleColumns = [slnoColumn, ...visibleColumns];
+  //   }
+
+  //   return visibleColumns;
+  // }, [explorelistViewcolumn, VISIBLE_FIELDS]);
+
+  const columns = React.useMemo(() => {
     let visibleColumns = explorelistViewcolumn.filter((column) =>
       VISIBLE_FIELDS.includes(column.field)
     );
 
-
     if (VISIBLE_FIELDS.includes("slno")) {
+      
       const slnoColumn = {
-        field: "slno",
-        headerName: "SL#",
-        width: 50,
-        sortable: false,
-        filterable: false,
-        valueGetter: (params) =>
-          `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`,
-      };
-
-
-      visibleColumns = [slnoColumn, ...visibleColumns];
+          field: "slno",
+          headerName: "SL#",
+          width: 50,
+          sortable: false,
+          filterable: false,
+          valueGetter: (params) =>
+            page * pageSize +
+            params.api.getRowIndexRelativeToVisibleRows(params.id) +
+            1,
+        };
+        visibleColumns = [slnoColumn, ...visibleColumns];
     }
 
     return visibleColumns;
   }, [explorelistViewcolumn, VISIBLE_FIELDS]);
-
-
   /******************Employee values assign a state variale******************** */
   const selectCellData = ({ rowData, mode, field }) => {
     setMode(mode);
@@ -758,8 +786,9 @@ const Editbin = () => {
                           getRowId={(row) => row.RecordID}
                           rowHeight={dataGridRowHeight}
                           headerHeight={dataGridHeaderFooterHeight}
-                          pageSize={dataGridPageSize}
-                          // pageSize={pageSize}
+                          pageSize={pageSize}
+                          page={page}
+                          onPageChange={(pageno) => handlePagechange(pageno)}
                           onPageSizeChange={(newPageSize) =>
                             setPageSize(newPageSize)
                           }

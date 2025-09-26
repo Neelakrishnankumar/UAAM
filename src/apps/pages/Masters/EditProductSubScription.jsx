@@ -85,7 +85,9 @@ const EditProductSubScription = () => {
   const Year = sessionStorage.getItem("year");
   const Finyear = sessionStorage.getItem("YearRecorid");
   const CompanyID = sessionStorage.getItem("compID");
-
+  var secondaryCurrentPage = parseInt(
+      sessionStorage.getItem("secondaryCurrentPage")
+    );
   const navigate = useNavigate();
   let params = useParams();
   const dispatch = useDispatch();
@@ -93,10 +95,10 @@ const EditProductSubScription = () => {
   var mode = params.Mode;
   var typeUom = params.filtertype;
   var accessID = params.accessID;
-
+  const [page, setPage] = React.useState(secondaryCurrentPage);
   const Data = useSelector((state) => state.formApi.Data);
   console.log("Data formapi");
-
+  
   const Status = useSelector((state) => state.formApi.Status);
   const Msg = useSelector((state) => state.formApi.msg);
   const isLoading = useSelector((state) => state.formApi.postLoading);
@@ -286,36 +288,61 @@ const EditProductSubScription = () => {
   //     ),
   //   [explorelistViewcolumn]
   // );
-  const columns = React.useMemo(() => {
+  // const columns = React.useMemo(() => {
 
+  //   let visibleColumns = explorelistViewcolumn.filter((column) =>
+  //     VISIBLE_FIELDS.includes(column.field)
+  //   );
+
+
+  //   if (VISIBLE_FIELDS.includes("slno")) {
+  //     const slnoColumn = {
+  //       field: "slno",
+  //       headerName: "SL#",
+  //       width: 50,
+  //       sortable: false,
+  //       filterable: false,
+  //       valueGetter: (params) =>
+  //         `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`,
+  //     };
+
+
+  //     visibleColumns = [slnoColumn, ...visibleColumns];
+  //   }
+
+  //   return visibleColumns;
+  // }, [explorelistViewcolumn, VISIBLE_FIELDS]);
+ const columns = React.useMemo(() => {
     let visibleColumns = explorelistViewcolumn.filter((column) =>
       VISIBLE_FIELDS.includes(column.field)
     );
 
-
     if (VISIBLE_FIELDS.includes("slno")) {
+      
       const slnoColumn = {
-        field: "slno",
-        headerName: "SL#",
-        width: 50,
-        sortable: false,
-        filterable: false,
-        valueGetter: (params) =>
-          `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`,
-      };
-
-
-      visibleColumns = [slnoColumn, ...visibleColumns];
+          field: "slno",
+          headerName: "SL#",
+          width: 50,
+          sortable: false,
+          filterable: false,
+          valueGetter: (params) =>
+            page * pageSize +
+            params.api.getRowIndexRelativeToVisibleRows(params.id) +
+            1,
+        };
+        visibleColumns = [slnoColumn, ...visibleColumns];
     }
 
     return visibleColumns;
   }, [explorelistViewcolumn, VISIBLE_FIELDS]);
-
   const ref = useRef();
   //  console.log("🚀 ~ file: Edituoms.jsx:248 ~ Edituom ~ ref:", ref)
   // **********Grid header function************
   const [rowCount, setRowCount] = useState(0);
-
+const handlePagechange = (pageno) => {
+    setPage(pageno);
+    sessionStorage.setItem("secondaryCurrentPage", pageno);
+  };
   function CustomToolbar() {
     return (
       <GridToolbarContainer
@@ -1028,7 +1055,9 @@ const EditProductSubScription = () => {
                             getRowId={(row) => row.RecordID}
                             rowHeight={dataGridRowHeight}
                             headerHeight={dataGridHeaderFooterHeight}
-                            pageSize={dataGridPageSize}
+                            pageSize={pageSize}
+                            page={page}
+                            onPageChange={(pageno) => handlePagechange(pageno)}
                             onPageSizeChange={(newPageSize) =>
                               setPageSize(newPageSize)
                             }

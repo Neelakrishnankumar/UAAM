@@ -40,7 +40,7 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { fnCsvFileUpload } from "../../store/reducers/Imguploadreducer";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import { screenRightsData } from "../../store/reducers/screenRightsreducer";
@@ -59,8 +59,8 @@ import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore
 import SearchIcon from "@mui/icons-material/Search";
 import EmailIcon from "@mui/icons-material/Email";
 import { searchData } from "../../store/reducers/Formapireducer";
-import PinDropIcon from '@mui/icons-material/PinDrop';
-import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
+import PinDropIcon from "@mui/icons-material/PinDrop";
+import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
 import toast from "react-hot-toast";
 import {
   dataGridHeaderFooterHeight,
@@ -168,20 +168,39 @@ const Listview = () => {
   //   () => listViewcolumn.filter(filterByID),
   //   [listViewcolumn]
   // );
-  const columns = React.useMemo(
-    () => listViewcolumn.filter(filterByID) ? [{
-      field: "slno",
-      headerName: "SL#",
-      width: 50,
-      sortable: false,
-      filterable: false,
-      valueGetter: (params) =>
-        `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`
-    }, , ...listViewcolumn.filter(filterByID)] : [],
-    [listViewcolumn]
-  );
+  // const columns = React.useMemo(
+  //   () => listViewcolumn.filter(filterByID) ? [{
+  //     field: "slno",
+  //     headerName: "SL#",
+  //     width: 50,
+  //     sortable: false,
+  //     filterable: false,
+  //     valueGetter: (params) =>
+  //       `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`
+  //   }, , ...listViewcolumn.filter(filterByID)] : [],
+  //   [listViewcolumn]
+  // );
   // console.log("🚀 ~ file: Listview.jsx:88 ~ Listview ~ columns:", columns)
-
+  const columns = React.useMemo(
+    () =>
+      listViewcolumn.filter(filterByID)
+        ? [
+            {
+              field: "slno",
+              headerName: "SL#",
+              width: 50,
+              sortable: false,
+              filterable: false,
+              valueGetter: (params) =>
+                page * pageSize +
+                params.api.getRowIndexRelativeToVisibleRows(params.id) +
+                1,
+            },
+            ...listViewcolumn.filter(filterByID),
+          ]
+        : [],
+    [listViewcolumn, page, pageSize] // include page & pageSize as deps
+  );
   const columnShow = React.useMemo(
     () => columns.filter(filterByIDShow),
     [listViewcolumn]
@@ -387,7 +406,8 @@ const Listview = () => {
                 <AddOutlinedIcon
                   onClick={() => {
                     navigate(
-                      `./Edit${screenName}/-1/A${accessID === "TR010" ? "/0" : ""
+                      `./Edit${screenName}/-1/A${
+                        accessID === "TR010" ? "/0" : ""
                       }`,
                       {
                         state: {
@@ -417,7 +437,6 @@ const Listview = () => {
     );
   }}
 /> */}
-
               </IconButton>
             </Tooltip>
           )}
@@ -582,7 +601,7 @@ const Listview = () => {
               "& .MuiDataGrid-footerContainer": {
                 height: dataGridHeaderFooterHeight,
                 minHeight: dataGridHeaderFooterHeight,
-              }
+              },
             }}
             key={accessID}
             rows={rows}
@@ -692,8 +711,6 @@ const Listview = () => {
               sx={{ marginLeft: "50px" }}
             />
           </Box>
-
-
         ) : accessID == "TR009" ? (
           <Box display="flex" flexDirection="row" padding="25px">
             <Chip
