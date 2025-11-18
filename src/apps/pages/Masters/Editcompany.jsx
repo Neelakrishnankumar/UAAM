@@ -12,6 +12,10 @@ import {
   Checkbox,
   Tooltip,
   LinearProgress,
+  MenuItem,
+  InputLabel,
+  Select,
+  Chip
 } from "@mui/material";
 import { Formik, Field } from "formik";
 import * as Yup from "yup";
@@ -36,10 +40,10 @@ export const companySchema = Yup.object().shape({
     .number()
     .min(10000, "Not valid Pin Code")
     .max(999999, "Not valid Pin Code"),
-    country: Yup.object()
+  country: Yup.object()
     .required('Please select a country')
     .nullable(),
-    license: Yup.string()
+  license: Yup.string()
     .matches(/^[a-zA-Z0-9]{4}$/, "Please enter alphabets only, exactly 4 characters") // Only letters and digits, 4 characters long
     .test('contains-both', 'The code must contain both letters and numbers', value => {
       return /[a-zA-Z]/.test(value) && /\d/.test(value); // Must contain both letters and numbers
@@ -145,7 +149,7 @@ const Editcompany = () => {
   useEffect(() => {
     dispatch(getFetchData({ accessID, get: "get", recID }));
   }, [location.key]);
-  
+
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const Data = useSelector((state) => state.formApi.Data);
   const getLoading = useSelector((state) => state.formApi.getLoading);
@@ -178,11 +182,12 @@ const Editcompany = () => {
     noofusers: Data.NumberOfUsers,
     country: Data.CnRecordID
       ? {
-          RecordID: Data.CnRecordID,
-          Code: Data.CountryCode,
-          Name: Data.CountryName,
-        }
+        RecordID: Data.CnRecordID,
+        Code: Data.CountryCode,
+        Name: Data.CountryName,
+      }
       : null,
+    Module: mode === "E" ? Data.Module : ""
   };
 
   /*************************SAVE FUCTION*********************/
@@ -213,7 +218,10 @@ const Editcompany = () => {
       Regularslno: values.useregular === true ? "Y" : "N",
       NumberOfEmployee: values.noOfEmployees,
       NumberOfUsers: values.noofusers,
+      Module: values.Module
     };
+    console.log(values.Module);
+
     let action = mode === "A" ? "insert" : "update";
     const data = await dispatch(postData({ accessID, action, idata }));
     if (data.payload.Status == "Y") {
@@ -422,12 +430,27 @@ const Editcompany = () => {
                           // log
                           url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
                         />
+
                         {/* {touched.country && errors.country && (
                           <div style={{ color: "red", fontSize: "12px", marginTop: "2px" }}>
                             {errors.country}
                           </div>
                         )} */}
                       </FormControl>
+                      <TextField
+                        fullWidth
+                        variant="standard"
+                        type="text"
+                        label="RBI Code"
+                        value={values.rbiCode}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        name="rbiCode"
+                        error={!!touched.rbiCode && !!errors.rbiCode}
+                        helperText={touched.rbiCode && errors.rbiCode}
+                        focused
+                      // inputProps={{ maxLength: 5 }}
+                      />
                     </FormControl>
                     <TextField
                       fullWidth
@@ -595,20 +618,117 @@ const Editcompany = () => {
                       error={!!touched.iECode && !!errors.iECode}
                       helperText={touched.iECode && errors.iECode}
                     />
-                    <TextField
-                      fullWidth
+
+                    {/* <FormControl
                       variant="standard"
-                      type="text"
-                      label="RBI Code"
-                      value={values.rbiCode}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      name="rbiCode"
-                      error={!!touched.rbiCode && !!errors.rbiCode}
-                      helperText={touched.rbiCode && errors.rbiCode}
+                      fullWidth
+                      // required 
+                      focused>
+                      <InputLabel id="module-label">Module</InputLabel>
+                      <Select
+                        labelId="module-label"
+                        id="Module"
+                        name="Module"
+                        multiple
+                        value={values.Module}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        renderValue={(selected) => selected.join(', ')}
+                      >
+                        <MenuItem value="All">All</MenuItem>
+                        <MenuItem value="Task">Task</MenuItem>
+                        <MenuItem value="Project">Project</MenuItem>
+                        <MenuItem value="Attendance">Attendance</MenuItem>
+                        <MenuItem value="Request">Request</MenuItem>
+                        <MenuItem value="Assessment">Assessment</MenuItem>
+                        <MenuItem value="Myprofile">Myprofile</MenuItem>
+                      </Select>
+                    </FormControl> */}
+                    <FormControl
+                      variant="standard"
+                      fullWidth
                       focused
-                      // inputProps={{ maxLength: 5 }}
-                    />
+                    >
+                      <InputLabel id="module-label">Module</InputLabel>
+
+                      <Select
+                        labelId="module-label"
+                        id="Module"
+                        name="Module"
+                        multiple
+                        // Convert comma-separated string to array for MUI Select
+                        value={values.Module ? values.Module.split(",") : []}
+                        onChange={(e) => {
+                          // Convert array back to comma-separated string
+                          handleChange({
+                            target: {
+                              name: "Module",
+                              value: e.target.value.join(",")
+                            }
+                          });
+                        }}
+                        onBlur={handleBlur}
+                        renderValue={(selected) => selected.join(", ")}
+                      >
+                        <MenuItem value="All">All</MenuItem>
+                        <MenuItem value="Task">Task</MenuItem>
+                        <MenuItem value="Project">Project</MenuItem>
+                        <MenuItem value="Attendance">Attendance</MenuItem>
+                        <MenuItem value="Request">Request</MenuItem>
+                        <MenuItem value="Assessment">Assessment</MenuItem>
+                        <MenuItem value="Myprofile">Myprofile</MenuItem>
+                      </Select>
+                    </FormControl>
+
+                    {/* <FormControl variant="standard" fullWidth focused>
+                      <InputLabel id="module-label">Module</InputLabel>
+
+                      <Select
+                        labelId="module-label"
+                        id="Module"
+                        name="Module"
+                        multiple
+                        value={values.Module?.split(",") || []} // convert string to array safely
+                        onChange={(e) => {
+                          // Convert selected array back to comma-separated string
+                          handleChange({
+                            target: {
+                              name: "Module",
+                              value: e.target.value.join(","),
+                            },
+                          });
+                        }}
+                        onBlur={handleBlur}
+                        renderValue={(selected) => (
+                          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                            {selected.map((value) => (
+                              <Chip
+                                key={value}
+                                label={value}
+                                onDelete={() => {
+                                  // Remove value inside the field
+                                  const newSelected = (values.Module || "")
+                                    .split(",")
+                                    .filter((item) => item !== value)
+                                    .join(",");
+                                  handleChange({
+                                    target: { name: "Module", value: newSelected },
+                                  });
+                                }}
+                              />
+                            ))}
+                          </Box>
+                        )}
+                      >
+                        <MenuItem value="All">All</MenuItem>
+                        <MenuItem value="Task">Task</MenuItem>
+                        <MenuItem value="Project">Project</MenuItem>
+                        <MenuItem value="Attendance">Attendance</MenuItem>
+                        <MenuItem value="Request">Request</MenuItem>
+                        <MenuItem value="Assessment">Assessment</MenuItem>
+                        <MenuItem value="Myprofile">Myprofile</MenuItem>
+                      </Select>
+                    </FormControl> */}
                     <TextField
                       fullWidth
                       variant="standard"
