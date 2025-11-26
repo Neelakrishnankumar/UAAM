@@ -28,6 +28,21 @@ export const imageUpload = createAsyncThunk(
     return response.data;
   }
 );
+export const CompanyimageUpload = createAsyncThunk(
+  "Image/CompReportImage",
+  async ({ formData }) => {
+    console.log("🚀 ~ file: Imguploadreducer.js:19 ~ formData:", formData)
+    const url = store.getState().globalurl.fileUploadUrl;
+    const response = await axios.post(url, formData, {
+      headers: {
+        Authorization:
+          "eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJzdWIiOiJCZXhAMTIzIiwibmFtZSI6IkJleCIsImFkbWluIjp0cnVlLCJleHAiOjE2Njk5ODQzNDl9.uxE3r3X4lqV_WKrRKRPXd-Jub9BnVcCXqCtLL4I0fpU",
+      },
+    });
+    console.log("🚀 ~ file: Imguploadreducer.js:26 ~ response:", response)
+    return response.data;
+  }
+);
 export const fileUpload = createAsyncThunk(
   "Image/Finance Entry",
   async ({ formData }) => {
