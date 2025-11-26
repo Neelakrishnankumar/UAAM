@@ -45,6 +45,16 @@
         "subscriptionperiod": "Please Enter the Subscription Period (in months)",
         "productid": "Please Enter the Product Code"
     },
+     "BankDetails": {
+    "bankname": "Please Enter the Bank Name",
+    "branchname": "Please Enter the Branch Name",
+    "Accounttype": "Please Enter the Account Type",
+    "ifsc": "Please Enter the IFSC Code",
+    "bankloc": "Please Enter the Bank Location",
+    "accountnumber": "Please Enter the Account Number",
+    "accountholdname": "Please Enter the Account Holder Name",
+    "bankaddress": "Please Enter the Bank Address"
+  },
     "Warningmsg": {
         "Logout": "Do you really want to Log Out?",
         "Close": "Do you want to Close?",

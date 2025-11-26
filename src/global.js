@@ -12,6 +12,8 @@ var baseurl ="https://uaam.beyondexs.com/"
 
 // var APIurl = "https://phpmigrationapi.bexatm.com/uaam/api/"
 // var baseurl = "https://phpmigrationapi.bexatm.com/"
+// var APIurl ="https://uaamuat.beyondexs.com/api/"
+//  var baseurl ="https://uaamuat.beyondexs.com/"
  
 const initialState = {
    name : 'Uaam',
@@ -93,6 +95,10 @@ const initialState = {
       subCheckUrl: APIurl+ "SubscriptionRenewalController.php",
       SubIdGetUrl: APIurl+ "SubscriptionIdGetController.php",
       trailCompanyUrl: APIurl+ "TrialCompanyPostController.php",
+      CompanyBankGET: APIurl+ "CompanyBankGetContoller.php",
+      CompanyBankUPDATE: APIurl+ "CompanyBankUpdateContoller.php",
+      CompanyReportSettingGet: APIurl+ "CompanyReportSettingGet.php",
+      CompanyReportSettingUpdate: APIurl+ "CompanyReportSettingUpdate.php",
 
   };
 

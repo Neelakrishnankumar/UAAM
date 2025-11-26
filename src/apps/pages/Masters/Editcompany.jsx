@@ -15,14 +15,22 @@ import {
   MenuItem,
   InputLabel,
   Select,
-  Chip
+  Chip,
+  Breadcrumbs,
 } from "@mui/material";
 import { Formik, Field } from "formik";
 import * as Yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getFetchData, postData } from "../../../store/reducers/Formapireducer";
+import {
+  BankFetchData,
+  BankpostData,
+  CompReportFetchData,
+  CompReportpostData,
+  getFetchData,
+  postData,
+} from "../../../store/reducers/Formapireducer";
 import { toast } from "react-hot-toast";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import ResetTvIcon from "@mui/icons-material/ResetTv";
@@ -30,39 +38,50 @@ import { LoadingButton } from "@mui/lab";
 import { useProSidebar } from "react-pro-sidebar";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { formGap } from "../../../ui-components/utils";
-import { CheckinAutocomplete, SingleFormikOptimizedAutocomplete } from "../../../ui-components/global/Autocomplete";
+import {
+  CheckinAutocomplete,
+  SingleFormikOptimizedAutocomplete,
+} from "../../../ui-components/global/Autocomplete";
 import store from "../../..";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import {
+  CompanyimageUpload,
+  imageUpload,
+} from "../../../store/reducers/Imguploadreducer";
+import Resizer from "react-image-file-resizer";
+import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined";
+import { Image } from "@mui/icons-material";
 
 export const companySchema = Yup.object().shape({
   address: Yup.string().max(500, "Address must be 500 character "),
   phone: Yup.string().max(10, "Not Valid Phone Number"),
-  pincode: Yup
-    .number()
+  pincode: Yup.number()
     .min(10000, "Not valid Pin Code")
     .max(999999, "Not valid Pin Code"),
-  country: Yup.object()
-    .required('Please select a country')
-    .nullable(),
+  country: Yup.object().required("Please select a country").nullable(),
   license: Yup.string()
-    .matches(/^[a-zA-Z0-9]{4}$/, "Please enter alphabets only, exactly 4 characters") // Only letters and digits, 4 characters long
-    .test('contains-both', 'The code must contain both letters and numbers', value => {
-      return /[a-zA-Z]/.test(value) && /\d/.test(value); // Must contain both letters and numbers
-    }),
-  iECode: Yup
-    .string()
+    .matches(
+      /^[a-zA-Z0-9]{4}$/,
+      "Please enter alphabets only, exactly 4 characters"
+    ) // Only letters and digits, 4 characters long
+    .test(
+      "contains-both",
+      "The code must contain both letters and numbers",
+      (value) => {
+        return /[a-zA-Z]/.test(value) && /\d/.test(value); // Must contain both letters and numbers
+      }
+    ),
+  iECode: Yup.string()
     .matches(/^[-_ a-zA-Z0-9]+$/, "Please enter alphabets only")
     .min(10, "I.E.Code must be 10 character"),
-  gst: Yup
-    .string()
+  gst: Yup.string()
     .matches(/^[-_ a-zA-Z0-9]+$/, "Only Numeric and Alphabets ")
     .min(15, "GST must be 15 character"),
   email: Yup.string().email("Please enter a valid Email"),
-  name: Yup
-    .string()
+  name: Yup.string()
     .max(50)
     .matches(/^[A-Za-z\s\.'-]+$/, "Please enter alphabets only"),
 });
-
 
 const Editcompany = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -76,6 +95,19 @@ const Editcompany = () => {
   const CompanyID = sessionStorage.getItem("compID");
   const [errorMsgData, setErrorMsgData] = useState(null);
   const [validationSchema, setValidationSchema] = useState(null);
+  const [BankValidationSchema, setBankValidationSchema] = useState(null);
+  const [show, setScreen] = React.useState("0");
+  const [headerImage, setheaderImage] = useState("");
+  const [footerImage, setfooterImage] = useState("");
+  const [esignImage, setesignImage] = useState("");
+  const [qrCodeImage, setqrCodeImage] = useState("");
+
+  //IMAGE PREVIEW
+  const [headerFile, setHeaderFile] = useState(null);
+  const [headerPreview, setHeaderPreview] = useState(null);
+  const [headerUploaded, setHeaderUploaded] = useState(null);
+
+  const data = useSelector((state) => state.formApi.Data);
   let recID = params.id;
   let mode = params.Mode;
   let accessID = params.accessID;
@@ -125,7 +157,6 @@ const Editcompany = () => {
             .matches(/^[6-9]\d{9}$/, "Invalid Phone Number"),
         };
 
-
         // IE Code
         schemaFields1.iECode = Yup.string()
           .nullable()
@@ -140,8 +171,31 @@ const Editcompany = () => {
           .transform((value) => (value === "" ? null : value))
           .matches(/^[A-Za-z0-9]{7,11}$/, data.Company.rbiCode);
 
+        // ************** 2. BANK SCHEMA **************
+        const BankSchema = Yup.object().shape({
+          bankname: Yup.string().required(data.BankDetails.bankname),
+          branchname: Yup.string().required(data.BankDetails.branchname),
+          Accounttype: Yup.string().required(data.BankDetails.Accounttype),
 
+          ifsc: Yup.string()
+            .required(data.BankDetails.ifsc)
+            .matches(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC Code"),
+
+          accountnumber: Yup.string()
+            .required(data.BankDetails.accountnumber)
+            .matches(/^\d{9,18}$/, "Invalid Account Number"),
+
+          bankloc: Yup.string().required(data.BankDetails.bankloc),
+          accountholdname: Yup.string().required(
+            data.BankDetails.accountholdname
+          ),
+          bankaddress: Yup.string().required(data.BankDetails.bankaddress),
+        });
+
+        // ************** 3. SET STATE **************
         const schema1 = Yup.object().shape(schemaFields1);
+
+        setBankValidationSchema(BankSchema);
         setValidationSchema(schema1);
       })
       .catch((err) => console.error("Error loading validationcms.json:", err));
@@ -149,13 +203,53 @@ const Editcompany = () => {
   useEffect(() => {
     dispatch(getFetchData({ accessID, get: "get", recID }));
   }, [location.key]);
+  const [validationSchema2, setValidationSchema2] = useState(null);
 
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const Data = useSelector((state) => state.formApi.Data);
   const getLoading = useSelector((state) => state.formApi.getLoading);
   const isLoading = useSelector((state) => state.formApi.postLoading);
-  const rowData = location.state || {};
+  const partyBankgetdata = useSelector((state) => state.formApi.BankData);
+  const CompReportgetdata = useSelector(
+    (state) => state.formApi.CompReportData
+  );
+  const BankgetLoading = useSelector((state) => state.formApi.BankgetLoading);
+  const CompReportgetLoading = useSelector(
+    (state) => state.formApi.CompReportgetLoading
+  );
+  const BankisLoading = useSelector((state) => state.formApi.BankpostLoading);
+  const CompReportpostDataLoading = useSelector(
+    (state) => state.formApi.CompReportpostDataLoading
+  );
+  const [loading, setLoading] = useState(false);
 
+  const rowData = location.state || {};
+  const screenChange = (event) => {
+    setScreen(event.target.value);
+    if (event.target.value == "0") {
+      console.log(event.target.value, "--find event.target.value");
+
+      if (recID && mode === "E") {
+        dispatch(getFetchData({ accessID, get: "get", recID }));
+      } else {
+        dispatch(getFetchData({ accessID, get: "", recID }));
+      }
+    }
+    if (event.target.value == "1") {
+      if (recID && mode === "E") {
+        dispatch(BankFetchData({ get: "get", recID }));
+      } else {
+        dispatch(BankFetchData({ get: "", recID }));
+      }
+    }
+    if (event.target.value == "2") {
+      if (recID && mode === "E") {
+        dispatch(CompReportFetchData({ recID }));
+      } else {
+        dispatch(CompReportFetchData({ get: "", recID }));
+      }
+    }
+  };
 
   const initialValues = {
     code: Data.Code,
@@ -182,12 +276,12 @@ const Editcompany = () => {
     noofusers: Data.NumberOfUsers,
     country: Data.CnRecordID
       ? {
-        RecordID: Data.CnRecordID,
-        Code: Data.CountryCode,
-        Name: Data.CountryName,
-      }
+          RecordID: Data.CnRecordID,
+          Code: Data.CountryCode,
+          Name: Data.CountryName,
+        }
       : null,
-    Module: mode === "E" ? Data.Module : ""
+    Module: mode === "E" ? Data.Module : "",
   };
 
   /*************************SAVE FUCTION*********************/
@@ -218,7 +312,7 @@ const Editcompany = () => {
       Regularslno: values.useregular === true ? "Y" : "N",
       NumberOfEmployee: values.noOfEmployees,
       NumberOfUsers: values.noofusers,
-      Module: values.Module
+      Module: values.Module,
     };
     console.log(values.Module);
 
@@ -229,6 +323,97 @@ const Editcompany = () => {
       navigate(`/Apps/TR014/Company`);
     } else {
       toast.error(data.payload.Msg);
+    }
+  };
+
+  const BankInitialValue = {
+    code: partyBankgetdata.Code || "",
+    name: partyBankgetdata.Name || "",
+    bankname: partyBankgetdata.BankName || "",
+    Accounttype: partyBankgetdata.BankAccountType || "",
+    branchname: partyBankgetdata.BankBranchName || "",
+    ifsc: partyBankgetdata.BankIfsc || "",
+    bankloc: partyBankgetdata.BankLocation || "",
+    accountnumber: partyBankgetdata.BankAccountNo || "",
+    bankaddress: partyBankgetdata.BankAddress || "",
+    accountholdname: partyBankgetdata.BankAccountHolderName || "",
+  };
+
+  const Banksave = async (values, del) => {
+    setLoading(true);
+
+    let action =
+      mode === "A" && !del
+        ? "insert"
+        : mode === "E" && del
+        ? "harddelete"
+        : "update";
+
+    const idata = {
+      action: "update",
+      RecordID: recID,
+      BankName: values.bankname,
+      BankBranchName: values.branchname,
+      BankAccountHolderName: values.accountholdname,
+      BankAccountNo: values.accountnumber,
+      BankAccountType: values.Accounttype,
+      BankIfsc: values.ifsc,
+      BankLocation: values.bankloc,
+      BankAddress: values.bankaddress,
+    };
+
+    try {
+      const response = await dispatch(BankpostData({ idata }));
+
+      if (response.payload.Status === "Y") {
+        toast.success(response.payload.Msg);
+        // navigate("/Apps/TR243/Party");
+        //setScreen(0);
+      } else {
+        toast.error(response.payload.Msg);
+      }
+    } catch (error) {
+      toast.error("An error occurred while saving data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const CompReportInitialValue = {
+    code: CompReportgetdata.Code || "",
+    name: CompReportgetdata.Name || "",
+    CmHeader: CompReportgetdata.CmHeader || "",
+    CmFooter: CompReportgetdata.CmFooter || "",
+    Signature: CompReportgetdata.Signature || "",
+    QrCode: CompReportgetdata.QrCode || "",
+  };
+
+  const CompReportsave = async (values, del) => {
+    setLoading(true);
+
+    const idata = {
+      action: "update",
+      CompanyID: recID,
+      QrCode: qrCodeImage,
+      Signature: esignImage,
+      CmHeader: headerImage,
+      CmFooter: footerImage,
+    };
+
+    try {
+      const response = await dispatch(CompReportpostData({ idata }));
+
+      if (response.payload.Status === "Y") {
+        toast.success(response.payload.Msg);
+        // navigate("/Apps/TR243/Party");
+        //setScreen(0);
+      } else {
+        toast.error(response.payload.Msg);
+      }
+    } catch (error) {
+      toast.error("An error occurred while saving data.");
+    } finally {
+      setLoading(false);
     }
   };
   const fnLogOut = (props) => {
@@ -253,9 +438,142 @@ const Editcompany = () => {
     });
   };
 
+  const getFileHeaderChange = async (event) => {
+    setheaderImage(event.target.files[0]);
+    const file = event.target.files[0];
+
+    if (!file) return;
+    setHeaderFile(file);
+
+    setHeaderPreview(URL.createObjectURL(file));
+
+    const formData = new FormData();
+    formData.append("file", event.target.files[0]);
+    formData.append("type", "images");
+
+    const fileData = await dispatch(CompanyimageUpload({ formData }));
+    setheaderImage(fileData.payload.name);
+    console.log(">>>", fileData.payload);
+    console.log(
+      "🚀 ~ file: Editdeliverychalan.jsx:1143 ~ getFileChange ~ fileData:",
+      fileData
+    );
+    if (fileData.payload.Status == "Y") {
+      // console.log("I am here");
+      toast.success(fileData.payload.Msg);
+    }
+  };
+  //   const getFileHeaderChange = async (e) => {
+  //   let files = e.target.files;
+  //   let fileReader = new FileReader();
+
+  //   fileReader.readAsDataURL(files[0]);
+  //   fileReader.onload = (event) => {
+  //     let fileInput = !!event.target.result;
+  //     if (fileInput) {
+  //       try {
+  //         Resizer.imageFileResizer(
+  //           files[0],
+  //           150,
+  //           150,
+  //           "JPEG",
+  //           100,
+  //           0,
+  //           async (uri) => {
+  //             const formData = { file: uri, type: "images" };
+  //             const fileData = await dispatch(CompanyimageUpload({ formData }));
+  //             console.log("Uploaded File Response:", fileData);
+
+  //             if (fileData?.payload?.Status === "Y") {
+  //               toast.success(fileData.payload.Msg);
+  //               setheaderImage(fileData.payload.name);
+  //             } else {
+  //               toast.error("File upload failed.");
+  //             }
+  //           },
+  //           "base64",
+  //           150,
+  //           150
+  //         );
+  //       } catch (err) {
+  //         console.log(err);
+  //         toast.error("An error occurred during file processing.");
+  //       }
+  //     }
+  //   };
+  // };
+
+  const getFileFooterChange = async (event) => {
+    setfooterImage(event.target.files[0]);
+
+    console.log(event.target.files[0]);
+
+    const formData = new FormData();
+    formData.append("file", event.target.files[0]);
+    formData.append("type", "images");
+
+    const fileData = await dispatch(CompanyimageUpload({ formData }));
+    setfooterImage(fileData.payload.name);
+    console.log(">>>", fileData.payload);
+    console.log(
+      "🚀 ~ file: Editdeliverychalan.jsx:1143 ~ getFileChange ~ fileData:",
+      fileData
+    );
+    if (fileData.payload.Status == "Y") {
+      // console.log("I am here");
+      toast.success(fileData.payload.Msg);
+    }
+  };
+
+  const getFileESignChange = async (event) => {
+    setesignImage(event.target.files[0]);
+
+    console.log(event.target.files[0]);
+
+    const formData = new FormData();
+    formData.append("file", event.target.files[0]);
+    formData.append("type", "images");
+
+    const fileData = await dispatch(CompanyimageUpload({ formData }));
+    setesignImage(fileData.payload.name);
+    console.log(">>>", fileData.payload);
+    console.log(
+      "🚀 ~ file: Editdeliverychalan.jsx:1143 ~ getFileChange ~ fileData:",
+      fileData
+    );
+    if (fileData.payload.Status == "Y") {
+      // console.log("I am here");
+      toast.success(fileData.payload.Msg);
+    }
+  };
+
+  const getFileQRCodeChange = async (event) => {
+    setqrCodeImage(event.target.files[0]);
+
+    console.log(event.target.files[0]);
+
+    const formData = new FormData();
+    formData.append("file", event.target.files[0]);
+    formData.append("type", "images");
+
+    const fileData = await dispatch(CompanyimageUpload({ formData }));
+    setqrCodeImage(fileData.payload.name);
+    console.log(">>>", fileData.payload);
+    console.log(
+      "🚀 ~ file: Editdeliverychalan.jsx:1143 ~ getFileChange ~ fileData:",
+      fileData
+    );
+    if (fileData.payload.Status == "Y") {
+      // console.log("I am here");
+      toast.success(fileData.payload.Msg);
+    }
+  };
+
   return (
     <Box>
       {getLoading ? <LinearProgress /> : false}
+      {BankgetLoading ? <LinearProgress /> : false}
+      {CompReportgetLoading ? <LinearProgress /> : false}
       <Paper elevation={3} sx={{ margin: "0px 10px", background: "#F2F0F0" }}>
         <Box display="flex" justifyContent="space-between" p={2}>
           <Box
@@ -269,14 +587,50 @@ const Editcompany = () => {
                 <MenuOutlinedIcon />
               </IconButton>
             )}
-            <Typography variant="h3">
-              {mode === "E"
-                ? `Company(${rowData.CompanyName})`
-                : "Company(New)"}
-            </Typography>
+            <Breadcrumbs
+              maxItems={3}
+              aria-label="breadcrumb"
+              separator={<NavigateNextIcon sx={{ color: "#0000D1" }} />}
+            >
+              <Typography
+                variant="h3"
+                onClick={() => navigate("/Apps/TR014/Company")}
+              >
+                {mode === "E"
+                  ? `Company(${rowData.CompanyName})`
+                  : "Company(New)"}
+              </Typography>
+              {mode === "E" && show == "0" ? (
+                <Typography variant="h3">Company Details</Typography>
+              ) : null}
+              {mode === "E" && show == "1" ? (
+                <Typography variant="h3">Bank Details</Typography>
+              ) : null}
+              {mode === "E" && show == "2" ? (
+                <Typography variant="h3">Report Settings</Typography>
+              ) : null}
+            </Breadcrumbs>
           </Box>
 
           <Box display="flex">
+            {mode !== "A" ? (
+              <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                <InputLabel id="demo-select-small">Explore</InputLabel>
+                <Select
+                  labelId="demo-select-small"
+                  id="demo-select-small"
+                  value={show}
+                  label="Explore"
+                  onChange={screenChange}
+                >
+                  <MenuItem value={0}>Company</MenuItem>
+                  <MenuItem value={1}>Bank Deatils</MenuItem>
+                  <MenuItem value={2}>Report Settings</MenuItem>
+                </Select>
+              </FormControl>
+            ) : (
+              false
+            )}
             <Tooltip title="Close">
               <IconButton onClick={() => fnLogOut("Close")} color="error">
                 <ResetTvIcon />
@@ -290,7 +644,8 @@ const Editcompany = () => {
           </Box>
         </Box>
       </Paper>
-      {!getLoading ? (
+      {/* {!getLoading ? ( */}
+      {show == "0" ? (
         <Paper elevation={3} sx={{ margin: "10px" }}>
           <Formik
             initialValues={initialValues}
@@ -351,7 +706,10 @@ const Editcompany = () => {
                       type="text"
                       label={
                         <>
-                          Name <span style={{ color: 'red', fontSize: '20px' }}>*</span>
+                          Name{" "}
+                          <span style={{ color: "red", fontSize: "20px" }}>
+                            *
+                          </span>
                         </>
                       }
                       // onInvalid={(e) => {
@@ -379,7 +737,10 @@ const Editcompany = () => {
                       type="text"
                       label={
                         <>
-                          Address <span style={{ color: 'red', fontSize: '20px' }}>*</span>
+                          Address{" "}
+                          <span style={{ color: "red", fontSize: "20px" }}>
+                            *
+                          </span>
                         </>
                       }
                       value={values.address}
@@ -416,7 +777,11 @@ const Editcompany = () => {
                         <CheckinAutocomplete
                           label={
                             <>
-                              Country<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                              Country
+                              <span style={{ color: "red", fontSize: "20px" }}>
+                                {" "}
+                                *{" "}
+                              </span>
                             </>
                           }
                           id="country"
@@ -428,7 +793,9 @@ const Editcompany = () => {
                             setFieldValue("country", newValue);
                           }}
                           // log
-                          url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
+                          url={`${
+                            store.getState().globalurl.listViewurl
+                          }?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
                         />
 
                         {/* {touched.country && errors.country && (
@@ -449,7 +816,7 @@ const Editcompany = () => {
                         error={!!touched.rbiCode && !!errors.rbiCode}
                         helperText={touched.rbiCode && errors.rbiCode}
                         focused
-                      // inputProps={{ maxLength: 5 }}
+                        // inputProps={{ maxLength: 5 }}
                       />
                     </FormControl>
                     <TextField
@@ -458,7 +825,11 @@ const Editcompany = () => {
                       type="number"
                       label={
                         <>
-                          Pincode<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                          Pincode
+                          <span style={{ color: "red", fontSize: "20px" }}>
+                            {" "}
+                            *{" "}
+                          </span>
                         </>
                       }
                       // required
@@ -488,7 +859,11 @@ const Editcompany = () => {
                       type="number"
                       label={
                         <>
-                          Phone<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                          Phone
+                          <span style={{ color: "red", fontSize: "20px" }}>
+                            {" "}
+                            *{" "}
+                          </span>
                         </>
                       }
                       // required
@@ -539,8 +914,6 @@ const Editcompany = () => {
                       inputProps={{ readOnly: true }}
                       focused
                     />
-
-
                   </FormControl>
                   <FormControl sx={{ gridColumn: "span 2", gap: formGap }}>
                     <TextField
@@ -562,7 +935,11 @@ const Editcompany = () => {
                       type="email"
                       label={
                         <>
-                          Email ID<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                          Email ID
+                          <span style={{ color: "red", fontSize: "20px" }}>
+                            {" "}
+                            *{" "}
+                          </span>
                         </>
                       }
                       // required
@@ -644,11 +1021,7 @@ const Editcompany = () => {
                         <MenuItem value="Myprofile">Myprofile</MenuItem>
                       </Select>
                     </FormControl> */}
-                    <FormControl
-                      variant="standard"
-                      fullWidth
-                      focused
-                    >
+                    <FormControl variant="standard" fullWidth focused>
                       <InputLabel id="module-label">Module</InputLabel>
 
                       <Select
@@ -663,8 +1036,8 @@ const Editcompany = () => {
                           handleChange({
                             target: {
                               name: "Module",
-                              value: e.target.value.join(",")
-                            }
+                              value: e.target.value.join(","),
+                            },
                           });
                         }}
                         onBlur={handleBlur}
@@ -735,7 +1108,11 @@ const Editcompany = () => {
                       type="text"
                       label={
                         <>
-                          GST<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                          GST
+                          <span style={{ color: "red", fontSize: "20px" }}>
+                            {" "}
+                            *{" "}
+                          </span>
                         </>
                       }
                       // required
@@ -761,7 +1138,11 @@ const Editcompany = () => {
                       type="text"
                       label={
                         <>
-                          Subscription Code<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                          Subscription Code
+                          <span style={{ color: "red", fontSize: "20px" }}>
+                            {" "}
+                            *{" "}
+                          </span>
                         </>
                       }
                       // required
@@ -785,7 +1166,6 @@ const Editcompany = () => {
                       }}
                       inputProps={{ maxLength: 4 }}
                     />
-
 
                     <TextField
                       fullWidth
@@ -868,6 +1248,789 @@ const Editcompany = () => {
             )}
           </Formik>
           {/* </Box> */}
+        </Paper>
+      ) : (
+        false
+      )}
+
+      {show == "1" ? (
+        <Paper elevation={3} sx={{ margin: "10px" }}>
+          <Formik
+            initialValues={BankInitialValue}
+            onSubmit={(values, setSubmitting) => {
+              setTimeout(() => {
+                Banksave(values);
+              }, 100);
+            }}
+            validationSchema={BankValidationSchema}
+            enableReinitialize={true}
+          >
+            {({
+              errors,
+              touched,
+              handleBlur,
+              handleChange,
+              isSubmitting,
+              values,
+              handleSubmit,
+              setFieldValue,
+            }) => (
+              <form onSubmit={handleSubmit}>
+                <Box
+                  display="grid"
+                  gap={formGap}
+                  padding={1}
+                  gridTemplateColumns="repeat(2 , minMax(0,1fr))"
+                  // gap="30px"
+                  sx={{
+                    "& > div": {
+                      gridColumn: isNonMobile ? undefined : "span 2",
+                    },
+                  }}
+                >
+                  {/* {CompanyAutoCode == "Y" ? (
+                    <TextField
+                      name="code"
+                      type="text"
+                      id="code"
+                      label="Code"
+                      variant="standard"
+                      placeholder="Auto"
+                      focused
+                      // required
+                      value={values.code}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={!!touched.code && !!errors.code}
+                      helperText={touched.code && errors.code}
+                      sx={{
+                        backgroundColor: "#ffffff", // Set the background to white
+                        "& .MuiFilledInput-root": {
+                          backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                        },
+                      }}
+                      InputProps={{ readOnly: true }}
+                      // autoFocus
+                    />
+                  ) : ( */}
+                  <TextField
+                    name="code"
+                    type="text"
+                    id="code"
+                    label={
+                      <>
+                        Code
+                        {/* <span style={{ color: "red", fontSize: "20px" }}>
+                            *
+                          </span> */}
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    // required
+                    value={values.code}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.code && !!errors.code}
+                    helperText={touched.code && errors.code}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    InputProps={{
+                      inputProps: {
+                        readOnly: true,
+                      },
+                    }}
+                    autoFocus
+                  />
+                  {/* )} */}
+                  <TextField
+                    name="name"
+                    type="text"
+                    id="name"
+                    label={
+                      <>
+                        Name
+                        {/* <span style={{ color: "red", fontSize: "20px" }}>
+                          *
+                        </span> */}
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.name}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.name && !!errors.name}
+                    helperText={touched.name && errors.name}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    InputProps={{
+                      inputProps: {
+                        readOnly: true,
+                      },
+                    }}
+                    // required
+                    //autoFocus={CompanyAutoCode == "Y"}
+                  />
+                  <TextField
+                    name="bankname"
+                    type="text"
+                    id="bankname"
+                    label={
+                      <>
+                        Bank Name
+                        <span style={{ color: "red", fontSize: "20px" }}>
+                          *
+                        </span>
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    // required
+                    value={values.bankname}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.bankname && !!errors.bankname}
+                    helperText={touched.bankname && errors.bankname}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    autoFocus
+                  />
+                  <TextField
+                    name="Accounttype"
+                    type="text"
+                    id="Accounttype"
+                    label={
+                      <>
+                        Account Type
+                        <span style={{ color: "red", fontSize: "20px" }}>
+                          *
+                        </span>
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    // required
+                    value={values.Accounttype}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.Accounttype && !!errors.Accounttype}
+                    helperText={touched.Accounttype && errors.Accounttype}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    autoFocus
+                  />
+                  <TextField
+                    name="branchname"
+                    label={
+                      <>
+                        Branch Name
+                        <span style={{ color: "red", fontSize: "20px" }}>
+                          *
+                        </span>
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    // required
+                    value={values.branchname}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    // onChange={(e) => {
+                    //   const input = e.target.value.toUpperCase();
+                    //   if (/^[A-Z0-9]*$/.test(input) || input === "") {
+                    //     handleChange({
+                    //       target: {
+                    //         name: "branchname",
+                    //         value: input,
+                    //       },
+                    //     });
+                    //   }
+                    // }}
+                    error={!!touched.branchname && !!errors.branchname}
+                    helperText={touched.branchname && errors.branchname}
+                    sx={{
+                      backgroundColor: "#ffffff",
+                    }}
+                    autoFocus
+                  />
+                  <TextField
+                    name="ifsc"
+                    label={
+                      <>
+                        IFSC Code
+                        <span style={{ color: "red", fontSize: "20px" }}>
+                          *
+                        </span>
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    // required
+                    value={values.ifsc}
+                    onBlur={handleBlur}
+                    //  onChange={handleChange}
+                    onChange={(e) => {
+                      const input = e.target.value.toUpperCase();
+                      if (/^[0-9A-Z]*$/.test(input) || input === "") {
+                        // This updates Formik value correctly
+                        handleChange({
+                          target: {
+                            name: "ifsc",
+                            value: input,
+                          },
+                        });
+                      }
+                    }}
+                    error={!!touched.ifsc && !!errors.ifsc}
+                    helperText={touched.ifsc && errors.ifsc}
+                    sx={{
+                      backgroundColor: "#ffffff",
+                    }}
+                    autoFocus
+                  />
+                  <TextField
+                    name="accountholdname"
+                    type="text"
+                    id="accountholdname"
+                    label={
+                      <>
+                        Account Holder Name
+                        <span style={{ color: "red", fontSize: "20px" }}>
+                          *
+                        </span>
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    // required
+                    value={values.accountholdname}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={
+                      !!touched.accountholdname && !!errors.accountholdname
+                    }
+                    helperText={
+                      touched.accountholdname && errors.accountholdname
+                    }
+                    // inputProps={{ maxLength: 10 }}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    autoFocus
+                  />
+
+                  <TextField
+                    name="bankloc"
+                    type="text"
+                    id="bankloc"
+                    label={
+                      <>
+                        Bank Location
+                        <span style={{ color: "red", fontSize: "20px" }}>
+                          *
+                        </span>
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    // required
+                    value={values.bankloc}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    autoFocus
+                    error={!!touched.bankloc && !!errors.bankloc}
+                    helperText={touched.bankloc && errors.bankloc}
+                  />
+                  {/* <TextField
+                    name="accountnumber"
+                    type="number"
+                    id="accountnumber"
+                    label="Account Number"
+                    variant="standard"
+                    focused
+                     required
+                    value={values.accountnumber}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    autoFocus
+                  /> */}
+                  <TextField
+                    name="accountnumber"
+                    type="text" // use "text" instead of "number" to preserve leading 0s and better control
+                    id="accountnumber"
+                    label={
+                      <>
+                        Account Number
+                        <span style={{ color: "red", fontSize: "20px" }}>
+                          *
+                        </span>
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    // required
+                    value={values.accountnumber}
+                    onBlur={handleBlur}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      // Allow only digits
+                      if (/^\d*$/.test(input)) {
+                        handleChange({
+                          target: {
+                            name: "accountnumber",
+                            value: input,
+                          },
+                        });
+                      }
+                    }}
+                    error={!!touched.accountnumber && !!errors.accountnumber}
+                    helperText={touched.accountnumber && errors.accountnumber}
+                    sx={{
+                      backgroundColor: "#ffffff",
+                    }}
+                    autoFocus
+                  />
+                  <TextField
+                    name="bankaddress"
+                    type="text"
+                    id="bankaddress"
+                    label={
+                      <>
+                        Bank Address
+                        <span style={{ color: "red", fontSize: "20px" }}>
+                          *
+                        </span>
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    // required
+                    value={values.bankaddress}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    error={!!touched.bankaddress && !!errors.bankaddress}
+                    helperText={touched.bankaddress && errors.bankaddress}
+                    autoFocus
+                  />
+                </Box>
+                <Box
+                  display="flex"
+                  justifyContent="flex-end"
+                  padding={1}
+                  gap="20px"
+                >
+                  {/* {YearFlag == "true" ? ( */}
+                  <LoadingButton
+                    color="secondary"
+                    variant="contained"
+                    type="submit"
+                    loading={isLoading}
+                  >
+                    Save
+                  </LoadingButton>
+                  {/* ) : (
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      disabled={true}
+                    >
+                      Save
+                    </Button>
+                  )}{" "} */}
+
+                  <Button
+                    color="warning"
+                    variant="contained"
+                    onClick={() => {
+                      setScreen(0);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              </form>
+            )}
+          </Formik>
+        </Paper>
+      ) : (
+        false
+      )}
+
+      {show == "2" ? (
+        <Paper elevation={3} sx={{ margin: "10px" }}>
+          <Formik
+            initialValues={CompReportInitialValue}
+            onSubmit={(values, setSubmitting) => {
+              setTimeout(() => {
+                CompReportsave(values);
+              }, 100);
+            }}
+            //validationSchema={BankValidationSchema}
+            enableReinitialize={true}
+          >
+            {({
+              errors,
+              touched,
+              handleBlur,
+              handleChange,
+              isSubmitting,
+              values,
+              handleSubmit,
+              setFieldValue,
+            }) => (
+              <form onSubmit={handleSubmit}>
+                <Box
+                  display="grid"
+                  gap={formGap}
+                  padding={1}
+                  gridTemplateColumns="repeat(2 , minMax(0,1fr))"
+                  // gap="30px"
+                  sx={{
+                    "& > div": {
+                      gridColumn: isNonMobile ? undefined : "span 2",
+                    },
+                  }}
+                >
+                  {/* {CompanyAutoCode == "Y" ? (
+                    <TextField
+                      name="code"
+                      type="text"
+                      id="code"
+                      label="Code"
+                      variant="standard"
+                      placeholder="Auto"
+                      focused
+                      // required
+                      value={values.code}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={!!touched.code && !!errors.code}
+                      helperText={touched.code && errors.code}
+                      sx={{
+                        backgroundColor: "#ffffff", // Set the background to white
+                        "& .MuiFilledInput-root": {
+                          backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                        },
+                      }}
+                      InputProps={{ readOnly: true }}
+                      // autoFocus
+                    />
+                  ) : ( */}
+                  <TextField
+                    name="code"
+                    type="text"
+                    id="code"
+                    label={
+                      <>
+                        Code
+                        {/* <span style={{ color: "red", fontSize: "20px" }}>
+                            *
+                          </span> */}
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    // required
+                    value={values.code}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.code && !!errors.code}
+                    helperText={touched.code && errors.code}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    InputProps={{
+                      inputProps: {
+                        readOnly: true,
+                      },
+                    }}
+                    autoFocus
+                  />
+                  {/* )} */}
+                  <TextField
+                    name="name"
+                    type="text"
+                    id="name"
+                    label={
+                      <>
+                        Name
+                        {/* <span style={{ color: "red", fontSize: "20px" }}>
+                          *
+                        </span> */}
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.name}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.name && !!errors.name}
+                    helperText={touched.name && errors.name}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    InputProps={{
+                      inputProps: {
+                        readOnly: true,
+                      },
+                    }}
+                    // required
+                    //autoFocus={CompanyAutoCode == "Y"}
+                  />
+                </Box>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  padding={1}
+                  gap="20px"
+                >
+                  <Box>
+                    {/* HEADER IMAGE */}
+                    <Tooltip title="Header Image Upload">
+                      <IconButton
+                        size="small"
+                        color="warning"
+                        aria-label="upload picture"
+                        component="label"
+                      >
+                        <input
+                          hidden
+                          accept="all/*"
+                          type="file"
+                          onChange={getFileHeaderChange}
+                        />
+                        <PictureAsPdfOutlinedIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      component={"a"}
+                      onClick={() => {
+                        CompReportgetdata.CmHeader || headerImage
+                          ? window.open(
+                              headerImage
+                                ? store.getState().globalurl.imageUrl +
+                                    headerImage
+                                : store.getState().globalurl.imageUrl +
+                                    CompReportgetdata.CmHeader,
+                              "_blank"
+                            )
+                          : toast.error("Please Upload File");
+                      }}
+                    >
+                      Header Image View
+                    </Button>
+                    {/* <Image
+                      src={
+                        headerPreview
+                          ? headerPreview 
+                          : headerUploaded
+                          ? store.getState().globalurl.imageUrl + headerUploaded
+                          : store.getState().globalurl.imageUrl +
+                            CompReportgetdata.CmHeader
+                      }
+                      width={300}
+                      height={300}
+                    /> */}
+                  </Box>
+                  <Box>
+                    {/* FOOTER IMAGE */}
+                    <Tooltip title="Footer Upload">
+                      <IconButton
+                        size="small"
+                        color="warning"
+                        aria-label="upload picture"
+                        component="label"
+                      >
+                        <input
+                          hidden
+                          accept="all/*"
+                          type="file"
+                          onChange={getFileFooterChange}
+                        />
+                        <PictureAsPdfOutlinedIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      component={"a"}
+                      onClick={() => {
+                        CompReportgetdata.CmFooter || footerImage
+                          ? window.open(
+                              footerImage
+                                ? store.getState().globalurl.imageUrl +
+                                    footerImage
+                                : store.getState().globalurl.imageUrl +
+                                    CompReportgetdata.CmFooter,
+                              "_blank"
+                            )
+                          : toast.error("Please Upload File");
+                      }}
+                    >
+                      Footer Image View
+                    </Button>
+                  </Box>
+                  <Box>
+                    {/* E-SIGN IMAGE */}
+                    <Tooltip title="E-Sign Upload">
+                      <IconButton
+                        size="small"
+                        color="warning"
+                        aria-label="upload picture"
+                        component="label"
+                      >
+                        <input
+                          hidden
+                          accept="all/*"
+                          type="file"
+                          onChange={getFileESignChange}
+                        />
+                        <PictureAsPdfOutlinedIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      component={"a"}
+                      onClick={() => {
+                        CompReportgetdata.Signature || esignImage
+                          ? window.open(
+                              esignImage
+                                ? store.getState().globalurl.imageUrl +
+                                    esignImage
+                                : store.getState().globalurl.imageUrl +
+                                    CompReportgetdata.Signature,
+                              "_blank"
+                            )
+                          : toast.error("Please Upload File");
+                      }}
+                    >
+                      E-Sign Image View
+                    </Button>
+                  </Box>
+                  <Box>
+                    {/* QR CODE IMAGE */}
+                    <Tooltip title="QR Code Upload">
+                      <IconButton
+                        size="small"
+                        color="warning"
+                        aria-label="upload picture"
+                        component="label"
+                      >
+                        <input
+                          hidden
+                          accept="all/*"
+                          type="file"
+                          onChange={getFileQRCodeChange}
+                        />
+                        <PictureAsPdfOutlinedIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      component={"a"}
+                      onClick={() => {
+                        CompReportgetdata.QrCode || qrCodeImage
+                          ? window.open(
+                              qrCodeImage
+                                ? store.getState().globalurl.imageUrl +
+                                    qrCodeImage
+                                : store.getState().globalurl.imageUrl +
+                                    CompReportgetdata.QrCode,
+                              "_blank"
+                            )
+                          : toast.error("Please Upload File");
+                      }}
+                    >
+                      QR Code View
+                    </Button>
+                  </Box>
+                </Box>
+                <Box
+                  display="flex"
+                  justifyContent="flex-end"
+                  padding={1}
+                  gap="20px"
+                >
+                  {/* {YearFlag == "true" ? ( */}
+                  <LoadingButton
+                    color="secondary"
+                    variant="contained"
+                    type="submit"
+                    loading={isLoading}
+                  >
+                    Save
+                  </LoadingButton>
+                  {/* ) : (
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      disabled={true}
+                    >
+                      Save
+                    </Button>
+                  )}{" "} */}
+
+                  <Button
+                    color="warning"
+                    variant="contained"
+                    onClick={() => {
+                      setScreen(0);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              </form>
+            )}
+          </Formik>
         </Paper>
       ) : (
         false
