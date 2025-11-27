@@ -12,13 +12,16 @@ import {
   Checkbox,
   Tooltip,
   LinearProgress,
+  MenuItem,
+  Select,
+  InputLabel
 } from "@mui/material";
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getFetchData } from "../../../store/reducers/Formapireducer";
+import { getFetchData, trailCompany } from "../../../store/reducers/Formapireducer";
 import { toast } from "react-hot-toast";
 import Listviewpopup from "../Lookup";
 import Popup from "../popup";
@@ -56,7 +59,7 @@ const Trialcompany = () => {
   const isLoading = useSelector((state) => state.formApi.postLoading);
 
   useEffect(() => {
-    dispatch(getFetchData({ accessID:"TR014", get: "get", recID:"-1" }));
+    dispatch(getFetchData({ accessID: "TR014", get: "get", recID: "-1" }));
   }, [location.key]);
 
   const initialValues = {
@@ -84,11 +87,13 @@ const Trialcompany = () => {
     noofusers: 1,
     country: Data.CnRecordID
       ? {
-          RecordID: Data.CnRecordID,
-          Code: Data.CountryCode,
-          Name: Data.CountryName,
-        }
+        RecordID: Data.CnRecordID,
+        Code: Data.CountryCode,
+        Name: Data.CountryName,
+      }
       : null,
+
+    Module: mode === "E" ? Data.Module : ""
   };
 
   const handleShow = (type) => {
@@ -106,17 +111,17 @@ const Trialcompany = () => {
       setOpenCNpopup(false);
     }
   };
-const generateAlphaCode = (length = 4) => {
-  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += letters.charAt(Math.floor(Math.random() * letters.length));
-  }
-  return result;
-};
+  const generateAlphaCode = (length = 4) => {
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += letters.charAt(Math.floor(Math.random() * letters.length));
+    }
+    return result;
+  };
   const fnSave = async (values) => {
     const idata = {
-      RecordID: recID,
+      RecordID: recID || "-1",
       CnRecordID: values.country?.RecordID || "0",
       CountryCode: values.country?.Code || "",
       CountryName: values.country?.Name || "",
@@ -129,52 +134,69 @@ const generateAlphaCode = (length = 4) => {
       Fax: values.fax,
       Web: values.web,
       Cst: values.cst,
-      Areacode: values.areacode,
+      AreaCode: "",
+      IeCode: "",
       Process: values.stockClose ? "Y" : "N",
       Gst: values.gst,
       Regularslno: values.useregular ? "Y" : "N",
-      
+
       // License: values.license,
-      License:generateAlphaCode(),
-      Disable: "",   
+      License: generateAlphaCode(),
+      Disable: "",
       // NumberOfEmployee: values.noOfEmployees,
       // NumberOfUsers: values.noofusers,
       NumberOfEmployee: "5",
       NumberOfUsers: "1",
       Iecode: "",
-      Rbicode:"",
+      Rbicode: "",
       Lut: "",
-      SortOrder: "",
-   
+      SortOrder: 1,
+      Module: values.Module
+
     };
 
 
     console.log("Sending to API:", idata);
 
-    try {
-      const response = await fetch(
-        "https://dvmtapi.bexatm.com/uaam/api/TrialCompanyPostController.php",
-        {
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json',
-            "Authorization":"eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJzdWIiOiJCZXhAMTIzIiwibmFtZSI6IkJleCIsImFkbWluIjp0cnVlLCJleHAiOjE2Njk5ODQzNDl9.uxE3r3X4lqV_WKrRKRPXd-Jub9BnVcCXqCtLL4I0fpU"
-          },
-          body: JSON.stringify(idata),
-        }
-      );
+    // try {
+    //   const response = await fetch(
+    //     "https://dvmtapi.bexatm.com/uaam/api/TrialCompanyPostController.php",
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJzdWIiOiJCZXhAMTIzIiwibmFtZSI6IkJleCIsImFkbWluIjp0cnVlLCJleHAiOjE2Njk5ODQzNDl9.uxE3r3X4lqV_WKrRKRPXd-Jub9BnVcCXqCtLL4I0fpU"
+    //       },
+    //       body: JSON.stringify(idata),
+    //     }
+    //   );
 
-      const result = await response.json();
-      if (result.Status === "Y") {
-        toast.success(result.Msg || "Company saved successfully.");
+    //   const result = await response.json();
+    //   if (result.Status === "Y") {
+    //     toast.success(result.Msg || "Company saved successfully.");
+    //     navigate(`/trial-company/notification`);
+    //   } else {
+    //     toast.error(result.Msg || "Failed to save company.");
+    //   }
+    // } catch (error) {
+    //   console.error("Save Error:", error);
+    //   toast.error("Something went wrong while saving.");
+    // }
+    try {
+      const res = await dispatch(trailCompany({ data: idata }));
+
+      if (res?.payload?.Status === "Y") {
+        toast.success(res.payload.Msg || "Company saved successfully.");
         navigate(`/trial-company/notification`);
       } else {
-        toast.error(result.Msg || "Failed to save company.");
+        toast.error(res.payload.Msg || "Failed to save company.");
       }
+
     } catch (error) {
       console.error("Save Error:", error);
       toast.error("Something went wrong while saving.");
     }
+
   };
 
   const fnLogOut = (props) => {
@@ -193,11 +215,11 @@ const generateAlphaCode = (length = 4) => {
     });
   };
 
-  
+
   return (
     <Box>
       {getLoading ? <LinearProgress /> : false}
-            <Paper elevation={3} sx={{ margin: "0px 10px", background: "#F2F0F0" }}>
+      <Paper elevation={3} sx={{ margin: "0px 10px", background: "#F2F0F0" }}>
         <Box display="flex" justifyContent="space-between" p={2}>
           <Box display="flex" borderRadius="3px" alignItems="center">
             <Box display={"flex"} borderRadius="3px" alignItems="center">
@@ -206,7 +228,7 @@ const generateAlphaCode = (length = 4) => {
                 color="#0000D1"
                 sx={{ cursor: "default" }}
               >
-              Company Registration
+                Company Registration
               </Typography>
             </Box>
           </Box>
@@ -266,24 +288,24 @@ const generateAlphaCode = (length = 4) => {
                       onChange={handleChange}
                       value={values.code}
                       focused
-                      inputProps={{maxLength: 5}}
-                      InputProps={{readOnly:true}}
+                      inputProps={{ maxLength: 5 }}
+                      InputProps={{ readOnly: true }}
                       name="code"
                       autoFocus
-                      // error={!!touched.code && !!errors.code}
-                      // helperText={touched.code && errors.code}                      
-                      // onInvalid={(e) => {
-                      //   e.target.setCustomValidity("Please Fill The Code");
-                      // }}
-                      // onInput={(e) => {
-                      //   e.target.setCustomValidity("");
-                      // }}
-                      // onInvalid={(e) => {
-                      //   e.target.setCustomValidity("Please Fill The Code");
-                      // }}
-                      // onInput={(e) => {
-                      //   e.target.setCustomValidity("");
-                      // }}
+                    // error={!!touched.code && !!errors.code}
+                    // helperText={touched.code && errors.code}                      
+                    // onInvalid={(e) => {
+                    //   e.target.setCustomValidity("Please Fill The Code");
+                    // }}
+                    // onInput={(e) => {
+                    //   e.target.setCustomValidity("");
+                    // }}
+                    // onInvalid={(e) => {
+                    //   e.target.setCustomValidity("Please Fill The Code");
+                    // }}
+                    // onInput={(e) => {
+                    //   e.target.setCustomValidity("");
+                    // }}
                     />
 
                     <TextField
@@ -353,18 +375,18 @@ const generateAlphaCode = (length = 4) => {
                           alignItems: "center",
                         }}
                       >
-                        <SingleFormikOptimizedAutocomplete 
-                    label="Country"
-                    id="country"
-                    name="country"
-                    value={values.country}
-                    onChange={(e,newValue)=> {
-                      setFieldValue("country",newValue)
-                    }}
-                    log
-                   url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
-                    />
-                    
+                        <SingleFormikOptimizedAutocomplete
+                          label="Country"
+                          id="country"
+                          name="country"
+                          value={values.country}
+                          onChange={(e, newValue) => {
+                            setFieldValue("country", newValue)
+                          }}
+                          log
+                          url={`${store.getState().globalurl.listViewurl}?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
+                        />
+
                         {/* <TextField
                           label="Country"
                           variant="standard"
@@ -388,10 +410,46 @@ const generateAlphaCode = (length = 4) => {
                           focused
                         /> */}
                       </FormControl>
-                     
+                      <FormControl
+                        variant="standard"
+                        sx={{ marginTop: "8px" }}
+                        fullWidth
+                        focused
+                      >
+                        <InputLabel id="module-label">Module</InputLabel>
+
+                        <Select
+                          labelId="module-label"
+                          id="Module"
+                          name="Module"
+                          multiple
+                          // Convert comma-separated string to array for MUI Select
+                          value={values.Module ? values.Module.split(",") : []}
+                          onChange={(e) => {
+                            // Convert array back to comma-separated string
+                            handleChange({
+                              target: {
+                                name: "Module",
+                                value: e.target.value.join(",")
+                              }
+                            });
+                          }}
+                          onBlur={handleBlur}
+                          renderValue={(selected) => selected.join(", ")}
+                        >
+                          <MenuItem value="All">All</MenuItem>
+                          <MenuItem value="Task">Task</MenuItem>
+                          <MenuItem value="Project">Project</MenuItem>
+                          <MenuItem value="Attendance">Attendance</MenuItem>
+                          <MenuItem value="Request">Request</MenuItem>
+                          <MenuItem value="Assessment">Assessment</MenuItem>
+                          <MenuItem value="Myprofile">Myprofile</MenuItem>
+                        </Select>
+                      </FormControl>
 
                     </FormControl>
-                     <TextField
+
+                    <TextField
                       fullWidth
                       variant="standard"
                       type="text"
@@ -450,7 +508,7 @@ const generateAlphaCode = (length = 4) => {
                       variant="standard"
                       type="text"
                       label="Web URL"
-                      
+
                       value={values.web}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -567,7 +625,7 @@ const generateAlphaCode = (length = 4) => {
                       focused
                       inputProps={{ maxLength: 5 }}
                     /> */}
-                    
+
 
                     {/* <TextField
                       fullWidth
