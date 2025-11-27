@@ -51,6 +51,7 @@ import {
 import Resizer from "react-image-file-resizer";
 import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined";
 import { Image } from "@mui/icons-material";
+import { TbBoxMultiple1 } from "react-icons/tb";
 
 export const companySchema = Yup.object().shape({
   address: Yup.string().max(500, "Address must be 500 character "),
@@ -103,9 +104,10 @@ const Editcompany = () => {
   const [qrCodeImage, setqrCodeImage] = useState("");
 
   //IMAGE PREVIEW
-  const [headerFile, setHeaderFile] = useState(null);
-  const [headerPreview, setHeaderPreview] = useState(null);
-  const [headerUploaded, setHeaderUploaded] = useState(null);
+  const [headerPreview, setHeaderPreview] = useState(""); // blob preview url
+  const [footerPreview, setFooterPreview] = useState(""); // blob preview url
+  const [eSignPreview, seteSignPreview] = useState(""); // blob preview url
+  const [qrCodePreview, setqrCodePreview] = useState(""); // blob preview url
 
   const data = useSelector((state) => state.formApi.Data);
   let recID = params.id;
@@ -305,7 +307,7 @@ const Editcompany = () => {
       Rbicode: values.rbiCode,
       Gst: values.gst,
       Lut: values.Lut,
-      SortOrder: values.sortOrder,
+      SortOrder: values.sortOrder || 0,
       License: values.license,
       Disable: values.disable === true ? "Y" : "N",
       Process: values.stockClose === true ? "Y" : "N",
@@ -394,10 +396,25 @@ const Editcompany = () => {
     const idata = {
       action: "update",
       CompanyID: recID,
-      QrCode: qrCodeImage,
-      Signature: esignImage,
-      CmHeader: headerImage,
-      CmFooter: footerImage,
+      QrCode:
+        qrCodeImage && qrCodeImage !== ""
+          ? qrCodeImage
+          : CompReportgetdata.QrCode,
+
+      Signature:
+        esignImage && esignImage !== ""
+          ? esignImage
+          : CompReportgetdata.Signature,
+
+      CmHeader:
+        headerImage && headerImage !== ""
+          ? headerImage
+          : CompReportgetdata.CmHeader,
+
+      CmFooter:
+        footerImage && footerImage !== ""
+          ? footerImage
+          : CompReportgetdata.CmFooter,
     };
 
     try {
@@ -438,14 +455,9 @@ const Editcompany = () => {
     });
   };
 
-  const getFileHeaderChange = async (event) => {
+  const getFileHeaderChange1 = async (event) => {
     setheaderImage(event.target.files[0]);
-    const file = event.target.files[0];
-
-    if (!file) return;
-    setHeaderFile(file);
-
-    setHeaderPreview(URL.createObjectURL(file));
+    setHeaderPreview(URL.createObjectURL(event.target.files[0]));
 
     const formData = new FormData();
     formData.append("file", event.target.files[0]);
@@ -463,50 +475,12 @@ const Editcompany = () => {
       toast.success(fileData.payload.Msg);
     }
   };
-  //   const getFileHeaderChange = async (e) => {
-  //   let files = e.target.files;
-  //   let fileReader = new FileReader();
-
-  //   fileReader.readAsDataURL(files[0]);
-  //   fileReader.onload = (event) => {
-  //     let fileInput = !!event.target.result;
-  //     if (fileInput) {
-  //       try {
-  //         Resizer.imageFileResizer(
-  //           files[0],
-  //           150,
-  //           150,
-  //           "JPEG",
-  //           100,
-  //           0,
-  //           async (uri) => {
-  //             const formData = { file: uri, type: "images" };
-  //             const fileData = await dispatch(CompanyimageUpload({ formData }));
-  //             console.log("Uploaded File Response:", fileData);
-
-  //             if (fileData?.payload?.Status === "Y") {
-  //               toast.success(fileData.payload.Msg);
-  //               setheaderImage(fileData.payload.name);
-  //             } else {
-  //               toast.error("File upload failed.");
-  //             }
-  //           },
-  //           "base64",
-  //           150,
-  //           150
-  //         );
-  //       } catch (err) {
-  //         console.log(err);
-  //         toast.error("An error occurred during file processing.");
-  //       }
-  //     }
-  //   };
-  // };
 
   const getFileFooterChange = async (event) => {
     setfooterImage(event.target.files[0]);
-
+    setFooterPreview(URL.createObjectURL(event.target.files[0]));
     console.log(event.target.files[0]);
+    //setFooterPreview(URL.createObjectURL(event.target.files[0]));
 
     const formData = new FormData();
     formData.append("file", event.target.files[0]);
@@ -528,6 +502,7 @@ const Editcompany = () => {
   const getFileESignChange = async (event) => {
     setesignImage(event.target.files[0]);
 
+    seteSignPreview(URL.createObjectURL(event.target.files[0]));
     console.log(event.target.files[0]);
 
     const formData = new FormData();
@@ -551,7 +526,7 @@ const Editcompany = () => {
     setqrCodeImage(event.target.files[0]);
 
     console.log(event.target.files[0]);
-
+    setqrCodePreview(URL.createObjectURL(event.target.files[0]));
     const formData = new FormData();
     formData.append("file", event.target.files[0]);
     formData.append("type", "images");
@@ -1823,174 +1798,360 @@ const Editcompany = () => {
                   />
                 </Box>
                 <Box
-                  display="flex"
-                  justifyContent="space-between"
+                  // display="flex"
+                  // justifyContent="space-between"
+                  // padding={1}
+                  // gap="20px",
+                  display="grid"
+                  gap={formGap}
                   padding={1}
-                  gap="20px"
+                  gridTemplateColumns="repeat(4 , minMax(0,1fr))"
+                  // gap="30px"
+                  sx={{
+                    "& > div": {
+                      gridColumn: isNonMobile ? undefined : "span 2",
+                    },
+                  }}
                 >
-                  <Box>
-                    {/* HEADER IMAGE */}
-                    <Tooltip title="Header Image Upload">
-                      <IconButton
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    <Box>
+                      {/* HEADER IMAGE */}
+                      <Tooltip title="Header Image Upload">
+                        <IconButton
+                          size="small"
+                          color="warning"
+                          aria-label="upload picture"
+                          component="label"
+                        >
+                          <input
+                            hidden
+                            accept="all/*"
+                            type="file"
+                            onChange={getFileHeaderChange1}
+                          />
+                          <PictureAsPdfOutlinedIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Button
                         size="small"
-                        color="warning"
-                        aria-label="upload picture"
-                        component="label"
+                        variant="contained"
+                        component={"a"}
+                        onClick={() => {
+                          CompReportgetdata.CmHeader || headerImage
+                            ? window.open(
+                                headerImage
+                                  ? store.getState().globalurl.imageUrl +
+                                      headerImage
+                                  : store.getState().globalurl.imageUrl +
+                                      CompReportgetdata.CmHeader,
+                                "_blank"
+                              )
+                            : toast.error("Please Upload File");
+                        }}
                       >
-                        <input
-                          hidden
-                          accept="all/*"
-                          type="file"
-                          onChange={getFileHeaderChange}
+                        Header Image View
+                      </Button>
+                    </Box>
+                    <Box>
+                      {headerPreview ||
+                      headerImage ||
+                      CompReportgetdata.CmHeader ? (
+                        <img
+                          src={
+                            headerPreview
+                              ? headerPreview
+                              : headerImage
+                              ? store.getState().globalurl.imageUrl +
+                                headerImage
+                              : store.getState().globalurl.imageUrl +
+                                CompReportgetdata.CmHeader
+                          }
+                          width={175}
+                          height={175}
+                          style={{
+                            objectFit: "contain",
+                            border: "1px solid #ccc",
+                          }}
                         />
-                        <PictureAsPdfOutlinedIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Button
-                      size="small"
-                      variant="contained"
-                      component={"a"}
-                      onClick={() => {
-                        CompReportgetdata.CmHeader || headerImage
-                          ? window.open(
-                              headerImage
-                                ? store.getState().globalurl.imageUrl +
-                                    headerImage
-                                : store.getState().globalurl.imageUrl +
-                                    CompReportgetdata.CmHeader,
-                              "_blank"
-                            )
-                          : toast.error("Please Upload File");
-                      }}
-                    >
-                      Header Image View
-                    </Button>
-                    {/* <Image
-                      src={
-                        headerPreview
-                          ? headerPreview 
-                          : headerUploaded
-                          ? store.getState().globalurl.imageUrl + headerUploaded
-                          : store.getState().globalurl.imageUrl +
-                            CompReportgetdata.CmHeader
-                      }
-                      width={300}
-                      height={300}
-                    /> */}
+                      ) : (
+                        <div
+                          style={{
+                            color: "red",
+                            marginTop: 10,
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: 175,
+                            height: 175,
+                            border: "1px solid #ccc",
+                          }}
+                        >
+                          Please upload image
+                        </div>
+                      )}
+                    </Box>
                   </Box>
-                  <Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
                     {/* FOOTER IMAGE */}
-                    <Tooltip title="Footer Upload">
-                      <IconButton
+                    <Box>
+                      <Tooltip title="Footer Upload">
+                        <IconButton
+                          size="small"
+                          color="warning"
+                          aria-label="upload picture"
+                          component="label"
+                        >
+                          <input
+                            hidden
+                            accept="all/*"
+                            type="file"
+                            onChange={getFileFooterChange}
+                          />
+                          <PictureAsPdfOutlinedIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Button
                         size="small"
-                        color="warning"
-                        aria-label="upload picture"
-                        component="label"
+                        variant="contained"
+                        component={"a"}
+                        onClick={() => {
+                          CompReportgetdata.CmFooter || footerImage
+                            ? window.open(
+                                footerImage
+                                  ? store.getState().globalurl.imageUrl +
+                                      footerImage
+                                  : store.getState().globalurl.imageUrl +
+                                      CompReportgetdata.CmFooter,
+                                "_blank"
+                              )
+                            : toast.error("Please Upload File");
+                        }}
                       >
-                        <input
-                          hidden
-                          accept="all/*"
-                          type="file"
-                          onChange={getFileFooterChange}
+                        Footer Image View
+                      </Button>
+                    </Box>
+                    <Box>
+                      {footerPreview ||
+                      footerImage ||
+                      CompReportgetdata.CmFooter ? (
+                        <img
+                          src={
+                            footerPreview
+                              ? footerPreview
+                              : footerImage
+                              ? store.getState().globalurl.imageUrl +
+                                footerImage
+                              : store.getState().globalurl.imageUrl +
+                                CompReportgetdata.CmFooter
+                          }
+                          width={175}
+                          height={175}
+                          style={{
+                            objectFit: "contain",
+                            border: "1px solid #ccc",
+                          }}
                         />
-                        <PictureAsPdfOutlinedIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Button
-                      size="small"
-                      variant="contained"
-                      component={"a"}
-                      onClick={() => {
-                        CompReportgetdata.CmFooter || footerImage
-                          ? window.open(
-                              footerImage
-                                ? store.getState().globalurl.imageUrl +
-                                    footerImage
-                                : store.getState().globalurl.imageUrl +
-                                    CompReportgetdata.CmFooter,
-                              "_blank"
-                            )
-                          : toast.error("Please Upload File");
-                      }}
-                    >
-                      Footer Image View
-                    </Button>
+                      ) : (
+                        <div
+                          style={{
+                            color: "red",
+                            marginTop: 10,
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: 175,
+                            height: 175,
+                            border: "1px solid #ccc",
+                          }}
+                        >
+                          Please upload image
+                        </div>
+                      )}
+                    </Box>
                   </Box>
-                  <Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
                     {/* E-SIGN IMAGE */}
-                    <Tooltip title="E-Sign Upload">
-                      <IconButton
+                    <Box>
+                      <Tooltip title="E-Sign Upload">
+                        <IconButton
+                          size="small"
+                          color="warning"
+                          aria-label="upload picture"
+                          component="label"
+                        >
+                          <input
+                            hidden
+                            accept="all/*"
+                            type="file"
+                            onChange={getFileESignChange}
+                          />
+                          <PictureAsPdfOutlinedIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Button
                         size="small"
-                        color="warning"
-                        aria-label="upload picture"
-                        component="label"
+                        variant="contained"
+                        component={"a"}
+                        onClick={() => {
+                          CompReportgetdata.Signature || esignImage
+                            ? window.open(
+                                esignImage
+                                  ? store.getState().globalurl.imageUrl +
+                                      esignImage
+                                  : store.getState().globalurl.imageUrl +
+                                      CompReportgetdata.Signature,
+                                "_blank"
+                              )
+                            : toast.error("Please Upload File");
+                        }}
                       >
-                        <input
-                          hidden
-                          accept="all/*"
-                          type="file"
-                          onChange={getFileESignChange}
+                        E-Sign Image View
+                      </Button>
+                    </Box>
+                    <Box>
+                      {eSignPreview ||
+                      esignImage ||
+                      CompReportgetdata.Signature ? (
+                        <img
+                          src={
+                            eSignPreview
+                              ? eSignPreview
+                              : esignImage
+                              ? store.getState().globalurl.imageUrl + esignImage
+                              : store.getState().globalurl.imageUrl +
+                                CompReportgetdata.Signature
+                          }
+                          width={175}
+                          height={175}
+                          style={{
+                            objectFit: "contain",
+                            border: "1px solid #ccc",
+                          }}
                         />
-                        <PictureAsPdfOutlinedIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Button
-                      size="small"
-                      variant="contained"
-                      component={"a"}
-                      onClick={() => {
-                        CompReportgetdata.Signature || esignImage
-                          ? window.open(
-                              esignImage
-                                ? store.getState().globalurl.imageUrl +
-                                    esignImage
-                                : store.getState().globalurl.imageUrl +
-                                    CompReportgetdata.Signature,
-                              "_blank"
-                            )
-                          : toast.error("Please Upload File");
-                      }}
-                    >
-                      E-Sign Image View
-                    </Button>
+                      ) : (
+                        <div
+                          style={{
+                            color: "red",
+                            marginTop: 10,
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: 175,
+                            height: 175,
+                            border: "1px solid #ccc",
+                          }}
+                        >
+                          Please upload image
+                        </div>
+                      )}
+                    </Box>
                   </Box>
-                  <Box>
-                    {/* QR CODE IMAGE */}
-                    <Tooltip title="QR Code Upload">
-                      <IconButton
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    <Box>
+                      {/* QR CODE IMAGE */}
+                      <Tooltip title="QR Code Upload">
+                        <IconButton
+                          size="small"
+                          color="warning"
+                          aria-label="upload picture"
+                          component="label"
+                        >
+                          <input
+                            hidden
+                            accept="all/*"
+                            type="file"
+                            onChange={getFileQRCodeChange}
+                          />
+                          <PictureAsPdfOutlinedIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Button
                         size="small"
-                        color="warning"
-                        aria-label="upload picture"
-                        component="label"
+                        variant="contained"
+                        component={"a"}
+                        onClick={() => {
+                          CompReportgetdata.QrCode || qrCodeImage
+                            ? window.open(
+                                qrCodeImage
+                                  ? store.getState().globalurl.imageUrl +
+                                      qrCodeImage
+                                  : store.getState().globalurl.imageUrl +
+                                      CompReportgetdata.QrCode,
+                                "_blank"
+                              )
+                            : toast.error("Please Upload File");
+                        }}
                       >
-                        <input
-                          hidden
-                          accept="all/*"
-                          type="file"
-                          onChange={getFileQRCodeChange}
+                        QR Code View
+                      </Button>
+                    </Box>
+                    <Box>
+                      {qrCodePreview ||
+                      qrCodeImage ||
+                      CompReportgetdata.QrCode ? (
+                        <img
+                          src={
+                            qrCodePreview
+                              ? qrCodePreview
+                              : qrCodeImage
+                              ? store.getState().globalurl.imageUrl +
+                                qrCodeImage
+                              : store.getState().globalurl.imageUrl +
+                                CompReportgetdata.QrCode
+                          }
+                          width={175}
+                          height={175}
+                          style={{
+                            objectFit: "contain",
+                            border: "1px solid #ccc",
+                          }}
                         />
-                        <PictureAsPdfOutlinedIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Button
-                      size="small"
-                      variant="contained"
-                      component={"a"}
-                      onClick={() => {
-                        CompReportgetdata.QrCode || qrCodeImage
-                          ? window.open(
-                              qrCodeImage
-                                ? store.getState().globalurl.imageUrl +
-                                    qrCodeImage
-                                : store.getState().globalurl.imageUrl +
-                                    CompReportgetdata.QrCode,
-                              "_blank"
-                            )
-                          : toast.error("Please Upload File");
-                      }}
-                    >
-                      QR Code View
-                    </Button>
+                      ) : (
+                        <div
+                          style={{
+                            color: "red",
+                            marginTop: 10,
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: 175,
+                            height: 175,
+                            border: "1px solid #ccc",
+                          }}
+                        >
+                          Please upload image
+                        </div>
+                      )}
+                    </Box>
                   </Box>
                 </Box>
                 <Box
