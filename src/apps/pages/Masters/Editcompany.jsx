@@ -599,7 +599,7 @@ const Editcompany = () => {
                   onChange={screenChange}
                 >
                   <MenuItem value={0}>Company</MenuItem>
-                  <MenuItem value={1}>Bank Deatils</MenuItem>
+                  <MenuItem value={1}>Bank Details</MenuItem>
                   <MenuItem value={2}>Report Settings</MenuItem>
                 </Select>
               </FormControl>

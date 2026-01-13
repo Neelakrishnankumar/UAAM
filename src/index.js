@@ -15,6 +15,7 @@ import Comboreducer from './store/reducers/Comboreducer';
 import Lookupapireducer from './store/reducers/Lookupapireducer';
 import Explorelitviewapireducer from './store/reducers/Explorelitviewapireducer';
 import screenRightsreducer from './store/reducers/screenRightsreducer';
+import { activityListener } from "./store/reducers/middleware/activityListener";
 
 
 
@@ -32,7 +33,8 @@ const store = configureStore({
     exploreApi:Explorelitviewapireducer,
      screenRights:screenRightsreducer,
   },
- 
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().prepend(activityListener.middleware),
 })
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

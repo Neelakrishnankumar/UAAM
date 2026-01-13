@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { Button, IconButton } from "@mui/material";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
@@ -146,3 +146,4 @@ export function fetchApidata(emailID, password, company, year) {
     }
   };
 }
+export const logout = createAction("loginApi/logout");
