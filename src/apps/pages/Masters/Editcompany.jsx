@@ -322,6 +322,11 @@ const Editcompany = () => {
     const data = await dispatch(postData({ accessID, action, idata }));
     if (data.payload.Status == "Y") {
       toast.success(data.payload.Msg);
+      // if (mode === "A") {
+      //   navigate(-1);
+      // } else if (mode === "E") {
+      //   setScreen("0");
+      // }
       navigate(`/Apps/TR014/Company`);
     } else {
       toast.error(data.payload.Msg);
@@ -370,7 +375,7 @@ const Editcompany = () => {
       if (response.payload.Status === "Y") {
         toast.success(response.payload.Msg);
         // navigate("/Apps/TR243/Party");
-        //setScreen(0);
+        setScreen("1");
       } else {
         toast.error(response.payload.Msg);
       }
@@ -423,7 +428,7 @@ const Editcompany = () => {
       if (response.payload.Status === "Y") {
         toast.success(response.payload.Msg);
         // navigate("/Apps/TR243/Party");
-        //setScreen(0);
+        setScreen("2");
       } else {
         toast.error(response.payload.Msg);
       }
@@ -548,7 +553,10 @@ const Editcompany = () => {
     <Box>
       {getLoading ? <LinearProgress /> : false}
       {BankgetLoading ? <LinearProgress /> : false}
+      {BankisLoading ? <LinearProgress /> : false}
       {CompReportgetLoading ? <LinearProgress /> : false}
+      {CompReportpostDataLoading ? <LinearProgress /> : false}
+      {isLoading ? <LinearProgress /> : false}
       <Paper elevation={3} sx={{ margin: "0px 10px", background: "#F2F0F0" }}>
         <Box display="flex" justifyContent="space-between" p={2}>
           <Box
