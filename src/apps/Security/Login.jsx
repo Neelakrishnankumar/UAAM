@@ -19,6 +19,7 @@ import {
   FormHelperText,
   FormGroup,
   MenuItem,
+  Typography,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -43,7 +44,7 @@ import { useParams } from "react-router-dom";
 import { Field, Form, Formik, ErrorMessage } from "formik";
 import background from "../../assets/img/background.jpg";
 import { LoadingButton } from "@mui/lab";
-
+import BexATMLogo from "../../assets/img/BexATM.png";
 const style = {
   height: "55px",
   border: "2px solid #1769aa ",
@@ -100,7 +101,7 @@ const Login = () => {
     //   return;
     // }
     if (values.username == "") {
-      toast.error("UserName should not be empty");
+      toast.error("Username should not be empty");
       setLoading(false);
       return;
     }
@@ -193,7 +194,7 @@ const Login = () => {
             initialValues={initialValues}
             enableReinitialize={true}
             // validationSchema={basicSchema}
-              onSubmit={(values, setSubmitting) => {
+            onSubmit={(values, setSubmitting) => {
               setTimeout(() => {
                 fnLogin(values);
               }, 100);
@@ -211,7 +212,7 @@ const Login = () => {
               <form onSubmit={handleSubmit}>
                 <Stack
                   component="form"
-                  height={{ sm: "520px", md: "373px" }}
+                  height={{ sm: "520px", md: "300px" }}
                   width={{ sm: "291px", md: "700px" }}
                   sx={{
                     boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
@@ -224,7 +225,7 @@ const Login = () => {
                   autoComplete="off"
                   direction={{ sm: "column", md: "row" }}
                 >
-                  <Stack
+                  {/* <Stack
                     sx={{
                       width: {
                         sm: "100%",
@@ -247,7 +248,53 @@ const Login = () => {
                       src={Newlogoimg}
                       sx={{ width: "100%", height: "100%" }}
                     ></Avatar>
-                    {/* UAAM */}
+                  </Stack> */}
+                  <Stack
+                    sx={{
+                      width: { sm: "100%", md: "100%", lg: "100%" },
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignContent: "center",
+                      justifyContent: "flexend",
+                      alignItems: "center",
+                      backgroundImage: `url(${BexATMLogo})`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
+                      backgroundSize: "75%",
+                      padding: 1,
+                      borderRadius: "5px",
+                      height: "300px",
+                      // marginBottom: "50px",
+                      marginTop: "-30px",
+                      flexDirection: "column-reverse",
+                    }}
+                    spacing={2}
+
+                  >
+
+                    <Typography
+                      variant="p"
+                      sx={{
+                        marginBottom: 5,
+                        // marginRight: 2,
+                        textAlign: "center",
+                        // fontWeight: "600",
+                        fontSize:"13px",
+                      }}
+                    >
+                      Version 1.0
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        marginTop: 2,
+                        textAlign: "center",
+                        fontWeight: "600",
+                      }}
+                    >
+                      Account Access Management
+                    </Typography>
                   </Stack>
 
                   <Stack
@@ -256,8 +303,8 @@ const Login = () => {
                     }}
                     spacing={2}
                   >
-                   
-                    <FormControl sx={{ marginTop: { sm: "5px", md: "80px" }  }}>
+
+                    <FormControl sx={{ marginTop: { sm: "5px", md: "60px" } }}>
                       <TextField
                         margin="normal"
                         focused
@@ -312,7 +359,7 @@ const Login = () => {
                         color="success"
                         loading={isLoading}
                         variant="contained"
-                        // type="submit"
+                      // type="submit"
                       >
                         Ok
                       </LoadingButton>
