@@ -19,6 +19,8 @@ import {
   GridToolbarContainer,
   GridToolbarExport,
 } from "@mui/x-data-grid";
+
+import Swal from "sweetalert2";
 import MatxCustomizer from "./Mailpdf";
 import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
 import ViewInArOutlinedIcon from "@mui/icons-material/ViewInArOutlined";
@@ -38,7 +40,7 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { fnCsvFileUpload } from "../../store/reducers/Imguploadreducer";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import { screenRightsData } from "../../store/reducers/screenRightsreducer";
@@ -54,10 +56,20 @@ import PauseCircleOutlinedIcon from "@mui/icons-material/PauseCircleOutlined";
 import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
 import NotStartedOutlinedIcon from "@mui/icons-material/NotStartedOutlined";
 import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore";
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from "@mui/icons-material/Search";
 import EmailIcon from "@mui/icons-material/Email";
 import { searchData } from "../../store/reducers/Formapireducer";
+import PinDropIcon from "@mui/icons-material/PinDrop";
+import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
 import toast from "react-hot-toast";
+import {
+  dataGridHeaderFooterHeight,
+  dataGridHeight,
+  dataGridPageSize,
+  dataGridPageSizeOption,
+  dataGridRowHeight,
+} from "../../ui-components/utils";
+
 const Listview = () => {
   const navigate = useNavigate();
   const colorMode = useContext(ColorModeContext);
@@ -103,6 +115,19 @@ const Listview = () => {
   const [uploadFile, setUploadFile] = useState();
   const compID = sessionStorage.getItem("compID");
   const YearRecorid = sessionStorage.getItem("YearRecorid");
+  const [errorMsgData, setErrorMsgData] = useState(null);
+
+  useEffect(() => {
+    fetch(process.env.PUBLIC_URL + "/validationcms.json")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch validationcms.json");
+        return res.json();
+      })
+      .then((data) => {
+        setErrorMsgData(data);
+      })
+      .catch((err) => console.error("Error loading validationcms.json:", err));
+  }, []);
   // console.log(
   //   "🚀 ~ file: Listview.jsx:58 ~ Listview ~ listViewcolumn",
   //   listViewcolumn
@@ -139,12 +164,42 @@ const Listview = () => {
     }
   }
 
+  // const columns = React.useMemo(
+  //   () => listViewcolumn.filter(filterByID),
+  //   [listViewcolumn]
+  // );
+  // const columns = React.useMemo(
+  //   () => listViewcolumn.filter(filterByID) ? [{
+  //     field: "slno",
+  //     headerName: "SL#",
+  //     width: 50,
+  //     sortable: false,
+  //     filterable: false,
+  //     valueGetter: (params) =>
+  //       `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`
+  //   }, , ...listViewcolumn.filter(filterByID)] : [],
+  //   [listViewcolumn]
+  // );
   const columns = React.useMemo(
-    () => listViewcolumn.filter(filterByID),
-    [listViewcolumn]
+    () =>
+      listViewcolumn.filter(filterByID)
+        ? [
+            {
+              field: "slno",
+              headerName: "SL#",
+              width: 50,
+              sortable: false,
+              filterable: false,
+              valueGetter: (params) =>
+                page * pageSize +
+                params.api.getRowIndexRelativeToVisibleRows(params.id) +
+                1,
+            },
+            ...listViewcolumn.filter(filterByID),
+          ]
+        : [],
+    [listViewcolumn, page, pageSize] // include page & pageSize as deps
   );
-  // console.log("🚀 ~ file: Listview.jsx:88 ~ Listview ~ columns:", columns)
-
   const columnShow = React.useMemo(
     () => columns.filter(filterByIDShow),
     [listViewcolumn]
@@ -170,39 +225,58 @@ const Listview = () => {
     setUploadFile(fileData.payload.apiResponse);
   };
 
-const [productFilter,setProductFilter] = useState();
-  const searchProduct = async() => {
-    if(!productFilter){
+  const [productFilter, setProductFilter] = useState();
+  const searchProduct = async () => {
+    if (!productFilter) {
       toast.success("Please type modelno");
       return;
     }
     const idata = {
-      accessID:accessID,
-      filter: productFilter
+      accessID: accessID,
+      filter: productFilter,
+    };
 
-    }
-
-    const response = await dispatch(searchData({ data:idata}));
+    const response = await dispatch(searchData({ data: idata }));
     if (response.payload.status == 200) {
       // toast.success(response.payload.message);
-   
-      if(accessID == "TR002"){
+
+      if (accessID == "TR002") {
         navigate(
           `/Apps/Secondarylistview/TR001/Product Master/${response.payload.data.PRD_PGRID}/${response.payload.data.PGR_DESC}`
         );
       }
-      if(accessID == "TR044"){
+      if (accessID == "TR044") {
         navigate(
           `/Apps/Secondarylistview/TR004/List of Materials/${response.payload.data.MGR_ID}/${response.payload.data.MGR_TYPE}/${response.payload.data.MTL_DESC}/${response.payload.data.MGR_MGROUP}/pm/`
         );
       }
-        
-      
     } else {
-      toast.error(response.payload.message ? response.payload.message : "Error" );
+      toast.error(
+        response.payload.message ? response.payload.message : "Error"
+      );
     }
-  }
-
+  };
+  const fnLogOut = (props) => {
+    Swal.fire({
+      title: errorMsgData.Warningmsg[props],
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: props,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (props === "Logout") {
+          navigate("/");
+        }
+        // if (props === "Close") {
+        //   navigate(-1);
+        // }
+      } else {
+        return;
+      }
+    });
+  };
   function CustomToolbar() {
     return (
       <GridToolbarContainer
@@ -221,10 +295,8 @@ const [productFilter,setProductFilter] = useState();
             <MenuOutlinedIcon />
           </IconButton>
         )}
-        <Box sx={{ display: "flex", flexDirection: "row" ,gap:10 }}>
+        <Box sx={{ display: "flex", flexDirection: "row", gap: 10 }}>
           <Typography variant="h3">{screenName}</Typography>
-
-        
         </Box>
 
         <Box
@@ -325,7 +397,7 @@ const [productFilter,setProductFilter] = useState();
             false
           ) : accessID == "TR135" ? (
             false
-          ) :
+          ) : (
             // UGA_ADD ? (
 
             <Tooltip arrow title="Add">
@@ -346,9 +418,27 @@ const [productFilter,setProductFilter] = useState();
                     );
                   }}
                 />
+                {/* <AddOutlinedIcon
+  onClick={() => {
+    navigate(
+      `./Edit${screenName}/-1/A${accessID === "TR010" ? "/0" : ""}`,
+      {
+        state: accessID === "TR014"
+          ? { CompanyName: -1 }
+          : accessID === "TR095"
+          ? { ...st }
+          : {
+            CustomerID: "-1",
+            ProductID: "-1",
+            BomID: "-1",
+            }
+      }
+    );
+  }}
+/> */}
               </IconButton>
             </Tooltip>
-           }
+          )}
           {/* <Tooltip arrow title="Excel">
             <IconButton  color="primary">
             <input hidden accept="all/*"  type="file" onChange={changeHandler}/>
@@ -397,7 +487,7 @@ const [productFilter,setProductFilter] = useState();
           />
 
           <Tooltip arrow title="Logout">
-            <IconButton onClick={() => navigate("/")} color="error">
+            <IconButton onClick={() => fnLogOut("Logout")} color="error">
               <LogoutOutlinedIcon />
             </IconButton>
           </Tooltip>
@@ -430,17 +520,16 @@ const [productFilter,setProductFilter] = useState();
 
   return (
     <React.Fragment>
-     
       <Box m="5px">
-      {accessID == "TR002" || accessID == "TR044" ? 
-      <Paper
+        {accessID == "TR002" || accessID == "TR044" ? (
+          <Paper
             component="form"
             sx={{
               p: "2px 4px",
               display: "flex",
               alignItems: "center",
               width: 300,
-              height:30
+              height: 30,
             }}
           >
             <InputBase
@@ -449,16 +538,29 @@ const [productFilter,setProductFilter] = useState();
               inputProps={{ "aria-label": "search google maps" }}
               type="text"
               value={productFilter}
-              onChange={(e)=>setProductFilter(e.target.value)}
+              onChange={(e) => setProductFilter(e.target.value)}
             />
             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-            <IconButton disabled={searchLoading} type="button" sx={{ p: "10px" }} aria-label="search">
-            {searchLoading?<CircularProgress size={20} /> : <SearchIcon onClick={searchProduct} />}
+            <IconButton
+              disabled={searchLoading}
+              type="button"
+              sx={{ p: "10px" }}
+              aria-label="search"
+            >
+              {searchLoading ? (
+                <CircularProgress size={20} />
+              ) : (
+                <SearchIcon onClick={searchProduct} />
+              )}
             </IconButton>
-          </Paper>:false}
+          </Paper>
+        ) : (
+          false
+        )}
         <Box
           m="5px 0 0 0"
-          height="85vh"
+          padding={2}
+          height={dataGridHeight}
           sx={{
             "& .MuiDataGrid-root": {
               border: "none",
@@ -483,9 +585,23 @@ const [productFilter,setProductFilter] = useState();
             "& .MuiCheckbox-root": {
               color: `${colors.greenAccent[200]} !important`,
             },
+            "& .odd-row": {
+              backgroundColor: "",
+              color: "", // Color for odd rows
+            },
+            "& .even-row": {
+              backgroundColor: "#d0edec",
+              color: "", // Color for even rows
+            },
           }}
         >
           <DataGrid
+            sx={{
+              "& .MuiDataGrid-footerContainer": {
+                height: dataGridHeaderFooterHeight,
+                minHeight: dataGridHeaderFooterHeight,
+              },
+            }}
             key={accessID}
             rows={rows}
             // columns={UGA_MOD || UGA_VIEW ? columns : columnShow}
@@ -493,14 +609,22 @@ const [productFilter,setProductFilter] = useState();
             loading={loading}
             disableSelectionOnClick
             getRowId={(row) => row.RecordID}
+            rowHeight={dataGridRowHeight}
+            headerHeight={dataGridHeaderFooterHeight}
             pageSize={pageSize}
             page={page}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={[5, 10, 15, 20]}
+            // rowsPerPageOptions={dataGridPageSizeOption}
+            rowsPerPageOptions={[5, 10, 15, 20, 25]}
             onPageChange={(pageno) => handlePagechange(pageno)}
             components={{
               Toolbar: CustomToolbar,
             }}
+            getRowClassName={(params) =>
+              params.indexRelativeToCurrentPage % 2 === 0
+                ? "odd-row"
+                : "even-row"
+            }
           />
         </Box>
         {accessID == "TR049" ? (
@@ -562,33 +686,31 @@ const [productFilter,setProductFilter] = useState();
           <Box display="flex" flexDirection="row" padding="25px">
             <Chip
               icon={<ListAltOutlinedIcon color="primary" />}
-              label="List of Usergroups"
+              label="List of User Rights"
               variant="outlined"
             />
           </Box>
-          ) : accessID == "TR014" ? (
-            <Box display="flex" flexDirection="row" padding="25px">
-              <Chip
+        ) : accessID == "TR014" ? (
+          <Box display="flex" flexDirection="row" padding="25px">
+            <Chip
               icon={<EditIcon color="primary" />}
               label="Edit"
               variant="outlined"
             />
-              <Chip
-                icon={<ListAltOutlinedIcon color="primary" />}
-                label="Location"
-                variant="outlined"
-                sx={{ marginLeft: "50px" }}
-              />
-              <Chip
-                icon={<ListAltOutlinedIcon color="primary" />}
-                label="Subscription"
-                variant="outlined"
-                sx={{ marginLeft: "50px" }}
-              />
-            </Box>
-   
-    
-    ) : accessID == "TR009" ? (
+            <Chip
+              icon={<PinDropIcon color="primary" />}
+              label="Locations"
+              variant="outlined"
+              sx={{ marginLeft: "50px" }}
+            />
+            <Chip
+              icon={<SubscriptionsIcon color="primary" />}
+              label="Subscriptions"
+              variant="outlined"
+              sx={{ marginLeft: "50px" }}
+            />
+          </Box>
+        ) : accessID == "TR009" ? (
           <Box display="flex" flexDirection="row" padding="25px">
             <Chip
               icon={<EditIcon color="primary" />}
@@ -794,8 +916,34 @@ const [productFilter,setProductFilter] = useState();
           <Box display="flex" flexDirection="row" padding="25px">
             <Chip
               icon={<ListAltOutlinedIcon color="primary" />}
-              label="List of Usergroups"
+              label="List of User Rights"
               variant="outlined"
+            />
+            <Chip
+              icon={<ListAltOutlinedIcon color="primary" />}
+              label="List of Users"
+              variant="outlined"
+              sx={{ marginLeft: "50px" }}
+            />
+          </Box>
+        ) : accessID == "TR014" ? (
+          <Box display="flex" flexDirection="row" padding="25px">
+            <Chip
+              icon={<EditIcon color="primary" />}
+              label="Edit"
+              variant="outlined"
+            />
+            <Chip
+              icon={<ListAltOutlinedIcon color="primary" />}
+              label="Location"
+              variant="outlined"
+              sx={{ marginLeft: "50px" }}
+            />
+            <Chip
+              icon={<ListAltOutlinedIcon color="primary" />}
+              label="Subscription"
+              variant="outlined"
+              sx={{ marginLeft: "50px" }}
             />
           </Box>
         ) : (

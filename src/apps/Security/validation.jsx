@@ -8,42 +8,83 @@ export const valid = Yup.object().shape({
 });
 
 /*************************COMPANY SCREEN*********************/
+// export const companySchema = yup.object().shape({
+//   // code:yup.string().matches(/^[-_ a-zA-Z0-9]+$/, "Only Numeric and Alphabets ").min(3).max(5),
+//   address: yup.string().max(500, "Address must be 500 character "),
+//    phone: yup.string().max(10, "Not Valid Phone Number"),
+//   // phone:yup.number().min(10),
+//   pincode: yup
+//     .number()
+//     .min(10000, "Not Valid Pin Number")
+//     .max(999999, "Not Valid Pin Number"),
+//   iECode: yup
+//     .string()
+//     .matches(/^[-_ a-zA-Z0-9]+$/, "Only Numeric and Alphabets ")
+//     .min(10, "I.E.Code must be 10 character"),
+//   // rbiCode: yup
+//   //   .string()
+//   //   .min(5, "RBI Code must be 5 character")
+//   //   .matches(/^[-_ a-zA-Z0-9]+$/, "Only Numeric and Alphabets "),
+//   gst: yup
+//     .string()
+//     .matches(/^[-_ a-zA-Z0-9]+$/, "Only Numeric and Alphabets ")
+//     .min(15, "GST must be 15 character"),
+
+//   web: yup
+//     .string()
+//     .matches(
+//       /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+//       "Enter a valid url!"
+//     ),
+//   fax: yup.string().min(11, "fax must be 11 character"),
+//   email: yup.string().email("Please enter a valid email"),
+//   name: yup
+//     .string()
+//     .max(50)
+//     .matches(/^[A-Za-z\s\.'-]+$/, "Please enter alphabets only "),
+// });
+
 export const companySchema = yup.object().shape({
-  // code:yup.string().matches(/^[-_ a-zA-Z0-9]+$/, "Only Numeric and Alphabets ").min(3).max(5),
   address: yup.string().max(500, "Address must be 500 character "),
-   phone: yup.string().max(10, "Not Valid Phone Number"),
-  // phone:yup.number().min(10),
+  phone: yup.string().max(10, "Not Valid Phone Number"),
   pincode: yup
     .number()
-    .min(10000, "Not Valid Pin Number")
-    .max(999999, "Not Valid Pin Number"),
+    .min(10000, "Not valid Pin Code")
+    .max(999999, "Not valid Pin Code"),
+    country: Yup.object()
+    .required('Please select a country')
+    .nullable(),
+    license: Yup.string()
+    .matches(/^[a-zA-Z0-9]{4}$/, "Please enter alphabets only, exactly 4 characters") // Only letters and digits, 4 characters long
+    .test('contains-both', 'The code must contain both letters and numbers', value => {
+      return /[a-zA-Z]/.test(value) && /\d/.test(value); // Must contain both letters and numbers
+    }),
   iECode: yup
     .string()
-    .matches(/^[-_ a-zA-Z0-9]+$/, "Only Numeric and Alphabets ")
+    .matches(/^[-_ a-zA-Z0-9]+$/, "Please enter alphabets only")
     .min(10, "I.E.Code must be 10 character"),
-  rbiCode: yup
-    .string()
-    .min(5, "RBI Code must be 5 character")
-    .matches(/^[-_ a-zA-Z0-9]+$/, "Only Numeric and Alphabets "),
   gst: yup
     .string()
     .matches(/^[-_ a-zA-Z0-9]+$/, "Only Numeric and Alphabets ")
     .min(15, "GST must be 15 character"),
-
-  web: yup
-    .string()
-    .matches(
-      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-      "Enter a valid url!"
-    ),
-  fax: yup.string().min(11, "fax must be 11 character"),
-  email: yup.string().email("Please enter a valid email"),
+  email: yup.string().email("Please enter a valid Email"),
   name: yup
     .string()
     .max(50)
-    .matches(/^[A-Za-z\s\.'-]+$/, "Only  Alphabets "),
+    .matches(/^[A-Za-z\s\.'-]+$/, "Please enter alphabets only"),
 });
 
+/*************Subscription Validation*************/
+
+export const SubscriptionScma = yup.object().shape({
+ 
+    code: Yup.string()
+    .matches(/^[a-zA-Z0-9]{5}$/, "Only alphanumeric characters allowed, exactly 4 characters") // Only letters and digits, 4 characters long
+    .test('contains-both', 'The code must contain both letters and numbers', value => {
+      return /[a-zA-Z]/.test(value) && /\d/.test(value); // Must contain both letters and numbers
+    }),
+ 
+});
 /********************* BANK MASTER SCREEN*************************/
 export const bankmasterSchema = yup.object().shape({
   // code:yup.string().matches(/^[-_ a-zA-Z0-9]+$/, "Only Numeric and Alphabets ").min(10,"Code must be 10 character"),
@@ -128,7 +169,9 @@ export const colorshadesSchema = yup.object().shape({
 
 /************************* UOM SCREEN *********************/
 export const uomSchema = yup.object().shape({
-  code: yup.string().matches(/^[-_ a-zA-Z]+$/, "Only  Alphabets"),
+  code: yup.string().matches(/^[a-zA-Z0-9\s'-.]+$/, "Only alphanumeric character"),
+
+  // code: yup.string().matches(/^[-_ a-zA-Z]+$/, "Only  Alphabets"),
   description: yup
     .string()
     .matches(/^[a-zA-Z0-9\s'-.]+$/, "Only alphanumeric character"),
@@ -821,21 +864,21 @@ export const BinSchema = yup.object().shape({
   bincode: yup
     .string()
     .matches(/^[a-zA-Z0-9\/\s\.'-]+$/, "Only alphanumeric character"),
-  binname: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Only  Alphabets"),
+  binname: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
   sortorder: yup.string().matches(/^[0-9\s]+$/, "Only Numeric"),
 });
 export const FunctionSchema = yup.object().shape({
   code: yup
     .string()
     .matches(/^(?!\d+\b)[a-zA-Z\d\s/]+$/, "Only alphanumeric character"),
-  name: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Only  Alphabets"),
+  name: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
   sortorder: yup.string().matches(/^[0-9\s]+$/, "Only Numeric"),
 });
 export const DesignationSchema = yup.object().shape({
   code: yup
     .string()
     .matches(/^(?!\d+\b)[a-zA-Z\d\s/]+$/, "Only alphanumeric character"),
-  name: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Only  Alphabets"),
+  name: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
   // rank: yup
   // .string()
   // .matches(
@@ -850,7 +893,7 @@ export const OverheadSchema = yup.object().shape({
   code: yup
     .string()
     .matches(/^(?!\d+\b)[a-zA-Z\d\s/]+$/, "Only alphanumeric character"),
-  name: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Only  Alphabets"),
+  name: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
 });
 export const FinanceSchema = yup.object().shape({
   referenceifany: yup
@@ -863,33 +906,45 @@ export const FinanceSchema = yup.object().shape({
       "Numeric and maximum of 3 decimal places"
     )
     .max(8, "Maximum Length is Eight"),
-  comments: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Only  Alphabets"),
-  approvedby: yup.string().matches(/[a-zA-Z\s]+$/, "Only  Alphabets"),
+  comments: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
+  approvedby: yup.string().matches(/[a-zA-Z\s]+$/, "Please enter alphabets only"),
 });
 export const UserSchema = yup.object().shape({
   code: yup
     .string()
     .matches(/^(?!\d+\b)[a-zA-Z\d\s/]+$/, "Only alphanumeric character"),
-  name: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Only  Alphabets"),
-  password: yup.string().required("Please enter password"),
-  comfirmpassword: yup.string().required("Please enter password"),
+  name: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
+ 
+  password: yup.string()
+  .required('Please Enter your password')
+  .matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+    "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+  ),
+  comfirmpassword: yup
+  .string()
+  .required("Please confirm your password")
+  .oneOf([yup.ref('password')], "Passwords must match"),
+
+  // password: yup.string().required("Please enter password"),
+  // comfirmpassword: yup.string().required("Please enter password"),
   email: yup.string().email("Please enter a valid email"),
-  comments: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Only  Alphabets"),
+  comments: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
   sortorder: yup.string().matches(/^[0-9\s]+$/, "Only Numeric"),
 });
 export const DailytaskSchema = yup.object().shape({
   code: yup
     .string()
     .matches(/^(?!\d+\b)[a-zA-Z\d\s/]+$/, "Only alphanumeric character"),
-  description: yup.string().matches(/^[A-Za-z\s\.'-]+$/, "Only  Alphabets "),
-  Comment: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Only  Alphabets"),
+  description: yup.string().matches(/^[A-Za-z\s\.'-]+$/, "Please enter alphabets only "),
+  Comment: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
 });
 export const DailyHoursTaskSchema = yup.object().shape({
   code: yup
     .string()
     .matches(/^(?!\d+\b)[a-zA-Z\d\s/]+$/, "Only alphanumeric character"),
-  description: yup.string().matches(/^[A-Za-z\s\.'-]+$/, "Only  Alphabets "),
-  Comment: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Only  Alphabets"),
+  description: yup.string().matches(/^[A-Za-z\s\.'-]+$/, "Please enter alphabets only "),
+  Comment: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
 });
 //  ****************Department**********
 // export const DepartmentSchema = yup.object().shape({
@@ -955,7 +1010,7 @@ export const PurchaseOrderNoSchema = yup.object().shape({
   purchaseorderno: yup
     .string()
     .matches(/^(?!\d+\b)[a-zA-Z\d\s/]+$/, "Only alphanumeric character"),
-  name: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Only  Alphabets"),
+  name: yup.string().matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
 
 });
 
@@ -1152,7 +1207,7 @@ export const basicSchema = yup.object().shape({
   /*************************department********* */
   Loc: yup
     .string()
-    .matches(/[-_ a-zA-Z]+$/, "Only  Alphabets")
+    .matches(/[-_ a-zA-Z]+$/, "Please enter alphabets only")
     .max(100),
   Name: yup
     .string()

@@ -1,0 +1,63 @@
+{
+    "Company": {
+        "address": "Please Enter the Address",
+        "name": "Please Enter the Name",
+        "country": "Please Enter the Country",
+        "email": "Please Enter the Email",
+        "pincode": "Please Enter the Pincode",
+        "gst": "Please Enter the GST",
+        "phone": "Please Enter the Phone",
+        "license": "Please Enter the Subscription Code",
+        "iECode": "Invalid I.E Code",
+        "rbiCode": "Invalid RBI Code"
+    },
+    "Location": {
+        "name": "Please Enter the Name"
+    },
+    "Gate": {
+        "name": "Please Enter the Name"
+    },
+    "Bin": {
+        "name": "Please Enter the Name",
+        "shelvescode": "Please Enter the Shelves Code",
+        "shelvesname": "Please Enter the Shelves Name"
+    },
+    "Products": {
+        "description": "Please Enter the Description",
+        "NoOfemployee": "Please Enter the No of Employee",
+        "NoOfenduser": "Please Enter the No of End User",
+        "price": "Please Enter the Price",
+        "offerprice": "Please Enter the Offer Price"
+    },
+    "Usergroup": {
+        "name": "Please Enter the Name"
+    },
+    "Users": {
+        "usergroup": "Please Enter the Usergroup",
+        "name": "Please Enter the Name",
+        "NameNoSpace": "User Name cannot contain spaces",
+        "password": "Please Enter the Password",
+        "comfirmpassword": "Please Enter the Confirm Password"
+    },
+    "Subscription": {
+        "productsubscription": "Please Enter the Product Subscription",
+        "subscriptionStartDate": "Please Enter the Subscription Start Date",
+        "subscriptionperiod": "Please Enter the Subscription Period (in months)",
+        "productid": "Please Enter the Product Code"
+    },
+     "BankDetails": {
+    "bankname": "Please Enter the Bank Name",
+    "branchname": "Please Enter the Branch Name",
+    "Accounttype": "Please Enter the Account Type",
+    "ifsc": "Please Enter the IFSC Code",
+    "bankloc": "Please Enter the Bank Location",
+    "accountnumber": "Please Enter the Account Number",
+    "accountholdname": "Please Enter the Account Holder Name",
+    "bankaddress": "Please Enter the Bank Address"
+  },
+    "Warningmsg": {
+        "Logout": "Do you really want to Log Out?",
+        "Close": "Do you want to Close?",
+        "Delete": "Do you want to Delete?"
+    }
+}

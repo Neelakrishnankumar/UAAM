@@ -9,6 +9,7 @@ import {
   SubMenu,
 } from "react-pro-sidebar";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import DatasetLinkedIcon from '@mui/icons-material/DatasetLinked';
 import {
   Box,
   Avatar,
@@ -91,6 +92,9 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import HowToRegOutlinedIcon from "@mui/icons-material/HowToRegOutlined";
 import SourceOutlinedIcon from "@mui/icons-material/SourceOutlined";
 import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
+import { menuHeight } from "../utils";
+import { logout } from "../../store/reducers/LoginReducer";
+import { useDispatch } from "react-redux";
 const child = {
   data: [
     // {
@@ -277,7 +281,7 @@ const child = {
     //       UGA_VIEW: true,
     //       UGA_ACCESSIDS: "TR061",
     //     },
-        
+
     //     {
     //       name: "Purchase Order Parameter",
     //       url: "./TR157/Paurchase Order Parameter",
@@ -423,7 +427,7 @@ const child = {
     //       UGA_VIEW: true,
     //       UGA_ACCESSIDS: "TR002",
     //     },
-        
+
     //     {
     //       name: "Job-Work Component",
     //       url: "./TR148/Job-Work",
@@ -901,7 +905,7 @@ const child = {
     //       UGA_VIEW: true,
     //       UGA_ACCESSIDS: "TR124",
     //     },
-        
+
     //   ],
     // },
     // {
@@ -988,38 +992,55 @@ const child = {
     {
       name: "License",
       id: 8,
-      Tooltipname: "Security",
+      Tooltipname: "License",
       MenuID: "SE100",
       icon: (
-        <Tooltip title="Security">
+        <Tooltip title="License">
           <GroupsOutlinedIcon sx={{ color: "#651fff" }} />
         </Tooltip>
       ),
       children: [
         {
-                name: "Company",
-                url: "./TR014/Company",
-                id: 11,
-                icon: (
-                  <Tooltip title="Company">
-                    <BusinessIcon color="info" />
-                  </Tooltip>
-                ),
-                UGA_ADD: true,
-                UGA_DEL: true,
-                UGA_MOD: true,
-                UGA_PRINT: true,
-                UGA_PROCESS: true,
-                UGA_VIEW: true,
-                UGA_ACCESSIDS: "TR014",
-              },
+          name: "Company",
+          url: "./TR014/Company",
+          id: 11,
+          icon: (
+            <Tooltip title="Company">
+              <BusinessIcon color="info" />
+            </Tooltip>
+          ),
+          UGA_ADD: true,
+          UGA_DEL: true,
+          UGA_MOD: true,
+          UGA_PRINT: true,
+          UGA_PROCESS: true,
+          UGA_VIEW: true,
+          UGA_ACCESSIDS: "TR014",
+        },
+        {
+          name: "Products",
+          url: "./TR240/Products",
+          id: 237,
+          icon: (
+            <Tooltip title="Products">
+              <DatasetLinkedIcon color="info" />
+            </Tooltip>
+          ),
+          UGA_ADD: true,
+          UGA_DEL: true,
+          UGA_MOD: true,
+          UGA_PRINT: true,
+          UGA_PROCESS: true,
+          UGA_VIEW: true,
+          UGA_ACCESSIDS: "TR014", //we didn't have UGA SO we can create a  ststic Menu 
+        },
 
         {
           name: "User Rights",
           id: 236,
-          url: "./TR099/Companies",
+          url: "./TR099/User Rights",
           icon: (
-            <Tooltip title="User Group">
+            <Tooltip title="User Rights">
               <Diversity3Icon color="info" />
             </Tooltip>
           ),
@@ -1076,6 +1097,7 @@ const Sidebars = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [selected, setSelected] = useState("Product Category");
+  const dispatch = useDispatch();
 
   const [open, setOpen] = React.useState(false);
 
@@ -1087,9 +1109,9 @@ const Sidebars = () => {
   const year = sessionStorage.getItem("year");
   const Groupaccess = JSON.parse(sessionStorage.getItem("Groupaccess")) || [];
   const Modules = JSON.parse(sessionStorage.getItem("Modules")) || [];
-  // console.log("🚀 ~ file: Sidebar.jsx:773 ~ Sidebars ~ Modules:", Modules);
-  // console.log("🚀 ~ file: Sidebar.jsx:772 ~ Sidebars ~ Groupaccess:", Groupaccess)
-
+  // console.log(" ~ file: Sidebar.jsx:773 ~ Sidebars ~ Modules:", Modules);
+  // console.log(" ~ file: Sidebar.jsx:772 ~ Sidebars ~ Groupaccess:", Groupaccess)
+console.log(sessionStorage.getItem("loginRecid"),"loginrecid");
   const handleClicks = (item) => {
     let newData = { ...menu, [item]: !menu[item] };
     setMenu(newData);
@@ -1110,94 +1132,87 @@ const Sidebars = () => {
         MenuID,
       }) => {
         if (!children) {
-          return accessRow.map(
-            ({
-              UGA_ADD,
-              UGA_DEL,
-              UGA_MOD,
-              UGA_PRINT,
-              UGA_PROCESS,
-              UGA_VIEW,
-              UGA_ACCESSID,
-            }) => {
-              if (
-                UGA_ACCESSID === UGA_ACCESSIDS &&
-                (UGA_ADD ||
-                  UGA_DEL ||
-                  UGA_MOD ||
-                  UGA_PRINT ||
-                  UGA_PROCESS ||
-                  UGA_VIEW)
-              ) {
-                return (
-                  <List component="div" disablePadding key={id}>
-                    <ListItem
-                      disableGutters
-                      style={{ padding: "0px" }}
-                      key={id}
-                    >
-                      <Item
-                        title={name}
-                        to={url}
-                        icon={icon}
-                        selected={selected}
-                        setSelected={setSelected}
-                      />
-                    </ListItem>
-                  </List>
-                );
-              }
-            }
+          // return accessRow.map(
+          //   ({
+          //     UGA_ADD,
+          //     UGA_DEL,
+          //     UGA_MOD,
+          //     UGA_PRINT,
+          //     UGA_PROCESS,
+          //     UGA_VIEW,
+          //     UGA_ACCESSID,
+          //   }) => {
+          //     if (true) {
+          return (
+            <List component="div" disablePadding key={id}>
+              <ListItem
+                disableGutters
+                style={{ padding: "0px", height: menuHeight }}
+                key={id}
+              >
+                <Item
+                  title={name}
+                  to={url}
+                  icon={icon}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+              </ListItem>
+            </List>
           );
+          //       }
+          //     }
+          //   );
         }
 
-        return Modules.map(({ PPD, SM_PMENU }) => {
-          if (PPD && SM_PMENU === MenuID) {
-            return (
-              <div key={id}>
-                <ListItem
-                  disableGutters
-                  key={id}
-                  onClick={() => handleClicks(name)}
-                >
-                  {!collapsed && (
-                    <Tooltip title={Tooltipname}>
-                      <ListItemButton>
-                        <ListItemIcon>{icon}</ListItemIcon>
-                        <ListItemText primary={name} />
+        // return Modules.map(({ PPD, SM_PMENU }) => {
+        //   if (true) {
+        return (
+          <div key={id}>
+            <ListItem
+              disableGutters
+              key={id}
+              onClick={() => handleClicks(name)}
+              style={{ height: menuHeight }}
+            >
+              {!collapsed && (
+                <Tooltip title={Tooltipname}>
+                  <ListItemButton style={{ height: menuHeight }} >
+                    <ListItemIcon>{icon}</ListItemIcon>
+                    <ListItemText primary={name} />
 
-                        {menu[name] ? (
-                          <ExpandMore />
-                        ) : (
-                          <ChevronRightOutlinedIcon />
-                        )}
-                      </ListItemButton>
-                    </Tooltip>
-                  )}
-                  {collapsed && (
-                    <ListItemButton>
-                      <ListItemIcon>
-                        {icon}{" "}
-                        {menu[name] ? (
-                          <ExpandMore />
-                        ) : (
-                          <ChevronRightOutlinedIcon />
-                        )}
-                      </ListItemIcon>
-                    </ListItemButton>
-                  )}
-                </ListItem>
-                <Collapse
-                  in={menu[name] ? true : false}
-                  timeout="auto"
-                  unmountOnExit
-                >
-                  {handleMenu(children, Groupaccess)}
-                </Collapse>
-              </div>
-            );
-          }
-        });
+                    {menu[name] ? (
+                      <ExpandMore />
+                    ) : (
+                      <ChevronRightOutlinedIcon />
+                    )}
+                  </ListItemButton>
+                </Tooltip>
+              )}
+              {collapsed && (
+                <ListItemButton style={{ height: menuHeight }} >
+                  <ListItemIcon>
+                    {icon}{" "}
+                    {menu[name] ? (
+                      <ExpandMore />
+                    ) : (
+                      <ChevronRightOutlinedIcon />
+                    )}
+                  </ListItemIcon>
+                </ListItemButton>
+              )}
+            </ListItem>
+            <Collapse
+              in={menu[name] ? true : false}
+              timeout="auto"
+              unmountOnExit
+            >
+              {handleMenu(children, Groupaccess)}
+            </Collapse>
+          </div>
+        );
+        //   }
+        // });
 
         //
         // }
@@ -1268,7 +1283,7 @@ const Sidebars = () => {
                     navigate("./Chart");
                   }}
                 ></Avatar> */}
-                <Typography  variant="h2">AAM</Typography>
+                <Typography variant="h2">AAM</Typography>
 
                 <IconButton
                   onClick={
@@ -1305,11 +1320,12 @@ const Sidebars = () => {
           <Box paddingBottom={3}>
             {handleMenu(child.data, Groupaccess)}
 
-         
+
             <Tooltip title="Logout">
               <ListItemButton
                 onClick={() => {
                   navigate("/");
+                  dispatch(logout());
                 }}
               >
                 <ListItemIcon>
@@ -1331,7 +1347,7 @@ const Sidebars = () => {
               </ListItemButton>
             </Tooltip> */}
             <Divider sx={{ mt: 1 }} variant="middle" />
-            <Grid mt={1} p={1} container direction={"column"} spacing={2}>
+            {/* <Grid mt={1} p={1} container direction={"column"} spacing={2}>
               <Grid item>
                 <Chip
                   color="primary"
@@ -1359,7 +1375,7 @@ const Sidebars = () => {
                   label="Calculation"
                 />
               </Grid>
-            </Grid>
+            </Grid> */}
           </Box>
         </Menu>
       </Sidebar>

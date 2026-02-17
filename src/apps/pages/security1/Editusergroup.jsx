@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   TextField,
   Box,
+  Paper,
   Typography,
   FormControl,
   FormLabel,
@@ -20,6 +21,7 @@ import ResetTvIcon from "@mui/icons-material/ResetTv";
 import Swal from "sweetalert2";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { tokens } from "../../../Theme";
+import * as Yup from "yup";
 import {
   DataGrid,
   GridToolbarContainer,
@@ -49,6 +51,13 @@ import {
 import { getFetchData, postData } from "../../../store/reducers/Formapireducer";
 import { toast } from "react-hot-toast";
 import { LoadingButton } from "@mui/lab";
+import {
+  dataGridHeaderFooterHeight,
+  dataGridHeight,
+  dataGridPageSize,
+  dataGridPageSizeOption,
+  formGap,
+} from "../../../ui-components/utils";
 
 const Editusergroup = () => {
   const theme = useTheme();
@@ -59,10 +68,16 @@ const Editusergroup = () => {
   const params = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const rowDatastate = location.state || {};
+  console.log(rowDatastate, "--rowDatastate");
+  const [page, setPage] = useState(0);
+
   const recID = params.id;
   const mode = params.Mode;
+
   const accessID = params.accessID;
   const companyRecID = params.companyRecID;
+  const [pageSize, setPageSize] = React.useState(20);
 
   // console.log("🚀 ~ file: Editusergroup.jsx:65 ~ Editusergroup ~ Year:", Year)
 
@@ -84,9 +99,27 @@ const Editusergroup = () => {
   const rowData = useSelector((state) => state.exploreApi.explorerowData);
   const exploreLoading = useSelector((state) => state.exploreApi.loading);
   // const YearRecorid = sessionStorage.getItem("YearRecorid");
-    const Finyear = sessionStorage.getItem("YearRecorid");
+  const Finyear = sessionStorage.getItem("YearRecorid");
   const CompanyID = sessionStorage.getItem("compID");
+  const [errorMsgData, setErrorMsgData] = useState(null);
+  const [validationSchema, setValidationSchema] = useState(null);
+  useEffect(() => {
+    fetch(process.env.PUBLIC_URL + "/validationcms.json")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch validationcms.json");
+        return res.json();
+      })
+      .then((data) => {
+        setErrorMsgData(data);
 
+
+        const schema1 = Yup.object().shape({
+          name: Yup.string().required(data.Usergroup.name),
+        });
+        setValidationSchema(schema1);
+      })
+      .catch((err) => console.error("Error loading validationcms.json:", err));
+  }, []);
   function handleConfirmChange1(event, clickedRow) {
     const updatedData = rowData.map((x) => {
       if ("0" === clickedRow.SM_RECID) {
@@ -259,20 +292,49 @@ const Editusergroup = () => {
     );
   }
   const column = [
+    // {
+    //   field: "SLNO",
+    //   headerName: "SL#",
+    //   width: 50,
+    // },
+    // {
+    //   field: "slno",
+    //   headerName: "SL#",
+    //   width: 50,
+    //   sortable: false,
+    //   filterable: false,
+    //   valueGetter: (params) =>
+    //     `${params.api.getRowIndexRelativeToVisibleRows(params.id) + 1}`
+    // },
     {
-      field: "SLNO",
-      headerName: "SLNO",
-      width: 50,
-    },
+      field: "slno",
+      headerName: "SL#",
+      width: 60,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      valueGetter: (params) => {
+        const index = params.api.getRowIndexRelativeToVisibleRows(params.id);
 
+        const totalVisibleRows = params.api.getAllRowIds().length;
+        const totalAllRows = params.api.getRowsCount();
+
+        if (totalVisibleRows < totalAllRows) {
+          return index + 1;
+        } else {
+          return page * pageSize + index + 1;
+        }
+      },
+    },
     {
       field: "SM_CAPTION1",
       headerName: "Screen Name",
-      width: 250,
+      width: 150,
     },
     {
       field: "all",
       headerName: "All",
+      // width: 10,
       flex: 1,
       align: "center",
       headerAlign: "center",
@@ -294,8 +356,9 @@ const Editusergroup = () => {
     },
     {
       field: "UGA_ADD",
-      headerName: "ADD",
+      headerName: "Add",
       flex: 1,
+      // width: 10,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
@@ -310,8 +373,9 @@ const Editusergroup = () => {
 
     {
       field: "UGA_VIEW",
-      headerName: "VIEW",
+      headerName: "View",
       flex: 1,
+      // width: 10,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
@@ -325,8 +389,9 @@ const Editusergroup = () => {
     },
     {
       field: "UGA_MOD",
-      headerName: "MODIFY",
+      headerName: "Modify",
       flex: 1,
+      // width: 10,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
@@ -340,8 +405,9 @@ const Editusergroup = () => {
     },
     {
       field: "UGA_DEL",
-      headerName: "DELETE",
+      headerName: "Delete",
       flex: 1,
+      // width: 10,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
@@ -355,8 +421,9 @@ const Editusergroup = () => {
     },
     {
       field: "UGA_PROCESS",
-      headerName: "PRINT",
+      headerName: "Print",
       flex: 1,
+      // width: 10,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
@@ -370,8 +437,9 @@ const Editusergroup = () => {
     },
     {
       field: "UGA_PRINT",
-      headerName: "PROCESS",
+      headerName: "Process",
       flex: 1,
+      // width: 10,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
@@ -386,7 +454,7 @@ const Editusergroup = () => {
   ];
   const fnLogOut = (props) => {
     Swal.fire({
-      title: `Do you want ${props}?`,
+      title: errorMsgData.Warningmsg[props],
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -428,83 +496,84 @@ const Editusergroup = () => {
       Comments: values.comments,
       Company: companyRecID,
       Disable: isCheck,
-      SortOrder: values.sortOrder,
-      // Finyear: YearRecorid,
+      SortOrder: values.sortOrder || 0,
       Groupaccess: rowData,
-      // YearID:,
-      // Company:,
-      //Finyear,
-      //CompanyID,
     };
 
     const response = await dispatch(postData({ accessID, action, idata }));
     if (response.payload.Status == "Y") {
       toast.success(response.payload.Msg);
-      navigate(`/Apps/Secondarylistview/TR095/Usergroups/${companyRecID}`);
+      navigate(-1);
+      // navigate(`/Apps/Secondarylistview/TR095/Usergroups/${companyRecID}`,{state:rowData});
     } else {
       toast.error(response.payload.Msg);
     }
   };
   return (
     <React.Fragment>
-      {getLoading ? <LinearProgress /> : false}
-      <Box display="flex" justifyContent="space-between" p={2}>
-        <Box display="flex" borderRadius="3px" alignItems="center">
-          {broken && !rtl && (
-            <IconButton onClick={() => toggleSidebar()}>
-              <MenuOutlinedIcon />
-            </IconButton>
-          )}
-          <Box
-            display={isNonMobile ? "flex" : "none"}
-            borderRadius="3px"
-            alignItems="center"
-          >
-            <Breadcrumbs
-              maxItems={3}
-              aria-label="breadcrumb"
-              separator={<NavigateNextIcon sx={{ color: "#0000D1" }} />}
+      {/* {getLoading ? <LinearProgress /> : false} */}
+      <Paper elevation={3} sx={{ margin: "0px 10px", background: "#F2F0F0" }}>
+        <Box display="flex" justifyContent="space-between" p={2}>
+          <Box display="flex" borderRadius="3px" alignItems="center">
+            {broken && !rtl && (
+              <IconButton onClick={() => toggleSidebar()}>
+                <MenuOutlinedIcon />
+              </IconButton>
+            )}
+            <Box
+              display={isNonMobile ? "flex" : "none"}
+              borderRadius="3px"
+              alignItems="center"
             >
-              <Typography
-                variant="h5"
-                color="#0000D1"
-                sx={{ cursor: "default" }}
-                onClick={() => {
-                  navigate("/Apps/TR099/Companies");
-                }}
+              <Breadcrumbs
+                maxItems={3}
+                aria-label="breadcrumb"
+                separator={<NavigateNextIcon sx={{ color: "#0000D1" }} />}
               >
-                Companies
-              </Typography>
-              <Typography
-                variant="h5"
-                color="#0000D1"
-                sx={{ cursor: "default" }}
-                onClick={() => {
-                  navigate("/Apps/Secondarylistview/TR095/Usergroups/3");
-                }}
-              >
-                User Group
-              </Typography>
-            </Breadcrumbs>
+                <Typography
+                  variant="h5"
+                  color="#0000D1"
+                  sx={{ cursor: "default" }}
+                  onClick={() => {
+                    navigate("/Apps/TR099/User Rights");
+                  }}
+                >
+                  {`Company(${rowDatastate.UGCompany})`}
+                </Typography>
+                <Typography
+                  variant="h5"
+                  color="#0000D1"
+                  sx={{ cursor: "default" }}
+                // onClick={() => {
+                //   navigate(
+                //     `/Apps/Secondarylistview/TR095/Usergroups/${companyRecID}`
+                //   );
+                // }}
+                >
+                  {mode === "E" ? `User Group(${rowDatastate.Usergroup})` : "User Group(New)"}
+
+                </Typography>
+              </Breadcrumbs>
+            </Box>
+          </Box>
+          <Box display="flex">
+            <Tooltip title="Close">
+              <IconButton onClick={() => fnLogOut("Close")} color="error">
+                <ResetTvIcon />
+              </IconButton>
+            </Tooltip>
+            <IconButton>
+              <LogoutOutlinedIcon
+                onClick={() => fnLogOut("Logout")}
+                color="error"
+              />
+            </IconButton>
           </Box>
         </Box>
-        <Box display="flex">
-          <Tooltip title="Close">
-            <IconButton onClick={() => fnLogOut("Close")} color="error">
-              <ResetTvIcon />
-            </IconButton>
-          </Tooltip>
-          <IconButton>
-            <LogoutOutlinedIcon
-              onClick={() => fnLogOut("Logout")}
-              color="error"
-            />
-          </IconButton>
-        </Box>
-      </Box>
-
-      {!getLoading && data && rowData ? (
-        <Box m="20px">
+      </Paper>
+      {/* {!getLoading && data && rowData ? ( */}
+      <Paper elevation={3} sx={{ margin: "10px" }}>
+        <Box>
           <Formik
             initialValues={userGroupInitialValue}
             onSubmit={(values, { resetForm }) => {
@@ -513,6 +582,7 @@ const Editusergroup = () => {
               }, 100);
             }}
             enableReinitialize={true}
+            validationSchema={validationSchema}
           >
             {({
               errors,
@@ -528,7 +598,8 @@ const Editusergroup = () => {
                 <Box
                   display="grid"
                   gridTemplateColumns="repeat(4 , minMax(0,1fr))"
-                  gap="30px"
+                  gap={formGap}
+                  padding={1}
                   sx={{
                     "& > div": {
                       gridColumn: isNonMobile ? undefined : "span 4",
@@ -540,24 +611,43 @@ const Editusergroup = () => {
                     type="text"
                     id="code"
                     label="Code"
+                    placeholder="Auto"
                     value={values.code}
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    variant="filled"
+                    variant="standard"
                     focused
                     sx={{ gridColumn: "span 2" }}
+                    InputProps={{ readOnly: true }}
                   />
                   <TextField
                     name="name"
                     type="text"
                     id="name"
-                    label="Name"
+                    label={
+                      <>
+                        Name<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                      </>
+                    }
                     value={values.name}
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    variant="filled"
+                    variant="standard"
                     focused
+                    // required
                     sx={{ gridColumn: "span 2" }}
+                    autoFocus
+                    error={!!touched.name && !!errors.name}
+                    helperText={touched.name && errors.name}
+                  // onInvalid={(e) => {
+                  //   e.target.setCustomValidity(
+                  //     "Please fill the Name"
+                  //   );
+                  // }}
+                  // onInput={(e) => {
+                  //   e.target.setCustomValidity("");
+                  // }}
+
                   />
                   <TextField
                     name="comments"
@@ -567,7 +657,7 @@ const Editusergroup = () => {
                     onBlur={handleBlur}
                     onChange={handleChange}
                     label="Comments"
-                    variant="filled"
+                    variant="standard"
                     focused
                     sx={{ gridColumn: "span 2" }}
                   />
@@ -579,13 +669,13 @@ const Editusergroup = () => {
                     onBlur={handleBlur}
                     onChange={handleChange}
                     label="Sort Order"
-                    variant="filled"
+                    variant="standard"
                     focused
-                    onWheel={(e) => e.target.blur()} 
+                    onWheel={(e) => e.target.blur()}
                     sx={{
                       gridColumn: "span 2",
                       input: { textAlign: "right" },
-                      background: "#fff6c3",
+                      background: "",
                     }}
                   />
                   <Box sx={{ gridColumn: "span 2" }}>
@@ -605,7 +695,8 @@ const Editusergroup = () => {
                   <Box m="5px">
                     <Box
                       m="5px 0 0 0"
-                      height="65vh"
+                      height={dataGridHeight}
+                      // height="65vh"
                       sx={{
                         "& .MuiDataGrid-root": {
                           border: "none",
@@ -627,15 +718,39 @@ const Editusergroup = () => {
                           borderTop: "none",
                           backgroundColor: colors.blueAccent[800],
                         },
+                        "& .MuiCheckbox-root": {
+                          color: `${colors.greenAccent[200]} !important`,
+                        },
+                        "& .odd-row": {
+                          backgroundColor: "",
+                          color: "", // Color for odd rows
+                        },
+                        "& .even-row": {
+                          backgroundColor: "#c4f5f2",
+                          color: "", // Color for even rows
+                        },
                       }}
                     >
                       {rowData ? (
                         <DataGrid
+                          sx={{
+                            "& .MuiDataGrid-footerContainer": {
+                              height: dataGridHeaderFooterHeight,
+                              minHeight: dataGridHeaderFooterHeight,
+                            },
+                          }}
                           rows={rowData}
                           columns={column}
                           loading={exploreLoading}
                           disableSelectionOnClick
                           getRowId={(row) => row.RecordID}
+                          headerHeight={dataGridHeaderFooterHeight}
+                          pageSize={pageSize}
+                          page={page}
+                          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                          onPageChange={(newPage) => setPage(newPage)}
+                          rowsPerPageOptions={dataGridPageSizeOption}
+                          pagination
                           // pageSize={pageSize}
                           // onPageSizeChange={(newPageSize) =>
                           //   setPageSize(newPageSize)
@@ -651,6 +766,12 @@ const Editusergroup = () => {
                               quickFilterProps: { debounceMs: 500 },
                             },
                           }}
+                          getRowClassName={(params) =>
+                            params.indexRelativeToCurrentPage % 2 === 0
+                              ? "odd-row"
+                              : "even-row"
+                          }
+                          rowHeight={30}
                         />
                       ) : (
                         "Loding..."
@@ -659,7 +780,13 @@ const Editusergroup = () => {
                   </Box>
                 </Box>
 
-                <Box display="flex" justifyContent="end" mt="20px" gap="20px">
+                <Box
+                  display="flex"
+                  padding={1}
+                  justifyContent="end"
+                  mt="20px"
+                  gap="20px"
+                >
                   <LoadingButton
                     loading={isLoading}
                     variant="contained"
@@ -670,10 +797,11 @@ const Editusergroup = () => {
                   </LoadingButton>
                   <Button
                     variant="contained"
-                    color="error"
+                    color="warning"
                     onClick={() => {
                       navigate(
-                        `/Apps/Secondarylistview/TR095/Usergroups/${companyRecID}`
+                        -1
+                        // `/Apps/Secondarylistview/TR095/Usergroups/${companyRecID}`
                       );
                     }}
                   >
@@ -695,9 +823,10 @@ const Editusergroup = () => {
           />
         </Popup> */}
         </Box>
-      ) : (
+      </Paper>
+      {/* ) : (
         "Loading..."
-      )}
+      )} */}
     </React.Fragment>
   );
 };
