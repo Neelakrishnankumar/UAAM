@@ -523,6 +523,7 @@ export const fetchListview =
         AccessID !=  "TR010" &&
         AccessID !=  "TR091" &&
         AccessID !=  "TR140" &&
+        AccessID !=  "TR238" &&
          AccessID != "TR022"
       ) {
         filter = "parentID=" + `'${filter}'`;
@@ -1712,6 +1713,7 @@ export const fetchListview =
             AccessID !== "TR111" &&
             AccessID !== "TR112" &&
             AccessID !== "TR114" &&
+            AccessID !== "TR238" &&
             AccessID !== "TR115"
           ) {
             obj = {
@@ -1885,8 +1887,8 @@ export const fetchListview =
                             </Tooltip>
                           </Link>
                             <Link
-                              to={`/Apps/Secondarylistview/${params.row.ChildID1}/${params.row.ChildName1}/${params.row.RecordID}`}
-                            // to={`/Apps/${params.row.ChildID1}/${params.row.ChildName1}/Edit${params.row.ChildName1}/${params.row.RecordID}/E`}
+                          to={`/Apps/Secondarylistview/${params.row.ChildID1}/${params.row.ChildName1}/${params.row.RecordID}`}
+                          // to={`/Apps/${params.row.ChildID1}/${params.row.ChildName1}/Edit${params.row.ChildName1}/${params.row.RecordID}/E`}
                         >
                             <Tooltip title="Subscriptions">
                               <IconButton color="info" size="small">
