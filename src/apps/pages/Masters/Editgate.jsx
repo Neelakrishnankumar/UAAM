@@ -39,6 +39,8 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { formGap } from "../../../ui-components/utils";
 // import CryptoJS from "crypto-js";
 import * as Yup from 'yup';
+
+
 const Editgate = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const navigate = useNavigate();
@@ -94,6 +96,9 @@ const Editgate = () => {
     code: data.Code,
     name: data.Name,
     comment: data.Comments,
+    lattitude: data.Latitude,
+    logtitude: data.Longitude,
+    radius: data.Radius,
     sortorder: data.SortOrder,
     disable: data.Disable === "Y" ? true : false,
   };
@@ -117,8 +122,9 @@ const Editgate = () => {
       // CompanyID,
       ReaderCode: "",
       ReaderName: "",
-      Latitude: "",
-      Longitude: ""
+      Latitude: values.lattitude,
+      Longitude: values.logtitude,
+      Radius: values.radius
     };
 
     const response = await dispatch(postData({ accessID, action, idata }));
@@ -334,6 +340,95 @@ const Editgate = () => {
                       helperText={touched.comment && errors.comment}
 
                     />
+                       <TextField
+                      name="lattitude"
+                      type="number"
+                      id="lattitude"
+                      label="Lattitude"
+                      variant="standard"
+                      focused
+                      value={values.lattitude}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={!!touched.lattitude && !!errors.lattitude}
+                      helperText={touched.lattitude && errors.lattitude}
+                      sx={{ background: "" }}
+                      InputProps={{
+                        inputProps: {
+                          style: { textAlign: "right" },
+                        },
+                      }}
+                      // onInput={(e) => {
+                      //   e.target.value = Math.max(0, parseInt(e.target.value))
+                      //     .toString()
+                      //     .slice(0, 8);
+                      // }}
+                    />
+                       <TextField
+                      name="logtitude"
+                      type="number"
+                      id="logtitude"
+                      label="Longtiude"
+                      variant="standard"
+                      focused
+                      value={values.logtitude}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={!!touched.logtitude && !!errors.logtitude}
+                      helperText={touched.logtitude && errors.logtitude}
+                      sx={{ background: "" }}
+                      InputProps={{
+                        inputProps: {
+                          style: { textAlign: "right" },
+                        },
+                      }}
+                      // onInput={(e) => {
+                      //   e.target.value = Math.max(0, parseInt(e.target.value))
+                      //     .toString()
+                      //     .slice(0, 8);
+                      // }}
+                    />
+                       <TextField
+                      name="radius"
+                      type="number"
+                      id="radius"
+                      label="Radius"
+                      variant="standard"
+                      focused
+                      value={values.radius}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={!!touched.radius && !!errors.radius}
+                      helperText={touched.radius && errors.radius}
+                      sx={{ background: "" }}
+                      InputProps={{
+                        inputProps: {
+                          style: { textAlign: "right" },
+                        },
+                      }}
+                    
+                    />
+                    {/* <TextField
+  name="radius"
+  type="number"
+  id="radius"
+  label="Radius (km)"
+  variant="standard"
+  value={values.radius}
+  onBlur={handleBlur}
+  onChange={handleChange}
+  error={!!touched.radius && !!errors.radius}
+  helperText={touched.radius && errors.radius}
+  InputProps={{
+    inputProps: {
+      min: 0,
+      step: 1,
+      style: { textAlign: "right" },
+    },
+  }}
+/> */}
+
+
 
                     <TextField
                       name="sortorder"

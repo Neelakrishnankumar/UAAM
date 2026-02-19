@@ -124,6 +124,8 @@ const ListviewSecondary = () => {
   var Description = params.Desc;
   var Number = params.Number;
   var filter;
+  var CompanyID = `${parentID}'`;
+  
   var invoiceFilter = `${parentID}' AND Invtype='${Number}'AND Finyear='${year}' AND CompID = '${compID}`;
   if (accessID == "TR087") {
     if (parentID == "A") {
@@ -190,6 +192,8 @@ const ListviewSecondary = () => {
   } else {
     filter = parentID;
   }
+  console.log(filter, "--sec list filter");
+  
   const listViewData = useSelector((state) => state.listviewApi.rowData);
   const open = useSelector((state) => state.listviewApi.mailOpen);
   const mailData = useSelector((state) => state.listviewApi.mailData);
@@ -713,7 +717,31 @@ const ListviewSecondary = () => {
               {/* <Typography variant="h5" color="#0000D1" sx={{cursor:'default'}}  onClick={() => {navigate(to)}}>{screen}</Typography> */}
             </Breadcrumbs>
           </Box>
-        ) : accessID == "TR073" ? (
+       
+      ) : accessID == "TR238"? (
+        <Box display="flex" borderRadius="3px" alignItems="center">
+         <Breadcrumbs
+            maxItems={2}
+            aria-label="breadcrumb"
+            separator={<NavigateNextIcon sx={{ color: "#0000D1" }} />}
+          >
+            <Typography
+              variant="h5"
+              color="#0000D1"
+              sx={{ cursor: "default" }}
+              onClick={() => {
+                navigate("/Apps/TR014/Company");
+              }}
+            >
+              Company
+            </Typography>
+            <Typography variant="h5" color="#0000D1" sx={{ cursor: "default" }}>
+              Subscription
+            </Typography>
+         
+          </Breadcrumbs>
+        </Box>
+      ) : accessID == "TR073" ? (
           <Box display="flex" borderRadius="3px" alignItems="center">
             <Breadcrumbs
               maxItems={2}
