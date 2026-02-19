@@ -56,6 +56,9 @@ const initialState = {
   BankgetLoading: false,
   BankStatus: "",
   BankData: {},
+  PolicygetLoading: false,
+  PolicyStatus: "",
+  PolicyData: {},
   CompReportgetLoading: false,
   CompReportStatus: "",
   CompReportData: {},
@@ -839,6 +842,60 @@ export const BankpostData = createAsyncThunk(
   }
 );
 
+// Company -- Policy Get
+export const PolicyFetchData = createAsyncThunk(
+  "PolicyFetchData/get",
+  async ({ get, recID }) => {
+    var url = store.getState().globalurl.CompanyPloicyGET;
+    const data = {
+      get: get,
+      CompanyID: recID,
+    };
+
+    console.log(
+      "🚀 ~ file: Formapireducer.js:225 ~ data:",
+      JSON.stringify(data)
+    );
+
+    const response = await axios.post(url, data, {
+      headers: {
+        Authorization:
+          "eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJzdWIiOiJCZXhAMTIzIiwibmFtZSI6IkJleCIsImFkbWluIjp0cnVlLCJleHAiOjE2Njk5ODQzNDl9.uxE3r3X4lqV_WKrRKRPXd-Jub9BnVcCXqCtLL4I0fpU",
+      },
+    });
+    console.log(
+      "🚀 ~ file: newFormApiReducer.js:27 ~ fetchData ~ response:",
+      response
+    );
+    return response.data;
+  }
+);
+
+//COMPANY_POLICY_POST
+export const PolicyUpdateData = createAsyncThunk(
+  "PolicyUpdateData/update",
+  async ({ idata }) => {
+    const url = store.getState().globalurl.CompanyPolicyUpdate;
+
+    
+      const data= idata;
+    
+    console.log("get" + JSON.stringify(data));
+    const response = await axios.post(url, data, {
+      headers: {
+        Authorization:
+          "eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJzdWIiOiJCZXhAMTIzIiwibmFtZSI6IkJleCIsImFkbWluIjp0cnVlLCJleHAiOjE2Njk4ODA2MTV9.uVL-s9M7nOPBH01dT1bpQbu0xbwXK4JT7HQo8h87t50",
+      },
+    });
+    console.log(
+      "🚀 ~ file: newFormApiReducer.js:27 ~ fetchData ~ response:",
+      response
+    );
+    return response.data;
+  }
+);
+
+
 // COMPANY REPORT
 export const CompReportFetchData = createAsyncThunk(
   "CompReportFetchData/get",
@@ -1378,7 +1435,26 @@ export const getApiSlice = createSlice({
         state.BankData = {};
         toast.error("Something Went Wrong");
       })
+//COMPANY_POLICY_GET
 
+     .addCase(PolicyFetchData.pending, (state, action) => {
+        state.PolicyStatus = "idle";
+        state.PolicygetLoading = true;
+        state.PolicyData = {};
+        state.msg = "Loading...";
+      })
+      .addCase(PolicyFetchData.fulfilled, (state, action) => {
+        state.PolicyStatus = "success";
+        state.PolicygetLoading = false;
+        state.PolicyData = action.payload.Data ? action.payload.Data : {};
+        // state.msg =  action.payload.Msg
+      })
+      .addCase(PolicyFetchData.rejected, (state, action) => {
+        state.PolicyStatus = "Error";
+        state.PolicygetLoading = false;
+        state.PolicyData = {};
+        toast.error("Something Went Wrong");
+      })
 
        // COMPANY REPORT GET
       .addCase(CompReportFetchData.pending, (state, action) => {

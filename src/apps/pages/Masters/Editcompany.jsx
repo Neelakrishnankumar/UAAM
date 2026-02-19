@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 import {
   Typography,
   Box,
+  Divider,
   Paper,
   Button,
   TextField,
@@ -17,7 +18,21 @@ import {
   Select,
   Chip,
   Breadcrumbs,
+  useTheme,
 } from "@mui/material";
+import { tokens } from "../../../Theme";
+import {
+  GridActionsCellItem,
+  DataGrid,
+  GridRowModes,
+  GridToolbarContainer,
+  GridRowEditStopReasons,
+} from "@mui/x-data-grid";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Cancel";
+import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { Formik, Field } from "formik";
 import * as Yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -29,6 +44,8 @@ import {
   CompReportFetchData,
   CompReportpostData,
   getFetchData,
+  PolicyFetchData,
+  PolicyUpdateData,
   postData,
 } from "../../../store/reducers/Formapireducer";
 import { toast } from "react-hot-toast";
@@ -37,7 +54,7 @@ import ResetTvIcon from "@mui/icons-material/ResetTv";
 import { LoadingButton } from "@mui/lab";
 import { useProSidebar } from "react-pro-sidebar";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import { formGap } from "../../../ui-components/utils";
+import { dataGridHeaderFooterHeight, dataGridHeight, dataGridRowHeight, formGap } from "../../../ui-components/utils";
 import {
   CheckinAutocomplete,
   SingleFormikOptimizedAutocomplete,
@@ -52,6 +69,9 @@ import Resizer from "react-image-file-resizer";
 import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined";
 import { Image } from "@mui/icons-material";
 import { TbBoxMultiple1 } from "react-icons/tb";
+import { nanoid } from "@reduxjs/toolkit";
+
+
 
 export const companySchema = Yup.object().shape({
   address: Yup.string().max(500, "Address must be 500 character "),
@@ -86,6 +106,8 @@ export const companySchema = Yup.object().shape({
 
 const Editcompany = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
@@ -110,6 +132,7 @@ const Editcompany = () => {
   const [qrCodePreview, setqrCodePreview] = useState(""); // blob preview url
 
   const data = useSelector((state) => state.formApi.Data);
+
   let recID = params.id;
   let mode = params.Mode;
   let accessID = params.accessID;
@@ -210,7 +233,12 @@ const Editcompany = () => {
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const Data = useSelector((state) => state.formApi.Data);
   const getLoading = useSelector((state) => state.formApi.getLoading);
-  const isLoading = useSelector((state) => state.formApi.postLoading);
+   const isLoading = useSelector((state) => state.formApi.postLoading);
+
+  const [page, setPage] = React.useState(0);
+  const [pageSize, setPageSize] = useState(15);
+  const exploreLoading = useSelector((state) => state.exploreApi.loading);
+
   const partyBankgetdata = useSelector((state) => state.formApi.BankData);
   const CompReportgetdata = useSelector(
     (state) => state.formApi.CompReportData
@@ -224,6 +252,10 @@ const Editcompany = () => {
     (state) => state.formApi.CompReportpostDataLoading
   );
   const [loading, setLoading] = useState(false);
+
+  //POLICY_GET
+    const PolicyData = useSelector((state) => state.formApi.PolicyData);
+  const PolicygetLoading = useSelector((state) => state.formApi.PolicygetLoading);
 
   const rowData = location.state || {};
   const screenChange = (event) => {
@@ -251,6 +283,24 @@ const Editcompany = () => {
         dispatch(CompReportFetchData({ get: "", recID }));
       }
     }
+    //Policy
+    if (event.target.value == "3") {
+      if (recID && mode === "E") {
+        dispatch(PolicyFetchData({ get: "get", recID }));
+      } else {
+        dispatch(PolicyFetchData({ get: "", recID }));
+      }
+    }
+
+    //Curriculam Details
+    // if (event.target.value == "4") {
+    //   if (recID && mode === "E") {
+    //     dispatch(PolicyFetchData({ get: "get", recID }));
+    //   } else {
+    //     dispatch(PolicyFetchData({ get: "", recID }));
+    //   }
+    // }
+
   };
 
   const initialValues = {
@@ -385,6 +435,62 @@ const Editcompany = () => {
       setLoading(false);
     }
   };
+
+
+  // POLICY SCREEN
+  const PolicyInitialValue = {
+    code: PolicyData.Code || "",
+    name: PolicyData.Name || "",
+    noofpermhrs: PolicyData.PerNumberOfHours || "",
+    noofpermpermonth: PolicyData.PerNumberOfMonth || "",
+    lossofpayrate: PolicyData.PerLossOfPayRate || "",
+    freeormonth: PolicyData.IrFreeMonth || "",
+    lossofpayrate2: PolicyData.IrLossOfPayRate || "",
+    salryrateorday: PolicyData.OtSalaryRatePerDay || "",
+   
+  };
+
+  const Policysave = async (values, del) => {
+    setLoading(true);
+
+    let action =
+      mode === "A" && !del
+        ? "insert"
+        : mode === "E" && del
+        ? "harddelete"
+        : "update";
+
+    const idata = {
+      action: "update",
+      RecordID: recID,
+      PerNumberOfHours: values.noofpermhrs,
+      PerNumberOfMonth: values.noofpermpermonth,
+      PerLossOfPayRate: values.lossofpayrate,
+      IrFreeMonth: values.freeormonth,
+      IrLossOfPayRate: values.lossofpayrate2,
+      OtSalaryRatePerDay: values.salryrateorday,
+      
+    };
+
+    try {
+      const response = await dispatch(PolicyUpdateData({ idata }));
+
+      if (response.payload.Status === "Y") {
+        toast.success(response.payload.Msg);
+        // navigate("/Apps/TR243/Party");
+        setScreen("3");
+      } else {
+        toast.error(response.payload.Msg);
+      }
+    } catch (error) {
+      toast.error("An error occurred while saving data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  
+
 
   const CompReportInitialValue = {
     code: CompReportgetdata.Code || "",
@@ -549,6 +655,373 @@ const Editcompany = () => {
     }
   };
 
+  //Curriculam Details
+
+const curriculamrows = [
+  {
+    id: 1,
+    slno: 1,
+    groupName: "Morning Shift",
+    slot: "Hours",
+    fromtime: "09:00",
+    totime: "12:00",
+  },
+  {
+    id: 2,
+    slno: 2,
+    groupName: "Afternoon Shift",
+    slot: "Hours",
+    fromtime: "13:00",
+    totime: "17:00",
+  },
+  {
+    id: 3,
+    slno: 3,
+    groupName: "Night Shift",
+    slot: "Hours",
+    fromtime: "18:00",
+    totime: "22:00",
+  }
+];
+
+  const columns = [
+    {
+      field: "slno",
+      headerName: "SL#",
+      width: 60,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      valueGetter: (params) => {
+        const index = params.api.getRowIndexRelativeToVisibleRows(params.id);
+
+        const totalVisibleRows = params.api.getAllRowIds().length;
+        const totalAllRows = params.api.getRowsCount();
+
+        if (totalVisibleRows < totalAllRows) {
+          return index + 1;
+        } else {
+          return page * pageSize + index + 1;
+        }
+      },
+    },
+    {
+      headerName: "RecordID",
+      field: "id",
+      width: 100,
+      align: "left",
+      headerAlign: "center",
+      hide: true,
+    },
+
+    // {
+    //   headerName: (
+    //     <span>
+    //       Role <span style={{ color: "red" }}>*</span>
+    //     </span>
+    //   ),
+    //   field: "TaskDetailRoleID",
+    //   width: 300,
+    //   headerAlign: "center",
+    //   hide: false,
+    //   editable: true,
+    //   sortable: false,
+    //   renderCell: (params) => {
+    //     return params.value?.Name || ""; // show only the name
+    //   },
+    //   renderEditCell: (params) => {
+    //     return <EditAutocompleteCell {...params} />;
+    //   },
+    // },
+    {
+      field: "groupName",
+      headerName: "Group Name",
+      width: 100,
+      editable: true,
+      type: "text",
+    },
+    {
+      field: "slot",
+      headerName: "Slot",
+      width: 150,
+      align: "left",
+      headerAlign: "center",
+      editable: true,
+      // type: "singleSelect",
+      // valueOptions: ["Hours", "Days", "Month"],
+    },
+    {
+      headerName: "From Time",
+      field: "fromtime",
+      width: 150,
+      hide: false,
+      editable: true,
+      // renderCell: (params) => {
+      //   return formatDateToDDMMYYYY(params.value); // show only the name
+      // },
+      renderEditCell: (params) => {
+        return <EditDateCell {...params} />;
+      },
+    },
+     {
+      headerName: "To Time",
+      field: "totime",
+      width: 150,
+      hide: false,
+      editable: true,
+      // renderCell: (params) => {
+      //   return formatDateToDDMMYYYY(params.value); // show only the name
+      // },
+      renderEditCell: (params) => {
+        return <EditDateCell {...params} />;
+      },
+    },
+
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      width: 150,
+      cellClassName: "actions",
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<SaveIcon />}
+              label="Save"
+              material={{
+                sx: {
+                  color: "primary.main",
+                },
+              }}
+              // onClick={handleSaveClick(id)}
+            />,
+            <GridActionsCellItem
+              icon={<CancelIcon />}
+              label="Cancel"
+              className="textPrimary"
+              // onClick={handleCancelClick(id)}
+              color="inherit"
+            />,
+          ];
+        }
+
+        return [
+          <GridActionsCellItem
+            icon={<AddIcon style={{ color: "#00563B" }} />}
+            label="Add"
+            // onClick={() => handleInsertInrow(id)}
+            color="inherit"
+          />,
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Edit"
+            className="textPrimary"
+            // onClick={handleEditClick(id)}
+            color="inherit"
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            // onClick={handleDeleteClick(id)}
+            color="inherit"
+          />,
+        ];
+      },
+    },
+  ];
+
+
+
+   function EditToolbar(props) {
+    const { setRows, setRowModesModel } = props;
+
+    const handleClick = () => {
+      const id = nanoid();
+      const nextSLNO =
+        rows.length > 0 ? Math.max(...rows.map((row) => row.SLNO || 0)) + 1 : 1;
+      setRows((oldRows) => [
+        ...oldRows,
+        {
+          RecordID: id, // Temporary ID, replaced after backend save
+          SLNO: nextSLNO,
+          // TaskID: "",
+          // TaskDetailRoleID: "",
+          // RoleCode: "",
+          // RoleName: "",
+          // TaskDetailEffort: 0,
+          // TaskDetailUnit: "",
+          // ProjectPlanedDate: "",
+          isNew: true,
+        },
+      ]);
+      setRowModesModel((oldModel) => ({
+        ...oldModel,
+        [id]: { mode: GridRowModes.Edit, fieldToFocus: "TaskDetailRoleID" },
+      }));
+    };
+    return (
+      <GridToolbarContainer
+        sx={{
+          marginBottom: "10px",
+          display: "flex",
+          justifyContent: "flex-start",
+        }}
+      >
+        <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+          Add Record
+        </Button>
+      </GridToolbarContainer>
+    );
+  }
+
+
+   const [rows, setRows] = React.useState([]);
+  const [rowModesModel, setRowModesModel] = React.useState({});
+
+  const handleRowEditStop = (params, event) => {
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevented = true;
+    }
+  };
+
+  const handleEditClick = (RecordID) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [RecordID]: { mode: GridRowModes.Edit },
+    });
+  };
+
+  const handleSaveClick = (RecordID) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [RecordID]: { mode: GridRowModes.View },
+    });
+  };
+
+  const handleDeleteClick = (RecordID) => async () => {
+    setRows(rows.filter((row) => row.RecordID !== RecordID));
+
+    if (!isNaN(RecordID)) {
+      const idata = {
+        //RecordID: recID,
+        RecordID: RecordID,
+      };
+
+      const response = await dispatch(
+        postData({
+          accessID: "TR237",
+          action: "harddelete",
+          idata: idata,
+        })
+      );
+
+      if (response.payload?.Status === "Y") {
+        toast.success(response.payload.Msg);
+        const data = await dispatch(
+          // getTaskDetailListviewData({
+          //   accessID: "TR237",
+          //   screenName: "Task Detail",
+          //   filter: `TaskID = ${recID}`,
+          //   any: "",
+          //   CompID: "",
+          // })
+        );
+        console.log("🚀 ~ screenChange ~ data:", data);
+        if (data.payload.Status == "Y") {
+          const resData = data.payload.Data.rows.map((value) => {
+            return {
+              ...value,
+              TaskDetailRoleID: {
+                RecordID: value.TaskDetailRoleID,
+                Name: value.RoleName,
+              },
+            };
+          });
+          setRows(resData);
+        } else {
+          setRows([]); // Ensures rows don't break if explorelistViewData is undefined or not an array
+        }
+      } else {
+        toast.error(response.payload?.Msg || "Operation failed");
+      }
+    }
+  };
+
+  const handleCancelClick = (RecordID) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [RecordID]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+
+    const editedRow = rows.find((row) => row.RecordID === RecordID);
+    if (editedRow.isNew) {
+      setRows(rows.filter((row) => row.RecordID !== RecordID));
+    }
+  };
+
+  const processRowUpdate = (newRow, oldRow) => {
+    const {
+      TaskDetailRoleID,
+      TaskDetailEffort,
+      TaskDetailUnit,
+      ProjectPlanedDate,
+    } = newRow;
+
+    // Validation rules
+    if (!TaskDetailRoleID) {
+      throw new Error("Role ID is required.");
+    }
+
+    if (!TaskDetailUnit || TaskDetailUnit.trim() === "") {
+      throw new Error("Unit is required.");
+    }
+
+    if (!ProjectPlanedDate || ProjectPlanedDate.trim() === "") {
+      throw new Error("Planned Date is required.");
+    }
+
+    if (isNaN(TaskDetailEffort) || TaskDetailEffort <= 0) {
+      throw new Error("Effort must be a number greater than 0.");
+    }
+
+    // If all validations pass
+    const updatedRow = { ...newRow, isNew: false };
+
+    setRows((prevRows) =>
+      prevRows.map((row) =>
+        row.RecordID === newRow.RecordID ? updatedRow : row
+      )
+    );
+
+    return updatedRow;
+  };
+  const handleRowModesModelChange = (newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
+
+  function EditDateCell(props) {
+    const { id, field, value, api } = props;
+
+    const handleChange = (event) => {
+      const newValue = event.target.value;
+      api.setEditCellValue({ id, field, value: newValue });
+    };
+
+    return (
+      <TextField
+        type="date"
+        fullWidth
+        size="small"
+        value={value ? new Date(value).toISOString().split("T")[0] : ""}
+        onChange={handleChange}
+        InputLabelProps={{ shrink: true }}
+      />
+    );
+  }
+
   return (
     <Box>
       {getLoading ? <LinearProgress /> : false}
@@ -592,6 +1065,9 @@ const Editcompany = () => {
               {mode === "E" && show == "2" ? (
                 <Typography variant="h3">Report Settings</Typography>
               ) : null}
+              {mode === "E" && show == "3" ? (
+                <Typography variant="h3">Policy</Typography>
+              ) : null}
             </Breadcrumbs>
           </Box>
 
@@ -609,6 +1085,8 @@ const Editcompany = () => {
                   <MenuItem value={0}>Company</MenuItem>
                   <MenuItem value={1}>Bank Details</MenuItem>
                   <MenuItem value={2}>Report Settings</MenuItem>
+                  <MenuItem value={3}>Policy</MenuItem>
+                  {/* <MenuItem value={4}>Curriculam Details</MenuItem> */}
                 </Select>
               </FormControl>
             ) : (
@@ -2186,6 +2664,880 @@ const Editcompany = () => {
                       Save
                     </Button>
                   )}{" "} */}
+
+                  <Button
+                    color="warning"
+                    variant="contained"
+                    onClick={() => {
+                      setScreen(0);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              </form>
+            )}
+          </Formik>
+        </Paper>
+      ) : (
+        false
+      )}
+      {/* Policy */}
+
+      
+      {/* {show == "3" ? (
+        <Paper elevation={3} sx={{ margin: "10px" }}>
+          <Formik
+            initialValues={BankInitialValue}
+            onSubmit={(values, setSubmitting) => {
+              setTimeout(() => {
+                Banksave(values);
+              }, 100);
+            }}
+            validationSchema={BankValidationSchema}
+            enableReinitialize={true}
+          >
+            {({
+              errors,
+              touched,
+              handleBlur,
+              handleChange,
+              isSubmitting,
+              values,
+              handleSubmit,
+              setFieldValue,
+            }) => (
+              <form onSubmit={handleSubmit}>
+                            <Typography variant="h5" padding={1}>Permission:</Typography>
+
+           
+           <Box
+                                display="grid"
+                                gridTemplateColumns="repeat(4, minMax(0, 1fr))"
+                                gap={formGap}
+                                padding={1}
+                                sx={{
+                                    "& > div": {
+                                        gridColumn: isNonMobile ? undefined : "span 4", // Adjust for mobile view
+                                    },
+                                }}
+                            >
+                                <FormControl
+                                    fullWidth
+                                    sx={{ gridColumn: "span 2", gap: formGap }}
+                                >
+             
+                  <TextField
+                    name="noofpermhrs"
+                    type="number"
+                    id="noofpermhrs"
+                    label={
+                      <>
+                        No Of Hours / Permission
+                        
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.noofpermhrs}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.noofpermhrs && !!errors.noofpermhrs}
+                    helperText={touched.noofpermhrs && errors.noofpermhrs}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    inputProps={{
+    style: { textAlign: "right" }
+  }}
+                   
+                  />
+                  <TextField
+                    name="noofpermpermonth"
+                    type="number"
+                    id="noofpermpermonth"
+                    label={
+                      <>
+                       No Of Permission / Month
+                     
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.noofpermpermonth}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.noofpermpermonth && !!errors.noofpermpermonth}
+                    helperText={touched.noofpermpermonth && errors.noofpermpermonth}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                  inputProps={{
+                    style: { textAlign: "right" }
+                  }}
+                    autoFocus
+                  />
+                  <TextField
+                    name="lossofpayrate"
+                    type="number"
+                    id="lossofpayrate"
+                    label={
+                      <>
+                        Loss of pay rate   
+                      
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.lossofpayrate}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.lossofpayrate && !!errors.lossofpayrate}
+                    helperText={touched.lossofpayrate && errors.lossofpayrate}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    inputProps={{
+                    style: { textAlign: "right" }
+                  }}
+                    autoFocus
+                  />
+                  </FormControl>
+                       </Box>
+                    <Divider variant="fullWidth" sx={{ mt: "20px" }} />
+                            <Typography variant="h5" padding={1}>Irregular:</Typography>
+
+                            <Box
+                                display="grid"
+                                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                gap={formGap}
+                                padding={1}
+                                sx={{
+                                    "& > div": {
+                                        gridColumn: isNonMobile ? undefined : "span 4",
+                                    },
+                                }}
+                            >
+                                <FormControl fullWidth sx={{ gridColumn: "span 2", gap: formGap }}>
+  <TextField
+                    name="freeormonth"
+                    type="number"
+                    id="freeormonth"
+                    label={
+                      <>
+                        Free / Month   
+                      
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.freeormonth}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.freeormonth && !!errors.freeormonth}
+                    helperText={touched.freeormonth && errors.freeormonth}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    inputProps={{
+                    style: { textAlign: "right" }
+                  }}
+                    autoFocus
+                  />
+                    <TextField
+                    name="lossofpayrate2"
+                    type="number"
+                    id="lossofpayrate2"
+                    label={
+                      <>
+                        Loss of pay / Rate  
+                      
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.lossofpayrate2}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.lossofpayrate2 && !!errors.lossofpayrate2}
+                    helperText={touched.lossofpayrate2 && errors.lossofpayrate2}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    inputProps={{
+                    style: { textAlign: "right" }
+                  }}
+                    autoFocus
+                  />
+
+
+ </FormControl>
+                       </Box>
+                          <Divider variant="fullWidth" sx={{ mt: "20px" }} />
+                            <Typography variant="h5" padding={1}>Overtime:</Typography>
+
+                            <Box
+                                display="grid"
+                                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                gap={formGap}
+                                padding={1}
+                                sx={{
+                                    "& > div": {
+                                        gridColumn: isNonMobile ? undefined : "span 4",
+                                    },
+                                }}
+                            >
+                                <FormControl fullWidth sx={{ gridColumn: "span 2", gap: formGap }}>
+   <TextField
+                    name="salryrateorday"
+                    type="number"
+                    id="salryrateorday"
+                    label={
+                      <>
+                    Salry rate / Day  
+                      
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.salryrateorday}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.salryrateorday && !!errors.salryrateorday}
+                    helperText={touched.salryrateorday && errors.salryrateorday}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    inputProps={{
+                    style: { textAlign: "right" }
+                  }}
+                    autoFocus
+                  />
+
+             
+
+ </FormControl>
+                       </Box>
+           
+                <Box
+                  display="flex"
+                  justifyContent="flex-end"
+                  padding={1}
+                  gap="20px"
+                >
+                 
+                  <LoadingButton
+                    color="secondary"
+                    variant="contained"
+                    type="submit"
+                    loading={isLoading}
+                  >
+                    Save
+                  </LoadingButton>
+               
+
+                  <Button
+                    color="warning"
+                    variant="contained"
+                    onClick={() => {
+                      setScreen(0);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              </form>
+            )}
+          </Formik>
+        </Paper>
+      ) : (
+        false
+      )} */}
+
+        {show == "3" ? (
+        <Paper elevation={3} sx={{ margin: "10px" }}>
+          <Formik
+            initialValues={PolicyInitialValue}
+            onSubmit={(values, setSubmitting) => {
+              setTimeout(() => {
+                Policysave(values);
+              }, 100);
+            }}
+            // validationSchema={PolicyValidationSchema}
+            enableReinitialize={true}
+          >
+            {({
+              errors,
+              touched,
+              handleBlur,
+              handleChange,
+              isSubmitting,
+              values,
+              handleSubmit,
+              setFieldValue,
+            }) => (
+              <form onSubmit={handleSubmit}>
+                  <Box
+                  display="grid"
+                  gap={formGap}
+                  padding={1}
+                  gridTemplateColumns="repeat(2 , minMax(0,1fr))"
+                  // gap="30px"
+                  sx={{
+                    "& > div": {
+                      gridColumn: isNonMobile ? undefined : "span 2",
+                    },
+                  }}
+                >
+              
+                  <TextField
+                    name="code"
+                    type="text"
+                    id="code"
+                    label={
+                      <>
+                        Code
+                   
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    // required
+                    value={values.code}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.code && !!errors.code}
+                    helperText={touched.code && errors.code}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    InputProps={{
+                      inputProps: {
+                        readOnly: true,
+                      },
+                    }}
+                    autoFocus
+                  />
+                  {/* )} */}
+                  <TextField
+                    name="name"
+                    type="text"
+                    id="name"
+                    label={
+                      <>
+                        Name
+                      
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.name}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.name && !!errors.name}
+                    helperText={touched.name && errors.name}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    InputProps={{
+                      inputProps: {
+                        readOnly: true,
+                      },
+                    }}
+                   
+                  />
+                </Box>
+                            <Typography variant="h5" padding={1}>Permission:</Typography>
+
+           
+           <Box
+                                display="grid"
+                                gridTemplateColumns="repeat(2, 1fr)"
+                                // gridTemplateColumns="repeat(4, minMax(0, 1fr))"
+                                gap={formGap}
+                                padding={1}
+                                sx={{
+                                    "& > div": {
+                                        gridColumn: isNonMobile ? undefined : "span 2", // Adjust for mobile view
+                                    },
+                                }}
+                            >
+                                {/* <FormControl
+                                    fullWidth
+                                    sx={{ gridColumn: "span 2", gap: formGap }}
+                                > */}
+             
+                  <TextField
+                    name="noofpermhrs"
+                    type="number"
+                    id="noofpermhrs"
+                    label={
+                      <>
+                        No Of Hours / Permission
+                        
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.noofpermhrs}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.noofpermhrs && !!errors.noofpermhrs}
+                    helperText={touched.noofpermhrs && errors.noofpermhrs}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    inputProps={{
+    style: { textAlign: "right" }
+  }}
+                   
+                  />
+                  <TextField
+                    name="noofpermpermonth"
+                    type="number"
+                    id="noofpermpermonth"
+                    label={
+                      <>
+                       No Of Permission / Month
+                     
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.noofpermpermonth}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.noofpermpermonth && !!errors.noofpermpermonth}
+                    helperText={touched.noofpermpermonth && errors.noofpermpermonth}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                  inputProps={{
+                    style: { textAlign: "right" }
+                  }}
+                    autoFocus
+                  />
+                  <TextField
+                    name="lossofpayrate"
+                    type="number"
+                    id="lossofpayrate"
+                    label={
+                      <>
+                        Loss Of Pay Rate   
+                      
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.lossofpayrate}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.lossofpayrate && !!errors.lossofpayrate}
+                    helperText={touched.lossofpayrate && errors.lossofpayrate}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    inputProps={{
+                    style: { textAlign: "right" }
+                  }}
+                    autoFocus
+                  />
+                  {/* </FormControl> */}
+                       </Box>
+                    <Divider variant="fullWidth" sx={{ mt: "20px" }} />
+                            <Typography variant="h5" padding={1}>Irregular:</Typography>
+
+                            <Box
+                                display="grid"
+                                gridTemplateColumns="repeat(2, 1fr)"
+                                // gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                gap={formGap}
+                                padding={1}
+                                sx={{
+                                    "& > div": {
+                                        gridColumn: isNonMobile ? undefined : "span 4",
+                                    },
+                                }}
+                            >
+                                {/* <FormControl fullWidth sx={{ gridColumn: "span 2", gap: formGap }}> */}
+  <TextField
+                    name="freeormonth"
+                    type="number"
+                    id="freeormonth"
+                    label={
+                      <>
+                        Free / Month   
+                      
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.freeormonth}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.freeormonth && !!errors.freeormonth}
+                    helperText={touched.freeormonth && errors.freeormonth}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    inputProps={{
+                    style: { textAlign: "right" }
+                  }}
+                    autoFocus
+                  />
+                    <TextField
+                    name="lossofpayrate2"
+                    type="number"
+                    id="lossofpayrate2"
+                    label={
+                      <>
+                        Loss Of Pay Rate  
+                      
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.lossofpayrate2}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.lossofpayrate2 && !!errors.lossofpayrate2}
+                    helperText={touched.lossofpayrate2 && errors.lossofpayrate2}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    inputProps={{
+                    style: { textAlign: "right" }
+                  }}
+                    autoFocus
+                  />
+
+
+ {/* </FormControl> */}
+                       </Box>
+                          <Divider variant="fullWidth" sx={{ mt: "20px" }} />
+                            <Typography variant="h5" padding={1}>Overtime:</Typography>
+
+                            <Box
+                                display="grid"
+                                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                gap={formGap}
+                                padding={1}
+                                sx={{
+                                    "& > div": {
+                                        gridColumn: isNonMobile ? undefined : "span 4",
+                                    },
+                                }}
+                            >
+                                <FormControl fullWidth sx={{ gridColumn: "span 2", gap: formGap }}>
+   <TextField
+                    name="salryrateorday"
+                    type="number"
+                    id="salryrateorday"
+                    label={
+                      <>
+                    Salary Rate / Day  
+                      
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.salryrateorday}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.salryrateorday && !!errors.salryrateorday}
+                    helperText={touched.salryrateorday && errors.salryrateorday}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    inputProps={{
+                    style: { textAlign: "right" }
+                  }}
+                    autoFocus
+                  />
+
+             
+
+ </FormControl>
+                       </Box>
+           
+                <Box
+                  display="flex"
+                  justifyContent="flex-end"
+                  padding={1}
+                  gap="20px"
+                >
+                 
+                  <LoadingButton
+                    color="secondary"
+                    variant="contained"
+                    type="submit"
+                    loading={isLoading}
+                  >
+                    Save
+                  </LoadingButton>
+               
+
+                  <Button
+                    color="warning"
+                    variant="contained"
+                    onClick={() => {
+                      setScreen(0);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              </form>
+            )}
+          </Formik>
+        </Paper>
+      ) : (
+        false
+      )}
+       {show == "4" ? (
+        <Paper elevation={3} sx={{ margin: "10px" }}>
+          <Formik
+            initialValues={PolicyInitialValue}
+            onSubmit={(values, setSubmitting) => {
+              // setTimeout(() => {
+              //   Policysave(values);
+              // }, 100);
+            }}
+            // validationSchema={PolicyValidationSchema}
+            enableReinitialize={true}
+          >
+            {({
+              errors,
+              touched,
+              handleBlur,
+              handleChange,
+              isSubmitting,
+              values,
+              handleSubmit,
+              setFieldValue,
+            }) => (
+              <form onSubmit={handleSubmit}>
+                  <Box
+                  display="grid"
+                  gap={formGap}
+                  padding={1}
+                  gridTemplateColumns="repeat(2 , minMax(0,1fr))"
+                  // gap="30px"
+                  sx={{
+                    "& > div": {
+                      gridColumn: isNonMobile ? undefined : "span 2",
+                    },
+                  }}
+                >
+              
+                  <TextField
+                    name="code"
+                    type="text"
+                    id="code"
+                    label={
+                      <>
+                        Code
+                   
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    // required
+                    value={values.code}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.code && !!errors.code}
+                    helperText={touched.code && errors.code}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    InputProps={{
+                      inputProps: {
+                        readOnly: true,
+                      },
+                    }}
+                    autoFocus
+                  />
+                  {/* )} */}
+                  <TextField
+                    name="name"
+                    type="text"
+                    id="name"
+                    label={
+                      <>
+                        Name
+                      
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.name}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.name && !!errors.name}
+                    helperText={touched.name && errors.name}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    InputProps={{
+                      inputProps: {
+                        readOnly: true,
+                      },
+                    }}
+                   
+                  />
+                </Box>
+             
+             <Box
+                    m="5px 0 0 0"
+                    height={dataGridHeight}
+                    sx={{
+                      "& .MuiDataGrid-root": {
+                        border: "none",
+                      },
+                      "& .MuiDataGrid-cell": {
+                        borderBottom: "none",
+                      },
+                      "& .name-column--cell": {
+                        color: colors.greenAccent[300],
+                      },
+                      "& .MuiDataGrid-columnHeaders": {
+                        backgroundColor: colors.blueAccent[800],
+                        borderBottom: "none",
+                      },
+                      "& .MuiDataGrid-virtualScroller": {
+                        backgroundColor: colors.primary[400],
+                      },
+                      "& .MuiDataGrid-footerContainer": {
+                        borderTop: "none",
+                        backgroundColor: colors.blueAccent[800],
+                      },
+                      "& .MuiCheckbox-root": {
+                        color: `${colors.greenAccent[200]} !important`,
+                      },
+                      "& .odd-row": {
+                        backgroundColor: "",
+                        color: "", // Color for odd rows
+                      },
+                      "& .even-row": {
+                        backgroundColor: "#D3D3D3",
+                        color: "", // Color for even rows
+                      },
+                    }}
+                  >
+                    <DataGrid
+                      sx={{
+                        "& .MuiDataGrid-footerContainer": {
+                          height: dataGridHeaderFooterHeight,
+                          minHeight: dataGridHeaderFooterHeight,
+                        },
+                      }}
+                      rows={curriculamrows}
+                      columns={columns}
+                      loading={exploreLoading}
+                      rowModesModel={rowModesModel}
+                      getRowId={(row) => row.id}
+                      editMode="row"
+                      disableRowSelectionOnClick
+                      rowHeight={dataGridRowHeight}
+                      headerHeight={dataGridHeaderFooterHeight}
+                      experimentalFeatures={{ newEditingApi: true }}
+                      onRowModesModelChange={handleRowModesModelChange}
+                      onRowEditStop={handleRowEditStop}
+                      processRowUpdate={processRowUpdate}
+                      onProcessRowUpdateError={(error) => {
+                        console.error(
+                          "Row update validation failed:",
+                          error.message
+                        );
+
+                        toast.error(error.message);
+                      }}
+                      components={{
+                        Toolbar: EditToolbar,
+                      }}
+                      componentsProps={{
+                        toolbar: { setRows, setRowModesModel },
+                      }}
+                      rowsPerPageOptions={[5, 10, 20]}
+                      getRowClassName={(params) =>
+                        params.indexRelativeToCurrentPage % 2 === 0
+                          ? "odd-row"
+                          : "even-row"
+                      }
+                      pagination
+                      pageSize={pageSize}
+                      page={page}
+                      onPageSizeChange={(newPageSize) =>
+                        setPageSize(newPageSize)
+                      }
+                      onPageChange={(newPage) => setPage(newPage)}
+                    />
+                  </Box>
+                <Box
+                  display="flex"
+                  justifyContent="flex-end"
+                  padding={1}
+                  gap="20px"
+                >
+                 
+                  <LoadingButton
+                    color="secondary"
+                    variant="contained"
+                    type="submit"
+                    loading={isLoading}
+                  >
+                    Save
+                  </LoadingButton>
+               
 
                   <Button
                     color="warning"

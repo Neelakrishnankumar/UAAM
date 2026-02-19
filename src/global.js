@@ -194,6 +194,8 @@ const initialState = {
   trailCompanyUrl: "",
   CompanyBankGET: "",
   CompanyBankUPDATE: "",
+  CompanyPloicyGET: "",
+  CompanyPolicyUpdate: "",
   CompanyReportSettingGet: "",
   CompanyReportSettingUpdate: "",
 };
@@ -291,7 +293,9 @@ export const getUrlSlice = createSlice({
       state.trailCompanyUrl = APIurl + "TrialCompanyPostController.php";
       state.CompanyBankGET = APIurl + "CompanyBankGetContoller.php";
       state.CompanyBankUPDATE = APIurl + "CompanyBankUpdateContoller.php";
-      state.CompanyReportSettingGet = APIurl + "CompanyReportSettingGet.php";
+     state.CompanyPloicyGET = APIurl + "CompanyPolicyGetController.php";
+     state.CompanyPolicyUpdate = APIurl + "CompanyPolicyUpdateController.php";
+     state.CompanyReportSettingGet = APIurl + "CompanyReportSettingGet.php";
       state.CompanyReportSettingUpdate =
         APIurl + "CompanyReportSettingUpdate.php";
       state.UserActivityUrl = APIurl + "UserActivityController.php";
