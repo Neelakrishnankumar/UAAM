@@ -411,7 +411,7 @@ import {
   Stack,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
@@ -534,7 +534,25 @@ const Login = () => {
     dispatch(fetchComboData1("TR014", "getall", "-1", "Company"));
     dispatch(fetchComboData1("TR015", "getall", "-1", "Year"));
   }, []);
+ const [initialValues, setInitialValues] = useState({
+    username: "",
+    password: "",
+    remember: false,
+  });
+  useEffect(() => {
+    const rememberedData = localStorage.getItem("rememberMeData");
 
+    if (rememberedData) {
+      const parsedData = JSON.parse(rememberedData);
+
+      setInitialValues({
+        username: parsedData.username || "",
+        password: parsedData.password || "",
+        license: parsedData.license || "",
+        remember: true,
+      });
+    }
+  }, []);
   const [value, setValues] = React.useState({
     showPassword: false,
   });
@@ -558,13 +576,13 @@ const Login = () => {
     password: Yup.string().required("Please enter the Password"),
   });
 
-  const initialValues = {
-    username: "",
-    password: "",
-    company: company,
-    year: year,
-    remember: false,
-  };
+  // const initialValues = {
+  //   username: "",
+  //   password: "",
+  //   company: company,
+  //   year: year,
+  //   remember: false,
+  // };
   const clear = async (values) => {
     setCompanycombo("");
     setYearcombo("");
@@ -613,6 +631,23 @@ const Login = () => {
     sessionStorage.setItem("loginRecid", loginrecordID);
 
     if (data.payload.Status == "Y") {
+       if (values.remember) {
+        localStorage.setItem("rememberMeData", JSON.stringify({
+          username: values.username,
+          password: values.password,
+          license: values.license,
+          remember: true,
+        }));
+        console.log("Saved:", localStorage.getItem("rememberMeData"));
+      } else {
+        localStorage.removeItem("rememberMeData");
+        setInitialValues({
+          username: "",
+          password: "",
+          license: "",
+          remember: false,
+        });
+      }
       //  var loginrecordID = data.payload.apiResponse.Recordid
       var company = data.payload.apiResponse.Company;
       var year = data.payload.apiResponse.Year;

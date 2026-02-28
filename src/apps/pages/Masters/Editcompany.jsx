@@ -334,6 +334,8 @@ const Editcompany = () => {
         }
       : null,
     Module: mode === "E" ? Data.Module : "",
+    Type: Data.Type 
+    // == "S" ? "Startup" : Data.Type == "I" ? "Institute" : Data.Type == "C" ? "Construction" : "",
   };
 
   /*************************SAVE FUCTION*********************/
@@ -365,6 +367,7 @@ const Editcompany = () => {
       NumberOfEmployee: values.noOfEmployees,
       NumberOfUsers: values.noofusers,
       Module: values.Module,
+      Type: values.Type,
     };
     console.log(values.Module);
 
@@ -1457,31 +1460,26 @@ const curriculamrows = [
                       helperText={touched.iECode && errors.iECode}
                     />
 
-                    {/* <FormControl
+                    <FormControl
                       variant="standard"
                       fullWidth
                       // required 
                       focused>
-                      <InputLabel id="module-label">Module</InputLabel>
+                      <InputLabel id="Type-label">Type</InputLabel>
                       <Select
-                        labelId="module-label"
-                        id="Module"
-                        name="Module"
-                        multiple
-                        value={values.Module}
+                        labelId="Type-label"
+                        id="Type"
+                        name="Type"                        
+                        value={values.Type}
                         onChange={handleChange}
-                        onBlur={handleBlur}
-                        renderValue={(selected) => selected.join(', ')}
+                        onBlur={handleBlur}                        
                       >
-                        <MenuItem value="All">All</MenuItem>
-                        <MenuItem value="Task">Task</MenuItem>
-                        <MenuItem value="Project">Project</MenuItem>
-                        <MenuItem value="Attendance">Attendance</MenuItem>
-                        <MenuItem value="Request">Request</MenuItem>
-                        <MenuItem value="Assessment">Assessment</MenuItem>
-                        <MenuItem value="Myprofile">Myprofile</MenuItem>
+                        <MenuItem value="S">Startup</MenuItem>
+                        <MenuItem value="I">Institute</MenuItem>
+                        <MenuItem value="C">Construction</MenuItem>
+                        
                       </Select>
-                    </FormControl> */}
+                    </FormControl>
                     <FormControl variant="standard" fullWidth focused>
                       <InputLabel id="module-label">Module</InputLabel>
 
