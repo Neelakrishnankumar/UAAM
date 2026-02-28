@@ -54,7 +54,12 @@ import ResetTvIcon from "@mui/icons-material/ResetTv";
 import { LoadingButton } from "@mui/lab";
 import { useProSidebar } from "react-pro-sidebar";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import { dataGridHeaderFooterHeight, dataGridHeight, dataGridRowHeight, formGap } from "../../../ui-components/utils";
+import {
+  dataGridHeaderFooterHeight,
+  dataGridHeight,
+  dataGridRowHeight,
+  formGap,
+} from "../../../ui-components/utils";
 import {
   CheckinAutocomplete,
   SingleFormikOptimizedAutocomplete,
@@ -70,8 +75,7 @@ import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined";
 import { Image } from "@mui/icons-material";
 import { TbBoxMultiple1 } from "react-icons/tb";
 import { nanoid } from "@reduxjs/toolkit";
-
-
+import { slotListView } from "../../../store/reducers/Explorelitviewapireducer";
 
 export const companySchema = Yup.object().shape({
   address: Yup.string().max(500, "Address must be 500 character "),
@@ -83,14 +87,14 @@ export const companySchema = Yup.object().shape({
   license: Yup.string()
     .matches(
       /^[a-zA-Z0-9]{4}$/,
-      "Please enter alphabets only, exactly 4 characters"
+      "Please enter alphabets only, exactly 4 characters",
     ) // Only letters and digits, 4 characters long
     .test(
       "contains-both",
       "The code must contain both letters and numbers",
       (value) => {
         return /[a-zA-Z]/.test(value) && /\d/.test(value); // Must contain both letters and numbers
-      }
+      },
     ),
   iECode: Yup.string()
     .matches(/^[-_ a-zA-Z0-9]+$/, "Please enter alphabets only")
@@ -116,6 +120,7 @@ const Editcompany = () => {
   const Year = sessionStorage.getItem("year");
   const Finyear = sessionStorage.getItem("YearRecorid");
   const CompanyID = sessionStorage.getItem("compID");
+
   const [errorMsgData, setErrorMsgData] = useState(null);
   const [validationSchema, setValidationSchema] = useState(null);
   const [BankValidationSchema, setBankValidationSchema] = useState(null);
@@ -134,6 +139,8 @@ const Editcompany = () => {
   const data = useSelector((state) => state.formApi.Data);
 
   let recID = params.id;
+  console.log(recID, "--recID");
+
   let mode = params.Mode;
   let accessID = params.accessID;
   useEffect(() => {
@@ -163,7 +170,7 @@ const Editcompany = () => {
             .required(data.Company.email)
             .matches(
               /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-              "Invalid Email format"
+              "Invalid Email format",
             ),
 
           pincode: Yup.string()
@@ -174,7 +181,7 @@ const Editcompany = () => {
             .required(data.Company.gst)
             .matches(
               /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
-              "Invalid GST number"
+              "Invalid GST number",
             ),
 
           phone: Yup.string()
@@ -212,7 +219,7 @@ const Editcompany = () => {
 
           bankloc: Yup.string().required(data.BankDetails.bankloc),
           accountholdname: Yup.string().required(
-            data.BankDetails.accountholdname
+            data.BankDetails.accountholdname,
           ),
           bankaddress: Yup.string().required(data.BankDetails.bankaddress),
         });
@@ -233,7 +240,7 @@ const Editcompany = () => {
   const { toggleSidebar, broken, rtl } = useProSidebar();
   const Data = useSelector((state) => state.formApi.Data);
   const getLoading = useSelector((state) => state.formApi.getLoading);
-   const isLoading = useSelector((state) => state.formApi.postLoading);
+  const isLoading = useSelector((state) => state.formApi.postLoading);
 
   const [page, setPage] = React.useState(0);
   const [pageSize, setPageSize] = useState(15);
@@ -241,24 +248,38 @@ const Editcompany = () => {
 
   const partyBankgetdata = useSelector((state) => state.formApi.BankData);
   const CompReportgetdata = useSelector(
-    (state) => state.formApi.CompReportData
+    (state) => state.formApi.CompReportData,
   );
   const BankgetLoading = useSelector((state) => state.formApi.BankgetLoading);
   const CompReportgetLoading = useSelector(
-    (state) => state.formApi.CompReportgetLoading
+    (state) => state.formApi.CompReportgetLoading,
   );
   const BankisLoading = useSelector((state) => state.formApi.BankpostLoading);
   const CompReportpostDataLoading = useSelector(
-    (state) => state.formApi.CompReportpostDataLoading
+    (state) => state.formApi.CompReportpostDataLoading,
   );
   const [loading, setLoading] = useState(false);
 
   //POLICY_GET
-    const PolicyData = useSelector((state) => state.formApi.PolicyData);
-  const PolicygetLoading = useSelector((state) => state.formApi.PolicygetLoading);
+  const PolicyData = useSelector((state) => state.formApi.PolicyData);
+  const PolicygetLoading = useSelector(
+    (state) => state.formApi.PolicygetLoading,
+  );
 
   const rowData = location.state || {};
-  const screenChange = (event) => {
+
+  const slotRowData = useSelector((state) => state.exploreApi.slotRowData);
+  console.log(slotRowData, "--slotRowData");
+
+  const [rows, setRows] = React.useState(slotRowData);
+
+  const [rowModesModel, setRowModesModel] = React.useState({});
+
+  useEffect(() => {
+    setRows(slotRowData || []);
+  }, [slotRowData]);
+
+  const screenChange = async (event) => {
     setScreen(event.target.value);
     if (event.target.value == "0") {
       console.log(event.target.value, "--find event.target.value");
@@ -293,15 +314,94 @@ const Editcompany = () => {
     }
 
     //Curriculam Details
-    // if (event.target.value == "4") {
+    if (event.target.value == "4") {
+      if (recID && mode === "E") {
+        dispatch(PolicyFetchData({ get: "get", recID }));
+        const data = await dispatch(
+          slotListView({
+            accessID: "TR334",
+            screenName: "Slot",
+            filter: `CompanyID = ${recID}`,
+            any: "",
+          }),
+        );
+        console.log(rows, "--finding rows inside ScreenChange");
+
+        // setRows(slotRowData);
+        console.log("🚀 ~ screenChange ~ data:", data);
+      } else {
+        dispatch(PolicyFetchData({ get: "", recID }));
+      }
+    }
+    //     if (event.target.value === "4") {
     //   if (recID && mode === "E") {
     //     dispatch(PolicyFetchData({ get: "get", recID }));
+
+    //     const data = await dispatch(
+    //       slotListView({
+    //         accessID: "TR334",
+    //         screenName: "Slot",
+    //         filter: `CompanyID = ${recID}`,
+    //         any: "",
+    //       })
+    //     );
+
+    //     if (data.payload?.Status === "Y") {
+    //       setRows(data.payload.Data.rows);
+    //     } else {
+    //       setRows([]);
+    //     }
+
+    //     console.log("🚀 ~ screenChange ~ data:", data);
     //   } else {
     //     dispatch(PolicyFetchData({ get: "", recID }));
     //   }
     // }
-
   };
+
+  // const screenChange = async (event) => {
+  //   const value = event.target.value;
+  //   setScreen(value);
+
+  //   const isEdit = recID && mode === "E";
+
+  //   if (value === "0") {
+  //     dispatch(getFetchData({ accessID, get: isEdit ? "get" : "", recID }));
+  //   }
+
+  //   if (value === "1") {
+  //     dispatch(BankFetchData({ get: isEdit ? "get" : "", recID }));
+  //   }
+
+  //   if (value === "2") {
+  //     dispatch(CompReportFetchData({ get: isEdit ? "get" : "", recID }));
+  //   }
+
+  //   if (value === "3") {
+  //         console.log("--calling Slot screen");
+
+  //     dispatch(PolicyFetchData({ get: isEdit ? "get" : "", recID }));
+  //   }
+
+  //   if (value === "4") {
+  //     console.log("--calling Slot screen");
+
+  //     dispatch(PolicyFetchData({ get: isEdit ? "get" : "", recID }));
+
+  //     if (isEdit) {
+  //       const data = await dispatch(
+  //         slotListView({
+  //           AccessID: "TR334",
+  //           ScreenName: "Slot",
+  //           Filter: `CompanyID = ${recID}`,
+  //           Any: "",
+  //         })
+  //       );
+
+  //       console.log("🚀 ~ screenChange ~ data:", data);
+  //     }
+  //   }
+  // };
 
   const initialValues = {
     code: Data.Code,
@@ -334,6 +434,8 @@ const Editcompany = () => {
         }
       : null,
     Module: mode === "E" ? Data.Module : "",
+    Type: Data.Type 
+    // == "S" ? "Startup" : Data.Type == "I" ? "Institute" : Data.Type == "C" ? "Construction" : "",
   };
 
   /*************************SAVE FUCTION*********************/
@@ -365,6 +467,7 @@ const Editcompany = () => {
       NumberOfEmployee: values.noOfEmployees,
       NumberOfUsers: values.noofusers,
       Module: values.Module,
+      Type: values.Type,
     };
     console.log(values.Module);
 
@@ -403,8 +506,8 @@ const Editcompany = () => {
       mode === "A" && !del
         ? "insert"
         : mode === "E" && del
-        ? "harddelete"
-        : "update";
+          ? "harddelete"
+          : "update";
 
     const idata = {
       action: "update",
@@ -436,7 +539,6 @@ const Editcompany = () => {
     }
   };
 
-
   // POLICY SCREEN
   const PolicyInitialValue = {
     code: PolicyData.Code || "",
@@ -447,7 +549,6 @@ const Editcompany = () => {
     freeormonth: PolicyData.IrFreeMonth || "",
     lossofpayrate2: PolicyData.IrLossOfPayRate || "",
     salryrateorday: PolicyData.OtSalaryRatePerDay || "",
-   
   };
 
   const Policysave = async (values, del) => {
@@ -457,8 +558,8 @@ const Editcompany = () => {
       mode === "A" && !del
         ? "insert"
         : mode === "E" && del
-        ? "harddelete"
-        : "update";
+          ? "harddelete"
+          : "update";
 
     const idata = {
       action: "update",
@@ -469,7 +570,6 @@ const Editcompany = () => {
       IrFreeMonth: values.freeormonth,
       IrLossOfPayRate: values.lossofpayrate2,
       OtSalaryRatePerDay: values.salryrateorday,
-      
     };
 
     try {
@@ -488,9 +588,6 @@ const Editcompany = () => {
       setLoading(false);
     }
   };
-
-  
-
 
   const CompReportInitialValue = {
     code: CompReportgetdata.Code || "",
@@ -579,7 +676,7 @@ const Editcompany = () => {
     console.log(">>>", fileData.payload);
     console.log(
       "🚀 ~ file: Editdeliverychalan.jsx:1143 ~ getFileChange ~ fileData:",
-      fileData
+      fileData,
     );
     if (fileData.payload.Status == "Y") {
       // console.log("I am here");
@@ -602,7 +699,7 @@ const Editcompany = () => {
     console.log(">>>", fileData.payload);
     console.log(
       "🚀 ~ file: Editdeliverychalan.jsx:1143 ~ getFileChange ~ fileData:",
-      fileData
+      fileData,
     );
     if (fileData.payload.Status == "Y") {
       // console.log("I am here");
@@ -625,7 +722,7 @@ const Editcompany = () => {
     console.log(">>>", fileData.payload);
     console.log(
       "🚀 ~ file: Editdeliverychalan.jsx:1143 ~ getFileChange ~ fileData:",
-      fileData
+      fileData,
     );
     if (fileData.payload.Status == "Y") {
       // console.log("I am here");
@@ -647,7 +744,7 @@ const Editcompany = () => {
     console.log(">>>", fileData.payload);
     console.log(
       "🚀 ~ file: Editdeliverychalan.jsx:1143 ~ getFileChange ~ fileData:",
-      fileData
+      fileData,
     );
     if (fileData.payload.Status == "Y") {
       // console.log("I am here");
@@ -655,38 +752,11 @@ const Editcompany = () => {
     }
   };
 
-  //Curriculam Details
-
-const curriculamrows = [
-  {
-    id: 1,
-    slno: 1,
-    groupName: "Morning Shift",
-    slot: "Hours",
-    fromtime: "09:00",
-    totime: "12:00",
-  },
-  {
-    id: 2,
-    slno: 2,
-    groupName: "Afternoon Shift",
-    slot: "Hours",
-    fromtime: "13:00",
-    totime: "17:00",
-  },
-  {
-    id: 3,
-    slno: 3,
-    groupName: "Night Shift",
-    slot: "Hours",
-    fromtime: "18:00",
-    totime: "22:00",
-  }
-];
+  //SLOT Screen_COMPANYEXPLORE
 
   const columns = [
     {
-      field: "slno",
+      field: "SLNO",
       headerName: "SL#",
       width: 60,
       sortable: false,
@@ -707,74 +777,57 @@ const curriculamrows = [
     },
     {
       headerName: "RecordID",
-      field: "id",
+      field: "RecordID",
       width: 100,
       align: "left",
       headerAlign: "center",
       hide: true,
     },
 
-    // {
-    //   headerName: (
-    //     <span>
-    //       Role <span style={{ color: "red" }}>*</span>
-    //     </span>
-    //   ),
-    //   field: "TaskDetailRoleID",
-    //   width: 300,
-    //   headerAlign: "center",
-    //   hide: false,
-    //   editable: true,
-    //   sortable: false,
-    //   renderCell: (params) => {
-    //     return params.value?.Name || ""; // show only the name
-    //   },
-    //   renderEditCell: (params) => {
-    //     return <EditAutocompleteCell {...params} />;
-    //   },
-    // },
     {
-      field: "groupName",
-      headerName: "Group Name",
-      width: 100,
-      editable: true,
-      type: "text",
-    },
-    {
-      field: "slot",
-      headerName: "Slot",
+      field: "SlotCode",
+      headerName: "Slot Code",
       width: 150,
       align: "left",
       headerAlign: "center",
       editable: true,
-      // type: "singleSelect",
-      // valueOptions: ["Hours", "Days", "Month"],
+    },
+    {
+      field: "SlotName",
+      headerName: "Slot Name",
+      width: 150,
+      align: "left",
+      headerAlign: "center",
+      editable: true,
     },
     {
       headerName: "From Time",
-      field: "fromtime",
+      field: "FromTime", // ✅ match exact API field
       width: 150,
-      hide: false,
+       align: "left",
+      headerAlign: "center",
       editable: true,
-      // renderCell: (params) => {
-      //   return formatDateToDDMMYYYY(params.value); // show only the name
-      // },
-      renderEditCell: (params) => {
-        return <EditDateCell {...params} />;
-      },
+      renderCell: (params) => params.value || "",
+      renderEditCell: (params) => <EditTimeCell {...params} />,
     },
-     {
+    {
       headerName: "To Time",
-      field: "totime",
+      field: "ToTime", // ✅ match exact API field
       width: 150,
-      hide: false,
+       align: "left",
+      headerAlign: "center",
       editable: true,
-      // renderCell: (params) => {
-      //   return formatDateToDDMMYYYY(params.value); // show only the name
-      // },
-      renderEditCell: (params) => {
-        return <EditDateCell {...params} />;
-      },
+      renderCell: (params) => params.value || "",
+      renderEditCell: (params) => <EditTimeCell {...params} />,
+    },
+    {
+      field: "Comments",
+      headerName: "Comments",
+      width: 150,
+       align: "left",
+      headerAlign: "center",
+      editable: true,
+      type: "text",
     },
 
     {
@@ -796,90 +849,42 @@ const curriculamrows = [
                   color: "primary.main",
                 },
               }}
-              // onClick={handleSaveClick(id)}
+              onClick={handleSaveClick(id)}
             />,
             <GridActionsCellItem
               icon={<CancelIcon />}
               label="Cancel"
               className="textPrimary"
-              // onClick={handleCancelClick(id)}
+              onClick={handleCancelClick(id)}
               color="inherit"
             />,
           ];
         }
 
         return [
-          <GridActionsCellItem
-            icon={<AddIcon style={{ color: "#00563B" }} />}
-            label="Add"
-            // onClick={() => handleInsertInrow(id)}
-            color="inherit"
-          />,
+          // <GridActionsCellItem
+          //   icon={<AddIcon style={{ color: "#00563B" }} />}
+          //   label="Add"
+          //   // onClick={() => handleInsertInrow(id)}
+          //   color="inherit"
+          // />,
           <GridActionsCellItem
             icon={<EditIcon />}
             label="Edit"
             className="textPrimary"
-            // onClick={handleEditClick(id)}
+            onClick={handleEditClick(id)}
             color="inherit"
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
-            // onClick={handleDeleteClick(id)}
+            onClick={handleDeleteClick(id)}
             color="inherit"
           />,
         ];
       },
     },
   ];
-
-
-
-   function EditToolbar(props) {
-    const { setRows, setRowModesModel } = props;
-
-    const handleClick = () => {
-      const id = nanoid();
-      const nextSLNO =
-        rows.length > 0 ? Math.max(...rows.map((row) => row.SLNO || 0)) + 1 : 1;
-      setRows((oldRows) => [
-        ...oldRows,
-        {
-          RecordID: id, // Temporary ID, replaced after backend save
-          SLNO: nextSLNO,
-          // TaskID: "",
-          // TaskDetailRoleID: "",
-          // RoleCode: "",
-          // RoleName: "",
-          // TaskDetailEffort: 0,
-          // TaskDetailUnit: "",
-          // ProjectPlanedDate: "",
-          isNew: true,
-        },
-      ]);
-      setRowModesModel((oldModel) => ({
-        ...oldModel,
-        [id]: { mode: GridRowModes.Edit, fieldToFocus: "TaskDetailRoleID" },
-      }));
-    };
-    return (
-      <GridToolbarContainer
-        sx={{
-          marginBottom: "10px",
-          display: "flex",
-          justifyContent: "flex-start",
-        }}
-      >
-        <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-          Add Record
-        </Button>
-      </GridToolbarContainer>
-    );
-  }
-
-
-   const [rows, setRows] = React.useState([]);
-  const [rowModesModel, setRowModesModel] = React.useState({});
 
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -912,38 +917,37 @@ const curriculamrows = [
 
       const response = await dispatch(
         postData({
-          accessID: "TR237",
+          accessID: "TR334",
           action: "harddelete",
           idata: idata,
-        })
+        }),
       );
 
       if (response.payload?.Status === "Y") {
         toast.success(response.payload.Msg);
         const data = await dispatch(
-          // getTaskDetailListviewData({
-          //   accessID: "TR237",
-          //   screenName: "Task Detail",
-          //   filter: `TaskID = ${recID}`,
-          //   any: "",
-          //   CompID: "",
-          // })
+          slotListView({
+            accessID: "TR334",
+            screenName: "Slot",
+            filter: `CompanyID = ${recID}`,
+            any: "",
+          }),
         );
         console.log("🚀 ~ screenChange ~ data:", data);
-        if (data.payload.Status == "Y") {
-          const resData = data.payload.Data.rows.map((value) => {
-            return {
-              ...value,
-              TaskDetailRoleID: {
-                RecordID: value.TaskDetailRoleID,
-                Name: value.RoleName,
-              },
-            };
-          });
-          setRows(resData);
-        } else {
-          setRows([]); // Ensures rows don't break if explorelistViewData is undefined or not an array
-        }
+        // if (data.payload.Status == "Y") {
+        //   const resData = data.payload.Data.rows.map((value) => {
+        //     return {
+        //       ...value,
+        //       TaskDetailRoleID: {
+        //         RecordID: value.TaskDetailRoleID,
+        //         Name: value.RoleName,
+        //       },
+        //     };
+        //   });
+        //   setRows(resData);
+        // } else {
+        //   setRows([]); // Ensures rows don't break if explorelistViewData is undefined or not an array
+        // }
       } else {
         toast.error(response.payload?.Msg || "Operation failed");
       }
@@ -962,47 +966,30 @@ const curriculamrows = [
     }
   };
 
+ 
   const processRowUpdate = (newRow, oldRow) => {
-    const {
-      TaskDetailRoleID,
-      TaskDetailEffort,
-      TaskDetailUnit,
-      ProjectPlanedDate,
-    } = newRow;
-
-    // Validation rules
-    if (!TaskDetailRoleID) {
-      throw new Error("Role ID is required.");
-    }
-
-    if (!TaskDetailUnit || TaskDetailUnit.trim() === "") {
-      throw new Error("Unit is required.");
-    }
-
-    if (!ProjectPlanedDate || ProjectPlanedDate.trim() === "") {
-      throw new Error("Planned Date is required.");
-    }
-
-    if (isNaN(TaskDetailEffort) || TaskDetailEffort <= 0) {
-      throw new Error("Effort must be a number greater than 0.");
-    }
-
-    // If all validations pass
     const updatedRow = { ...newRow, isNew: false };
+    console.log(newRow, "newRow");
+    console.log(oldRow, "--oldRow");
 
     setRows((prevRows) =>
       prevRows.map((row) =>
-        row.RecordID === newRow.RecordID ? updatedRow : row
-      )
+        row.RecordID === newRow.RecordID ? updatedRow : row,
+      ),
     );
+
+    console.log(updatedRow, "--updatedRow");
 
     return updatedRow;
   };
+
+ 
+  
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
 
-  function EditDateCell(props) {
+  function EditTimeCell(props) {
     const { id, field, value, api } = props;
 
     const handleChange = (event) => {
@@ -1010,15 +997,140 @@ const curriculamrows = [
       api.setEditCellValue({ id, field, value: newValue });
     };
 
+    // Remove seconds if present (09:00:00 → 09:00)
+    const formattedValue = value ? value.slice(0, 5) : "";
+
     return (
       <TextField
-        type="date"
+        type="time"
         fullWidth
         size="small"
-        value={value ? new Date(value).toISOString().split("T")[0] : ""}
+        value={formattedValue}
         onChange={handleChange}
         InputLabelProps={{ shrink: true }}
       />
+    );
+  }
+
+  const formatTo12Hour = (time) => {
+    if (!time) return "";
+
+    // ✅ If already formatted (contains AM/PM), return as is
+    if (
+      time.toUpperCase().includes("AM") ||
+      time.toUpperCase().includes("PM")
+    ) {
+      return time;
+    }
+
+    const [hour, minute] = time.split(":");
+    let h = parseInt(hour);
+    const ampm = h >= 12 ? "PM" : "AM";
+
+    h = h % 12;
+    h = h ? h : 12;
+
+    return `${h}:${minute} ${ampm}`;
+  };
+
+  const handleSaveButtonClick = async (action) => {
+    const idata = rows.map((row, index) => {
+      return {
+        RecordID: row.isNew ? 0 : row.RecordID,
+        CompanyID: recID,
+        Code: row.SlotCode,
+        SlotName: row.SlotName,
+        Comments: row.Comments,
+        FromTime: formatTo12Hour(row.FromTime),
+        ToTime: formatTo12Hour(row.ToTime),
+        SortOrder: 0,
+        // Disable: "",
+        // DeleteFlag: ""
+      };
+    });
+    console.log(idata, "--print the idata");
+
+    // return;
+    try {
+      const response = await dispatch(
+        postData({
+          accessID: "TR334",
+          action: "insert",
+          idata: idata,
+        }),
+      );
+
+      // Check response status for success
+      if (response.payload.Status === "Y") {
+        toast.success(response.payload.Msg);
+        const data = await dispatch(
+          slotListView({
+            accessID: "TR334",
+            screenName: "Slot",
+            filter: `CompanyID = ${recID}`,
+            any: "",
+          }),
+        );
+        console.log("🚀 ~ screenChange ~ data:", data);
+        if (data.payload.Status == "Y") {
+          const resData = data.payload.Data.rows.map((value) => {
+            return {
+              ...value,
+              // TaskDetailRoleID: {
+              //   RecordID: value.TaskDetailRoleID,
+              //   Name: value.RoleName,
+              // },
+            };
+          });
+          setRows(resData);
+        } else {
+          setRows([]); // Ensures rows don't break if explorelistViewData is undefined or not an array
+        }
+      } else {
+        toast.error(response.payload.Msg);
+      }
+    } catch (error) {
+      toast.error("Error occurred during save.");
+    }
+  };
+
+  function EditToolbar(props) {
+    const { setRows, setRowModesModel } = props;
+
+    const handleClick = () => {
+      const id = nanoid();
+      const nextSLNO =
+        rows.length > 0 ? Math.max(...rows.map((row) => row.SLNO || 0)) + 1 : 1;
+      setRows((oldRows) => [
+        ...oldRows,
+        {
+          RecordID: id, // Temporary ID, replaced after backend save
+          SLNO: nextSLNO,
+          SlotCode: "",
+          SlotName: "",
+          FromTime: "",
+          ToTime: "",
+          Comments: "",
+          isNew: true,
+        },
+      ]);
+      setRowModesModel((oldModel) => ({
+        ...oldModel,
+        [id]: { mode: GridRowModes.Edit, fieldToFocus: "SlotCode" },
+      }));
+    };
+    return (
+      <GridToolbarContainer
+        sx={{
+          marginBottom: "10px",
+          display: "flex",
+          justifyContent: "flex-start",
+        }}
+      >
+        <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+          Add Record
+        </Button>
+      </GridToolbarContainer>
     );
   }
 
@@ -1068,6 +1180,9 @@ const curriculamrows = [
               {mode === "E" && show == "3" ? (
                 <Typography variant="h3">Policy</Typography>
               ) : null}
+              {mode === "E" && show == "4" ? (
+                <Typography variant="h3">Slots</Typography>
+              ) : null}
             </Breadcrumbs>
           </Box>
 
@@ -1086,7 +1201,7 @@ const curriculamrows = [
                   <MenuItem value={1}>Bank Details</MenuItem>
                   <MenuItem value={2}>Report Settings</MenuItem>
                   <MenuItem value={3}>Policy</MenuItem>
-                  {/* <MenuItem value={4}>Curriculam Details</MenuItem> */}
+                  <MenuItem value={4}>Slot</MenuItem>
                 </Select>
               </FormControl>
             ) : (
@@ -1457,31 +1572,26 @@ const curriculamrows = [
                       helperText={touched.iECode && errors.iECode}
                     />
 
-                    {/* <FormControl
+                    <FormControl
                       variant="standard"
                       fullWidth
                       // required 
                       focused>
-                      <InputLabel id="module-label">Module</InputLabel>
+                      <InputLabel id="Type-label">Type</InputLabel>
                       <Select
-                        labelId="module-label"
-                        id="Module"
-                        name="Module"
-                        multiple
-                        value={values.Module}
+                        labelId="Type-label"
+                        id="Type"
+                        name="Type"                        
+                        value={values.Type}
                         onChange={handleChange}
-                        onBlur={handleBlur}
-                        renderValue={(selected) => selected.join(', ')}
+                        onBlur={handleBlur}                        
                       >
-                        <MenuItem value="All">All</MenuItem>
-                        <MenuItem value="Task">Task</MenuItem>
-                        <MenuItem value="Project">Project</MenuItem>
-                        <MenuItem value="Attendance">Attendance</MenuItem>
-                        <MenuItem value="Request">Request</MenuItem>
-                        <MenuItem value="Assessment">Assessment</MenuItem>
-                        <MenuItem value="Myprofile">Myprofile</MenuItem>
+                        <MenuItem value="S">Startup</MenuItem>
+                        <MenuItem value="I">Institute</MenuItem>
+                        <MenuItem value="C">Construction</MenuItem>
+                        
                       </Select>
-                    </FormControl> */}
+                    </FormControl>
                     <FormControl variant="standard" fullWidth focused>
                       <InputLabel id="module-label">Module</InputLabel>
 
@@ -2337,7 +2447,7 @@ const curriculamrows = [
                                       headerImage
                                   : store.getState().globalurl.imageUrl +
                                       CompReportgetdata.CmHeader,
-                                "_blank"
+                                "_blank",
                               )
                             : toast.error("Please Upload File");
                         }}
@@ -2354,10 +2464,10 @@ const curriculamrows = [
                             headerPreview
                               ? headerPreview
                               : headerImage
-                              ? store.getState().globalurl.imageUrl +
-                                headerImage
-                              : store.getState().globalurl.imageUrl +
-                                CompReportgetdata.CmHeader
+                                ? store.getState().globalurl.imageUrl +
+                                  headerImage
+                                : store.getState().globalurl.imageUrl +
+                                  CompReportgetdata.CmHeader
                           }
                           width={175}
                           height={175}
@@ -2422,7 +2532,7 @@ const curriculamrows = [
                                       footerImage
                                   : store.getState().globalurl.imageUrl +
                                       CompReportgetdata.CmFooter,
-                                "_blank"
+                                "_blank",
                               )
                             : toast.error("Please Upload File");
                         }}
@@ -2439,10 +2549,10 @@ const curriculamrows = [
                             footerPreview
                               ? footerPreview
                               : footerImage
-                              ? store.getState().globalurl.imageUrl +
-                                footerImage
-                              : store.getState().globalurl.imageUrl +
-                                CompReportgetdata.CmFooter
+                                ? store.getState().globalurl.imageUrl +
+                                  footerImage
+                                : store.getState().globalurl.imageUrl +
+                                  CompReportgetdata.CmFooter
                           }
                           width={175}
                           height={175}
@@ -2507,7 +2617,7 @@ const curriculamrows = [
                                       esignImage
                                   : store.getState().globalurl.imageUrl +
                                       CompReportgetdata.Signature,
-                                "_blank"
+                                "_blank",
                               )
                             : toast.error("Please Upload File");
                         }}
@@ -2524,9 +2634,10 @@ const curriculamrows = [
                             eSignPreview
                               ? eSignPreview
                               : esignImage
-                              ? store.getState().globalurl.imageUrl + esignImage
-                              : store.getState().globalurl.imageUrl +
-                                CompReportgetdata.Signature
+                                ? store.getState().globalurl.imageUrl +
+                                  esignImage
+                                : store.getState().globalurl.imageUrl +
+                                  CompReportgetdata.Signature
                           }
                           width={175}
                           height={175}
@@ -2592,7 +2703,7 @@ const curriculamrows = [
                                       qrCodeImage
                                   : store.getState().globalurl.imageUrl +
                                       CompReportgetdata.QrCode,
-                                "_blank"
+                                "_blank",
                               )
                             : toast.error("Please Upload File");
                         }}
@@ -2609,10 +2720,10 @@ const curriculamrows = [
                             qrCodePreview
                               ? qrCodePreview
                               : qrCodeImage
-                              ? store.getState().globalurl.imageUrl +
-                                qrCodeImage
-                              : store.getState().globalurl.imageUrl +
-                                CompReportgetdata.QrCode
+                                ? store.getState().globalurl.imageUrl +
+                                  qrCodeImage
+                                : store.getState().globalurl.imageUrl +
+                                  CompReportgetdata.QrCode
                           }
                           width={175}
                           height={175}
@@ -2684,7 +2795,6 @@ const curriculamrows = [
       )}
       {/* Policy */}
 
-      
       {/* {show == "3" ? (
         <Paper elevation={3} sx={{ margin: "10px" }}>
           <Formik
@@ -2972,7 +3082,7 @@ const curriculamrows = [
         false
       )} */}
 
-        {show == "3" ? (
+      {show == "3" ? (
         <Paper elevation={3} sx={{ margin: "10px" }}>
           <Formik
             initialValues={PolicyInitialValue}
@@ -2995,7 +3105,7 @@ const curriculamrows = [
               setFieldValue,
             }) => (
               <form onSubmit={handleSubmit}>
-                  <Box
+                <Box
                   display="grid"
                   gap={formGap}
                   padding={1}
@@ -3007,17 +3117,11 @@ const curriculamrows = [
                     },
                   }}
                 >
-              
                   <TextField
                     name="code"
                     type="text"
                     id="code"
-                    label={
-                      <>
-                        Code
-                   
-                      </>
-                    }
+                    label={<>Code</>}
                     variant="standard"
                     focused
                     // required
@@ -3044,12 +3148,7 @@ const curriculamrows = [
                     name="name"
                     type="text"
                     id="name"
-                    label={
-                      <>
-                        Name
-                      
-                      </>
-                    }
+                    label={<>Name</>}
                     variant="standard"
                     focused
                     value={values.name}
@@ -3068,39 +3167,34 @@ const curriculamrows = [
                         readOnly: true,
                       },
                     }}
-                   
                   />
                 </Box>
-                            <Typography variant="h5" padding={1}>Permission:</Typography>
+                <Typography variant="h5" padding={1}>
+                  Permission:
+                </Typography>
 
-           
-           <Box
-                                display="grid"
-                                gridTemplateColumns="repeat(2, 1fr)"
-                                // gridTemplateColumns="repeat(4, minMax(0, 1fr))"
-                                gap={formGap}
-                                padding={1}
-                                sx={{
-                                    "& > div": {
-                                        gridColumn: isNonMobile ? undefined : "span 2", // Adjust for mobile view
-                                    },
-                                }}
-                            >
-                                {/* <FormControl
+                <Box
+                  display="grid"
+                  gridTemplateColumns="repeat(2, 1fr)"
+                  // gridTemplateColumns="repeat(4, minMax(0, 1fr))"
+                  gap={formGap}
+                  padding={1}
+                  sx={{
+                    "& > div": {
+                      gridColumn: isNonMobile ? undefined : "span 2", // Adjust for mobile view
+                    },
+                  }}
+                >
+                  {/* <FormControl
                                     fullWidth
                                     sx={{ gridColumn: "span 2", gap: formGap }}
                                 > */}
-             
+
                   <TextField
                     name="noofpermhrs"
                     type="number"
                     id="noofpermhrs"
-                    label={
-                      <>
-                        No Of Hours / Permission
-                        
-                      </>
-                    }
+                    label={<>No Of Hours / Permission</>}
                     variant="standard"
                     focused
                     value={values.noofpermhrs}
@@ -3115,48 +3209,41 @@ const curriculamrows = [
                       },
                     }}
                     inputProps={{
-    style: { textAlign: "right" }
-  }}
-                   
+                      style: { textAlign: "right" },
+                    }}
                   />
                   <TextField
                     name="noofpermpermonth"
                     type="number"
                     id="noofpermpermonth"
-                    label={
-                      <>
-                       No Of Permission / Month
-                     
-                      </>
-                    }
+                    label={<>No Of Permission / Month</>}
                     variant="standard"
                     focused
                     value={values.noofpermpermonth}
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    error={!!touched.noofpermpermonth && !!errors.noofpermpermonth}
-                    helperText={touched.noofpermpermonth && errors.noofpermpermonth}
+                    error={
+                      !!touched.noofpermpermonth && !!errors.noofpermpermonth
+                    }
+                    helperText={
+                      touched.noofpermpermonth && errors.noofpermpermonth
+                    }
                     sx={{
                       backgroundColor: "#ffffff", // Set the background to white
                       "& .MuiFilledInput-root": {
                         backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
                       },
                     }}
-                  inputProps={{
-                    style: { textAlign: "right" }
-                  }}
+                    inputProps={{
+                      style: { textAlign: "right" },
+                    }}
                     autoFocus
                   />
                   <TextField
                     name="lossofpayrate"
                     type="number"
                     id="lossofpayrate"
-                    label={
-                      <>
-                        Loss Of Pay Rate   
-                      
-                      </>
-                    }
+                    label={<>Loss Of Pay Rate</>}
                     variant="standard"
                     focused
                     value={values.lossofpayrate}
@@ -3171,38 +3258,35 @@ const curriculamrows = [
                       },
                     }}
                     inputProps={{
-                    style: { textAlign: "right" }
-                  }}
+                      style: { textAlign: "right" },
+                    }}
                     autoFocus
                   />
                   {/* </FormControl> */}
-                       </Box>
-                    <Divider variant="fullWidth" sx={{ mt: "20px" }} />
-                            <Typography variant="h5" padding={1}>Irregular:</Typography>
+                </Box>
+                <Divider variant="fullWidth" sx={{ mt: "20px" }} />
+                <Typography variant="h5" padding={1}>
+                  Irregular:
+                </Typography>
 
-                            <Box
-                                display="grid"
-                                gridTemplateColumns="repeat(2, 1fr)"
-                                // gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-                                gap={formGap}
-                                padding={1}
-                                sx={{
-                                    "& > div": {
-                                        gridColumn: isNonMobile ? undefined : "span 4",
-                                    },
-                                }}
-                            >
-                                {/* <FormControl fullWidth sx={{ gridColumn: "span 2", gap: formGap }}> */}
-  <TextField
+                <Box
+                  display="grid"
+                  gridTemplateColumns="repeat(2, 1fr)"
+                  // gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                  gap={formGap}
+                  padding={1}
+                  sx={{
+                    "& > div": {
+                      gridColumn: isNonMobile ? undefined : "span 4",
+                    },
+                  }}
+                >
+                  {/* <FormControl fullWidth sx={{ gridColumn: "span 2", gap: formGap }}> */}
+                  <TextField
                     name="freeormonth"
                     type="number"
                     id="freeormonth"
-                    label={
-                      <>
-                        Free / Month   
-                      
-                      </>
-                    }
+                    label={<>Free / Month</>}
                     variant="standard"
                     focused
                     value={values.freeormonth}
@@ -3217,20 +3301,15 @@ const curriculamrows = [
                       },
                     }}
                     inputProps={{
-                    style: { textAlign: "right" }
-                  }}
+                      style: { textAlign: "right" },
+                    }}
                     autoFocus
                   />
-                    <TextField
+                  <TextField
                     name="lossofpayrate2"
                     type="number"
                     id="lossofpayrate2"
-                    label={
-                      <>
-                        Loss Of Pay Rate  
-                      
-                      </>
-                    }
+                    label={<>Loss Of Pay Rate</>}
                     variant="standard"
                     focused
                     value={values.lossofpayrate2}
@@ -3245,70 +3324,69 @@ const curriculamrows = [
                       },
                     }}
                     inputProps={{
-                    style: { textAlign: "right" }
-                  }}
-                    autoFocus
-                  />
-
-
- {/* </FormControl> */}
-                       </Box>
-                          <Divider variant="fullWidth" sx={{ mt: "20px" }} />
-                            <Typography variant="h5" padding={1}>Overtime:</Typography>
-
-                            <Box
-                                display="grid"
-                                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-                                gap={formGap}
-                                padding={1}
-                                sx={{
-                                    "& > div": {
-                                        gridColumn: isNonMobile ? undefined : "span 4",
-                                    },
-                                }}
-                            >
-                                <FormControl fullWidth sx={{ gridColumn: "span 2", gap: formGap }}>
-   <TextField
-                    name="salryrateorday"
-                    type="number"
-                    id="salryrateorday"
-                    label={
-                      <>
-                    Salary Rate / Day  
-                      
-                      </>
-                    }
-                    variant="standard"
-                    focused
-                    value={values.salryrateorday}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    error={!!touched.salryrateorday && !!errors.salryrateorday}
-                    helperText={touched.salryrateorday && errors.salryrateorday}
-                    sx={{
-                      backgroundColor: "#ffffff", // Set the background to white
-                      "& .MuiFilledInput-root": {
-                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
-                      },
+                      style: { textAlign: "right" },
                     }}
-                    inputProps={{
-                    style: { textAlign: "right" }
-                  }}
                     autoFocus
                   />
 
-             
+                  {/* </FormControl> */}
+                </Box>
+                <Divider variant="fullWidth" sx={{ mt: "20px" }} />
+                <Typography variant="h5" padding={1}>
+                  Overtime:
+                </Typography>
 
- </FormControl>
-                       </Box>
-           
+                <Box
+                  display="grid"
+                  gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                  gap={formGap}
+                  padding={1}
+                  sx={{
+                    "& > div": {
+                      gridColumn: isNonMobile ? undefined : "span 4",
+                    },
+                  }}
+                >
+                  <FormControl
+                    fullWidth
+                    sx={{ gridColumn: "span 2", gap: formGap }}
+                  >
+                    <TextField
+                      name="salryrateorday"
+                      type="number"
+                      id="salryrateorday"
+                      label={<>Salary Rate / Day</>}
+                      variant="standard"
+                      focused
+                      value={values.salryrateorday}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={
+                        !!touched.salryrateorday && !!errors.salryrateorday
+                      }
+                      helperText={
+                        touched.salryrateorday && errors.salryrateorday
+                      }
+                      sx={{
+                        backgroundColor: "#ffffff", // Set the background to white
+                        "& .MuiFilledInput-root": {
+                          backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                        },
+                      }}
+                      inputProps={{
+                        style: { textAlign: "right" },
+                      }}
+                      autoFocus
+                    />
+                  </FormControl>
+                </Box>
+
                 <Box
                   display="flex"
                   justifyContent="flex-end"
                   padding={1}
                   gap="20px"
                 >
-                 
                   <LoadingButton
                     color="secondary"
                     variant="contained"
@@ -3317,7 +3395,6 @@ const curriculamrows = [
                   >
                     Save
                   </LoadingButton>
-               
 
                   <Button
                     color="warning"
@@ -3336,7 +3413,7 @@ const curriculamrows = [
       ) : (
         false
       )}
-       {show == "4" ? (
+      {show == "4" ? (
         <Paper elevation={3} sx={{ margin: "10px" }}>
           <Formik
             initialValues={PolicyInitialValue}
@@ -3359,7 +3436,7 @@ const curriculamrows = [
               setFieldValue,
             }) => (
               <form onSubmit={handleSubmit}>
-                  <Box
+                <Box
                   display="grid"
                   gap={formGap}
                   padding={1}
@@ -3371,17 +3448,11 @@ const curriculamrows = [
                     },
                   }}
                 >
-              
                   <TextField
                     name="code"
                     type="text"
                     id="code"
-                    label={
-                      <>
-                        Code
-                   
-                      </>
-                    }
+                    label={<>Code</>}
                     variant="standard"
                     focused
                     // required
@@ -3408,12 +3479,7 @@ const curriculamrows = [
                     name="name"
                     type="text"
                     id="name"
-                    label={
-                      <>
-                        Name
-                      
-                      </>
-                    }
+                    label={<>Name</>}
                     variant="standard"
                     focused
                     value={values.name}
@@ -3432,112 +3498,106 @@ const curriculamrows = [
                         readOnly: true,
                       },
                     }}
-                   
                   />
                 </Box>
-             
-             <Box
-                    m="5px 0 0 0"
-                    height={dataGridHeight}
+
+                <Box
+                  m="5px 0 0 0"
+                  height={dataGridHeight}
+                  sx={{
+                    "& .MuiDataGrid-root": {
+                      border: "none",
+                    },
+                    "& .MuiDataGrid-cell": {
+                      borderBottom: "none",
+                    },
+                    "& .name-column--cell": {
+                      color: colors.greenAccent[300],
+                    },
+                    "& .MuiDataGrid-columnHeaders": {
+                      backgroundColor: colors.blueAccent[800],
+                      borderBottom: "none",
+                    },
+                    "& .MuiDataGrid-virtualScroller": {
+                      backgroundColor: colors.primary[400],
+                    },
+                    "& .MuiDataGrid-footerContainer": {
+                      borderTop: "none",
+                      backgroundColor: colors.blueAccent[800],
+                    },
+                    "& .MuiCheckbox-root": {
+                      color: `${colors.greenAccent[200]} !important`,
+                    },
+                    "& .odd-row": {
+                      backgroundColor: "",
+                      color: "", // Color for odd rows
+                    },
+                    "& .even-row": {
+                      backgroundColor: "#D3D3D3",
+                      color: "", // Color for even rows
+                    },
+                  }}
+                >
+                  <DataGrid
                     sx={{
-                      "& .MuiDataGrid-root": {
-                        border: "none",
-                      },
-                      "& .MuiDataGrid-cell": {
-                        borderBottom: "none",
-                      },
-                      "& .name-column--cell": {
-                        color: colors.greenAccent[300],
-                      },
-                      "& .MuiDataGrid-columnHeaders": {
-                        backgroundColor: colors.blueAccent[800],
-                        borderBottom: "none",
-                      },
-                      "& .MuiDataGrid-virtualScroller": {
-                        backgroundColor: colors.primary[400],
-                      },
                       "& .MuiDataGrid-footerContainer": {
-                        borderTop: "none",
-                        backgroundColor: colors.blueAccent[800],
-                      },
-                      "& .MuiCheckbox-root": {
-                        color: `${colors.greenAccent[200]} !important`,
-                      },
-                      "& .odd-row": {
-                        backgroundColor: "",
-                        color: "", // Color for odd rows
-                      },
-                      "& .even-row": {
-                        backgroundColor: "#D3D3D3",
-                        color: "", // Color for even rows
+                        height: dataGridHeaderFooterHeight,
+                        minHeight: dataGridHeaderFooterHeight,
                       },
                     }}
-                  >
-                    <DataGrid
-                      sx={{
-                        "& .MuiDataGrid-footerContainer": {
-                          height: dataGridHeaderFooterHeight,
-                          minHeight: dataGridHeaderFooterHeight,
-                        },
-                      }}
-                      rows={curriculamrows}
-                      columns={columns}
-                      loading={exploreLoading}
-                      rowModesModel={rowModesModel}
-                      getRowId={(row) => row.id}
-                      editMode="row"
-                      disableRowSelectionOnClick
-                      rowHeight={dataGridRowHeight}
-                      headerHeight={dataGridHeaderFooterHeight}
-                      experimentalFeatures={{ newEditingApi: true }}
-                      onRowModesModelChange={handleRowModesModelChange}
-                      onRowEditStop={handleRowEditStop}
-                      processRowUpdate={processRowUpdate}
-                      onProcessRowUpdateError={(error) => {
-                        console.error(
-                          "Row update validation failed:",
-                          error.message
-                        );
+                    rows={rows}
+                    columns={columns}
+                    loading={exploreLoading}
+                    rowModesModel={rowModesModel}
+                    getRowId={(row) => row.RecordID}
+                    editMode="row"
+                    disableRowSelectionOnClick
+                    rowHeight={dataGridRowHeight}
+                    headerHeight={dataGridHeaderFooterHeight}
+                    experimentalFeatures={{ newEditingApi: true }}
+                    onRowModesModelChange={handleRowModesModelChange}
+                    onRowEditStop={handleRowEditStop}
+                    processRowUpdate={processRowUpdate}
+                    onProcessRowUpdateError={(error) => {
+                      console.error(
+                        "Row update validation failed:",
+                        error.message,
+                      );
 
-                        toast.error(error.message);
-                      }}
-                      components={{
-                        Toolbar: EditToolbar,
-                      }}
-                      componentsProps={{
-                        toolbar: { setRows, setRowModesModel },
-                      }}
-                      rowsPerPageOptions={[5, 10, 20]}
-                      getRowClassName={(params) =>
-                        params.indexRelativeToCurrentPage % 2 === 0
-                          ? "odd-row"
-                          : "even-row"
-                      }
-                      pagination
-                      pageSize={pageSize}
-                      page={page}
-                      onPageSizeChange={(newPageSize) =>
-                        setPageSize(newPageSize)
-                      }
-                      onPageChange={(newPage) => setPage(newPage)}
-                    />
-                  </Box>
+                      toast.error(error.message);
+                    }}
+                    components={{
+                      Toolbar: EditToolbar,
+                    }}
+                    componentsProps={{
+                      toolbar: { setRows, setRowModesModel },
+                    }}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    getRowClassName={(params) =>
+                      params.indexRelativeToCurrentPage % 2 === 0
+                        ? "odd-row"
+                        : "even-row"
+                    }
+                    pagination
+                    pageSize={pageSize}
+                    page={page}
+                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                    onPageChange={(newPage) => setPage(newPage)}
+                  />
+                </Box>
                 <Box
                   display="flex"
                   justifyContent="flex-end"
                   padding={1}
                   gap="20px"
                 >
-                 
-                  <LoadingButton
+                  <Button
                     color="secondary"
                     variant="contained"
-                    type="submit"
-                    loading={isLoading}
+                    onClick={handleSaveButtonClick}
                   >
                     Save
-                  </LoadingButton>
-               
+                  </Button>
 
                   <Button
                     color="warning"
