@@ -30,7 +30,9 @@ const initialState = {
   Data:{},
   exploreRowDataID:[],
   exploreColumnDataID:[],
-  isLookupOpen:false
+  isLookupOpen:false,
+  slotRowData: [],
+  slotcolumnData: []
 
 };
 
@@ -114,6 +116,45 @@ export const packingListView = createAsyncThunk(
     return response.data;
   }
 );
+
+
+
+//COMPANY EXPLORE SLOT SCREEN
+export const slotListView = createAsyncThunk(
+  "slot/Companydetail",
+  async ({ accessID, screenName, filter,any}) => {
+    var url = store.getState().globalurl.listViewurl;
+    var idata = {
+      Query: {
+        AccessID: accessID,
+        ScreenName: screenName,
+        Filter: filter,
+        Any: any,
+        // CompId:CompID
+      },
+    };
+   
+    
+    console.log("🚀 ~ file: Formapireducer.js:225 ~ data:", JSON.stringify(idata))
+    idata = JSON.stringify(idata);
+    const response = await axios
+    .get(url, {
+      params: {
+        data: idata,
+      },
+      headers: {
+        Authorization:
+          "eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJzdWIiOiJCZXhAMTIzIiwibmFtZSI6IkJleCIsImFkbWluIjp0cnVlLCJleHAiOjE2Njk5ODQzNDl9.uxE3r3X4lqV_WKrRKRPXd-Jub9BnVcCXqCtLL4I0fpU",
+      },
+    })
+    console.log(
+      "🚀 ~ file: newFormApiReducer.js:27 ~ fetchData ~ response:",
+      response
+    );
+    return response.data;
+  }
+);
+
 export const getApiSlice = createSlice({
   name: "exploreApi",
   initialState,
@@ -124,6 +165,11 @@ export const getApiSlice = createSlice({
     userGroupRowUpdate(state,action){
       state.explorerowData = action.payload.rowData
     },
+    // slotRowUpdate(state,action){
+    //   console.log("🚀 ~ file: Explorelitviewapireducer.js:96 ~ slotRowUpdate ~ action:", action)
+
+    //   state.slotRowData = action.payload.data
+    // },
     packingRowUpdate(state,action){
      console.log("🚀 ~ file: Explorelitviewapireducer.js:96 ~ packingRowUpdate ~ action:", action)
      switch(action.payload.type){
@@ -241,6 +287,26 @@ export const getApiSlice = createSlice({
         state.Status = "Error";
         state.loading = false;
       })
+//SLOT ADDCAE IN COMPANY EXPLORE
+  .addCase(slotListView.pending, (state, action) => {
+        state.slotcolumnData=[]
+        state.slotRowData=[]
+        state.Status = "idle";
+        state.loading = true;
+      })
+      .addCase(slotListView.fulfilled, (state, action) => {
+        state.Status = "success";
+        state.loading = false;
+        state.slotcolumnData=action.payload.Data.columns
+        state.slotRowData=action.payload.Data.rows
+
+      })
+      .addCase(slotListView.rejected, (state, action) => {
+        state.Status = "Error";
+        state.loading = false;
+      })
+
+
       .addCase(getFetchUserData.pending, (state, action) => {
         state.Status = "idle";
         state.loading = true;
@@ -276,7 +342,8 @@ export const {
   openPopup,
   addtionalQtyCal,
   userGroupRowUpdate,
-  lookupOpen
+  lookupOpen,
+  // slotRowUpdate
 } = getApiSlice.actions;
 
 export default getApiSlice.reducer;
