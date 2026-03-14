@@ -41,6 +41,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   BankFetchData,
   BankpostData,
+  companyTermsGet,
   CompReportFetchData,
   CompReportpostData,
   getFetchData,
@@ -62,7 +63,12 @@ import {
 } from "../../../ui-components/utils";
 import {
   CheckinAutocomplete,
+  MultiFormikOptimizedAutocomplete,
   SingleFormikOptimizedAutocomplete,
+
+  STDCheckinAutocomplete,
+
+  STDMultiFormikOptimizedAutocomplete,
 } from "../../../ui-components/global/Autocomplete";
 import store from "../../..";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
@@ -129,6 +135,9 @@ const Editcompany = () => {
   const [footerImage, setfooterImage] = useState("");
   const [esignImage, setesignImage] = useState("");
   const [qrCodeImage, setqrCodeImage] = useState("");
+
+  const lookuplistViewurl = useSelector((state) => state.globalurl.listViewurl);
+
 
   //IMAGE PREVIEW
   const [headerPreview, setHeaderPreview] = useState(""); // blob preview url
@@ -235,6 +244,7 @@ const Editcompany = () => {
   useEffect(() => {
     dispatch(getFetchData({ accessID, get: "get", recID }));
   }, [location.key]);
+  
   const [validationSchema2, setValidationSchema2] = useState(null);
 
   const { toggleSidebar, broken, rtl } = useProSidebar();
@@ -266,6 +276,11 @@ const Editcompany = () => {
     (state) => state.formApi.PolicygetLoading,
   );
 
+  //TERMS_GET
+  const companytermsData = useSelector((state) => state.formApi.companytermsData);
+console.log(companytermsData, "--companytermsData");
+
+
   const rowData = location.state || {};
 
   const slotRowData = useSelector((state) => state.exploreApi.slotRowData);
@@ -273,11 +288,27 @@ const Editcompany = () => {
 
   const [rows, setRows] = React.useState(slotRowData);
 
+  const [termsrows, setTermsRows] = React.useState(companytermsData);
+
   const [rowModesModel, setRowModesModel] = React.useState({});
 
   useEffect(() => {
     setRows(slotRowData || []);
   }, [slotRowData]);
+
+    useEffect(() => {
+    setTermsRows(companytermsData || []);
+  }, [companytermsData]);
+  
+//   useEffect(() => {
+//     console.log(show, "--show");
+    
+//   if (show === "4") {
+//     setRows(slotRowData || []);
+//   } else if (show === "5") {
+//     setTermsRows(companytermsData || []);
+//   }
+// }, [show, slotRowData, companytermsData]);
 
   const screenChange = async (event) => {
     setScreen(event.target.value);
@@ -313,95 +344,79 @@ const Editcompany = () => {
       }
     }
 
-    //Curriculam Details
-    if (event.target.value == "4") {
-      if (recID && mode === "E") {
-        dispatch(PolicyFetchData({ get: "get", recID }));
-        const data = await dispatch(
-          slotListView({
-            accessID: "TR334",
-            screenName: "Slot",
-            filter: `CompanyID = ${recID}`,
-            any: "",
-          }),
-        );
-        console.log(rows, "--finding rows inside ScreenChange");
-
-        // setRows(slotRowData);
-        console.log("🚀 ~ screenChange ~ data:", data);
-      } else {
-        dispatch(PolicyFetchData({ get: "", recID }));
-      }
-    }
-    //     if (event.target.value === "4") {
+    //Slot Screen
+    // if (event.target.value == "4") {
     //   if (recID && mode === "E") {
     //     dispatch(PolicyFetchData({ get: "get", recID }));
-
     //     const data = await dispatch(
     //       slotListView({
     //         accessID: "TR334",
     //         screenName: "Slot",
     //         filter: `CompanyID = ${recID}`,
     //         any: "",
-    //       })
+    //       }),
     //     );
+    //     console.log(rows, "--finding rows inside ScreenChange");
 
-    //     if (data.payload?.Status === "Y") {
-    //       setRows(data.payload.Data.rows);
-    //     } else {
-    //       setRows([]);
-    //     }
-
+    //     // setRows(slotRowData);
     //     console.log("🚀 ~ screenChange ~ data:", data);
     //   } else {
     //     dispatch(PolicyFetchData({ get: "", recID }));
     //   }
     // }
+    if (event.target.value == "4") {
+  if (recID && mode === "E") {
+    dispatch(PolicyFetchData({ get: "get", recID }));
+
+    const data = await dispatch(
+      slotListView({
+        accessID: "TR334",
+        screenName: "Slot",
+        filter: `CompanyID = ${recID}`,
+        any: "",
+      })
+    );
+
+    if (data.payload.Status === "Y") {
+      const resData = data.payload.Data.rows.map((value) => {
+        return {
+          ...value,
+          Break: value.Break === "Y", // ✅ convert Y/N → true/false
+        };
+      });
+
+      setRows(resData);
+    } else {
+      setRows([]);
+    }
+  } else {
+    dispatch(PolicyFetchData({ get: "", recID }));
+  }
+}
+    if (event.target.value == "5") {
+      if (recID && mode === "E") {
+         dispatch(PolicyFetchData({ get: "get", recID }));
+        dispatch(companyTermsGet({recID }));
+        // const data = await dispatch(
+        //   slotListView({
+        //     accessID: "TR355",
+        //     screenName: "Terms",
+        //     filter: `CompanyID = ${recID}`,
+        //     any: "",
+        //   }),
+        // );
+        // console.log(rows, "--finding rows inside ScreenChange");
+
+        // setRows(slotRowData);
+        console.log("🚀 ~ screenChange ~ data:", data);
+      } else {
+         dispatch(PolicyFetchData({ get: "get", recID }));
+         dispatch(companyTermsGet({recID }));
+      }
+    }
   };
 
-  // const screenChange = async (event) => {
-  //   const value = event.target.value;
-  //   setScreen(value);
-
-  //   const isEdit = recID && mode === "E";
-
-  //   if (value === "0") {
-  //     dispatch(getFetchData({ accessID, get: isEdit ? "get" : "", recID }));
-  //   }
-
-  //   if (value === "1") {
-  //     dispatch(BankFetchData({ get: isEdit ? "get" : "", recID }));
-  //   }
-
-  //   if (value === "2") {
-  //     dispatch(CompReportFetchData({ get: isEdit ? "get" : "", recID }));
-  //   }
-
-  //   if (value === "3") {
-  //         console.log("--calling Slot screen");
-
-  //     dispatch(PolicyFetchData({ get: isEdit ? "get" : "", recID }));
-  //   }
-
-  //   if (value === "4") {
-  //     console.log("--calling Slot screen");
-
-  //     dispatch(PolicyFetchData({ get: isEdit ? "get" : "", recID }));
-
-  //     if (isEdit) {
-  //       const data = await dispatch(
-  //         slotListView({
-  //           AccessID: "TR334",
-  //           ScreenName: "Slot",
-  //           Filter: `CompanyID = ${recID}`,
-  //           Any: "",
-  //         })
-  //       );
-
-  //       console.log("🚀 ~ screenChange ~ data:", data);
-  //     }
-  //   }
-  // };
+ 
 
   const initialValues = {
     code: Data.Code,
@@ -826,6 +841,48 @@ const Editcompany = () => {
       editable: true,
       type: "text",
     },
+{
+  field: "Break",
+  headerName: "Break",
+  width: 120,
+  align: "center",
+  headerAlign: "center",
+  editable: true,
+
+  // Display checkbox in normal mode
+  renderCell: (params) => (
+    <Checkbox
+      // checked={Boolean(params.row.Break)}
+       checked={params.row.Break}
+      disabled
+    />
+  ),
+
+  // Checkbox when row is in edit mode
+ renderEditCell: (params) => {
+  const { id, field, value, api } = params;
+
+  const handleChange = (event) => {
+    const checked = event.target.checked;
+
+    api.setEditCellValue({
+      id,
+      field,
+      value: checked,
+    });
+
+    api.stopCellEditMode({ id, field }); // refresh row
+  };
+
+  return (
+    <Checkbox
+      checked={Boolean(value)}
+      onChange={handleChange}
+      color="primary"
+    />
+  );
+},
+},
 
     {
       field: "actions",
@@ -931,20 +988,18 @@ const Editcompany = () => {
           }),
         );
         console.log("🚀 ~ screenChange ~ data:", data);
-        // if (data.payload.Status == "Y") {
-        //   const resData = data.payload.Data.rows.map((value) => {
-        //     return {
-        //       ...value,
-        //       TaskDetailRoleID: {
-        //         RecordID: value.TaskDetailRoleID,
-        //         Name: value.RoleName,
-        //       },
-        //     };
-        //   });
-        //   setRows(resData);
-        // } else {
-        //   setRows([]); // Ensures rows don't break if explorelistViewData is undefined or not an array
-        // }
+
+        
+      if (data.payload.Status === "Y") {
+    const resData = data.payload.Data.rows.map((value) => ({
+      ...value,
+      Break: value.Break === "Y", // ✅ Convert Y/N → boolean
+    }));
+
+    setRows(resData);
+          } else {
+    setRows([]);
+  }
       } else {
         toast.error(response.payload?.Msg || "Operation failed");
       }
@@ -980,9 +1035,9 @@ const Editcompany = () => {
     return updatedRow;
   };
 
- 
-  
-  const handleRowModesModelChange = (newRowModesModel) => {
+
+
+const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
 
@@ -1032,6 +1087,8 @@ const Editcompany = () => {
 
   const handleSaveButtonClick = async (action) => {
     const idata = rows.map((row, index) => {
+
+  
       return {
         RecordID: row.isNew ? 0 : row.RecordID,
         CompanyID: recID,
@@ -1040,9 +1097,12 @@ const Editcompany = () => {
         Comments: row.Comments,
         FromTime: formatTo12Hour(row.FromTime),
         ToTime: formatTo12Hour(row.ToTime),
+        Break: row.Break ? "Y" : "N",
         SortOrder: 0,
-        // Disable: "",
-        // DeleteFlag: ""
+        IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
+       
+      
+
       };
     });
     console.log(idata, "--print the idata");
@@ -1073,13 +1133,12 @@ const Editcompany = () => {
           const resData = data.payload.Data.rows.map((value) => {
             return {
               ...value,
-              // TaskDetailRoleID: {
-              //   RecordID: value.TaskDetailRoleID,
-              //   Name: value.RoleName,
-              // },
+                Break: value.Break === "Y"   // convert to boolean
+              
             };
           });
           setRows(resData);
+
         } else {
           setRows([]); // Ensures rows don't break if explorelistViewData is undefined or not an array
         }
@@ -1087,6 +1146,7 @@ const Editcompany = () => {
         toast.error(response.payload.Msg);
       }
     } catch (error) {
+      console.error("Save error:", error);
       toast.error("Error occurred during save.");
     }
   };
@@ -1108,7 +1168,9 @@ const Editcompany = () => {
           FromTime: "",
           ToTime: "",
           Comments: "",
+          Break: false,
           isNew: true,
+   
         },
       ]);
       setRowModesModel((oldModel) => ({
@@ -1130,6 +1192,691 @@ const Editcompany = () => {
       </GridToolbarContainer>
     );
   }
+
+
+//==============================TERMS SECTION ================================================//  
+    function EditfromDateCell(props) {
+    const { id, field, value, api } = props;
+
+    const formatToInputDate = (val) => {
+      if (!val) return "";
+
+      const date = new Date(val);
+      if (isNaN(date.getTime())) return "";   // prevent invalid time error
+
+      return date.toISOString().split("T")[0];
+    };
+
+    const handleChange = (event) => {
+      const newValue = event.target.value;
+      api.setEditCellValue({ id, field, value: newValue });
+    };
+
+    return (
+      <TextField
+        type="date"
+        fullWidth
+        size="small"
+        value={formatToInputDate(value)}
+        onChange={handleChange}
+        InputLabelProps={{ shrink: true }}
+      />
+    );
+  }
+
+//STANDARD_LOOKUP
+  // function STDEditAutocompleteCell(props) {
+  //   console.log(props,"props")
+  // // const { id, value, field, api, row } = props;
+
+  // // const handleChange = async (event, newValue) => {
+  // //   if (!newValue) return;
+
+  // //   await api.setEditCellValue({
+  // //     id,
+  // //     field,
+  // //     value: newValue,
+  // //   });
+
+  // //   api.stopCellEditMode({ id, field });
+  // // };
+  //   const { id, value, field, api, row } = props;
+
+  //   const handleChange = async (newValue) => {
+  //     console.log("🚀 ~ handleChange ~ newValue:", newValue);
+  //     if (!newValue) return;
+
+  //     setStdName(newValue);
+  //     await api.setEditCellValue({
+  //       id,
+  //       field: "StandardName",
+  //       value: newValue,
+  //     });
+
+  //     api.stopCellEditMode({ id, field });
+  //   };
+  //   const [stdname, setStdName] = useState(row.StandardName ? row.StandardName : null);
+
+  // return (
+  //   <STDCheckinAutocomplete
+  //     name="Standard"
+  //     // label="Standard"
+  //     id="Standard"
+  //     value={stdname || null}
+  //     onChange={handleChange}
+  //     url={`${lookuplistViewurl}?data={"Query":{"AccessID":"2157","ScreenName":"Standard","Filter":"parentID='${recID}'","Any":""}}`}
+  //   />
+  // );
+  // }
+    function STDEditAutocompleteCell(props) {
+    console.log(props,"");
+  const { id, value, field, api, row } = props;
+
+  const handleChange = async (event, newValue) => {
+    if (!newValue) return;
+
+    await api.setEditCellValue({
+      id,
+      field,
+      value: newValue,
+    });
+
+    api.stopCellEditMode({ id, field });
+  };
+
+  return (
+    <STDMultiFormikOptimizedAutocomplete
+      name="StandardName"
+      // label="Slot Name"
+      id="StandardName"
+      value={value || []}
+      onChange={handleChange}
+      url={`${lookuplistViewurl}?data={"Query":{"AccessID":"2157","ScreenName":"Standard","Filter":"parentID='${recID}'","Any":""}}`}
+    />
+  );
+  }
+  //SLOT LOOKUP
+  function SLOTEditAutocompleteCell(props) {
+    console.log(props,"");
+  const { id, value, field, api, row } = props;
+
+  const handleChange = async (event, newValue) => {
+    if (!newValue) return;
+
+    await api.setEditCellValue({
+      id,
+      field,
+      value: newValue,
+    });
+
+    api.stopCellEditMode({ id, field });
+  };
+
+  return (
+    <STDMultiFormikOptimizedAutocomplete
+      name="SlotName"
+      // label="Slot Name"
+      id="SlotName"
+      value={value || []}
+      onChange={handleChange}
+      url={`${lookuplistViewurl}?data={"Query":{"AccessID":"2148","ScreenName":"Slot Name","Filter":"CompanyID='${recID}'","Any":""}}`}
+    />
+  );
+  }
+
+//BREAK_SLOT
+  function BREAKSLOTEditAutocompleteCell(props) {
+    const { id, value, field, api, row } = props;
+
+    const handleChange = async (event, newValue) => {
+      if (!newValue) return;
+
+      await api.setEditCellValue({
+        id,
+        field,
+        value: newValue,
+      });
+
+      api.stopCellEditMode({ id, field });
+    };
+
+    return (
+      <STDMultiFormikOptimizedAutocomplete
+        name="SlotBreak"
+        // label="Slot Break"
+        id="SlotBreak"
+        value={value || []}
+        onChange={handleChange}
+        url={`${lookuplistViewurl}?data={"Query":{"AccessID":"2156","ScreenName":"Slot Break","Filter":"","Any":""}}`}
+      />
+    );
+  }
+
+  //TERMS COLUMNS
+    const Termscolumns = [
+    {
+      field: "SLNO",
+      headerName: "SL#",
+      width: 50,
+      align: "right",
+      headerAlign: "center",
+      hide: false,
+      sortable: false,
+     
+    },
+    {
+      headerName: "RecordID",
+      field: "RecordID",
+      width: 100,
+      align: "left",
+      headerAlign: "center",
+      hide: true,
+    },
+
+    {
+      field: "Code",
+      headerName: "Code",
+      width: 150,
+      align: "left",
+      headerAlign: "center",
+      editable: true,
+    },
+    {
+      field: "TermsName",
+      headerName: "Terms Name",
+      width: 150,
+      align: "left",
+      headerAlign: "center",
+      editable: true,
+    },
+    {
+      headerName: "From Date",
+      field: "FromDate", // ✅ match exact API field
+      width: 150,
+       align: "left",
+      headerAlign: "center",
+      editable: true,
+      renderCell: (params) => params.value || "",
+      renderEditCell: (params) => {
+        return <EditfromDateCell {...params} />;
+      },
+    },
+    {
+      headerName: "To Date",
+      field: "ToDate", // ✅ match exact API field
+      width: 150,
+       align: "left",
+      headerAlign: "center",
+      editable: true,
+      renderCell: (params) => params.value || "",
+      renderEditCell: (params) => {
+        return <EditfromDateCell {...params} />;
+      },
+    },
+    // STD Lookup
+       {
+      field: "StandardID",
+      headerName: "StandardID",
+      width: 150,
+       align: "left",
+      headerAlign: "center",
+      editable: false,
+      hide: true,
+      
+    },
+     {
+      field: "StandardCode",
+      headerName: "StandardCode",
+      width: 150,
+       align: "left",
+      headerAlign: "center",
+      editable: false,
+      hide: true,
+    },
+      {
+      field: "StandardName",
+      headerName: "Standard",
+      width: 250,
+       align: "left",
+      headerAlign: "center",
+      editable: true,
+      
+      sortable: false,   // ✅ add this
+      renderCell: (params) => {
+        console.log("StandardName params:", params);
+        console.log("StandardName params value:", params.value);
+    if (Array.isArray(params.value)) {
+      return params.value.map((v) => v.Name).join(", ");
+    }
+    return params.value?.Name || "";
+  },
+      renderEditCell: (params) => {
+        return <STDEditAutocompleteCell {...params} />;
+      },
+    },
+    {
+      field: "SlotID",
+      headerName: "SlotID",
+      width: 150,
+       align: "left",
+      headerAlign: "center",
+      editable: false,
+      hide: true,
+    },
+     {
+      field: "SlotCode",
+      headerName: "SlotCode",
+      width: 150,
+       align: "left",
+      headerAlign: "center",
+      editable: false,
+      hide: true,
+    },
+     {
+      field: "SlotName",
+      headerName: "Slot Name",
+     width: 350,
+      hide: false,
+      editable: true,
+      headerAlign: "center",
+     sortable: false,
+      //    renderCell: (params) => {
+      //   return params.value?.Name || ""; // show only the name
+      // },
+      renderCell: (params) => {
+        console.log("SlotName params:", params);
+        console.log("SlotName params value:", params.value);
+    if (Array.isArray(params.value)) {
+      return params.value.map((v) => v.Name).join(", ");
+    }
+    return params.value?.Name || "";
+  },
+      renderEditCell: (params) => {
+        return <SLOTEditAutocompleteCell {...params} />;
+      },
+    
+    },
+     {
+      field: "BreakSlotID",
+      headerName: "BreakSlotID",
+      width: 150,
+       align: "left",
+      headerAlign: "center",
+      editable: false,
+      hide: true,
+    },
+     {
+      field: "BreakSlotCode",
+      headerName: "BreakSlotCode",
+      width: 150,
+       align: "left",
+      headerAlign: "center",
+      editable: false,
+      hide: true,
+    },
+    {
+  field: "BreakSlotName",
+  headerName: "Break Slots",
+  width: 350,
+  align: "left",
+  headerAlign: "center",
+  editable: true,
+  renderCell: (params) => {
+    console.log("BreakSlotName params:", params);
+    if (Array.isArray(params.value)) {
+      return params.value.map((v) => v.Name).join(", ");
+    }
+    return params.value?.Name || "";
+  },
+  renderEditCell: (params) => {
+    return <BREAKSLOTEditAutocompleteCell {...params} />;
+  },
+},
+
+    {
+      field: "Comments",
+      headerName: "Comments",
+      width: 150,
+       align: "left",
+      headerAlign: "center",
+      editable: true,
+      type: "text",
+    },
+
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      width: 150,
+      cellClassName: "actions",
+     getActions: ({ id }) => {
+  const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+  if (isInEditMode) {
+    return [
+      <GridActionsCellItem
+        icon={<SaveIcon />}
+        label="Save"
+        sx={{ color: "primary.main" }}
+        onClick={handleSaveTermsClick(id)}
+      />,
+      <GridActionsCellItem
+        icon={<CancelIcon />}
+        label="Cancel"
+        onClick={handleCancelTermsClick(id)}
+        color="inherit"
+      />,
+    ];
+  }
+
+  return [
+    <GridActionsCellItem
+      icon={<EditIcon />}
+      label="Edit"
+      onClick={handleEditTermsClick(id)}   // ✅ FIX
+      color="inherit"
+    />,
+    <GridActionsCellItem
+      icon={<DeleteIcon />}
+      label="Delete"
+      onClick={handleDeleteTermsClick(id)} // also add this
+      color="inherit"
+    />,
+  ];
+}
+    },
+  ];
+ const handleRowEditTermsStop = (params, event) => {
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevented = true;
+    }
+  };
+
+  const handleEditTermsClick = (RecordID) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [RecordID]: { mode: GridRowModes.Edit },
+    });
+  };
+
+ const handleSaveTermsClick = (RecordID) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [RecordID]: { mode: GridRowModes.View },
+    });
+  };
+  
+
+   const handleDeleteTermsClick = (RecordID) => async () => {
+    setTermsRows(rows.filter((row) => row.RecordID !== RecordID));
+
+    if (!isNaN(RecordID)) {
+      const idata = {
+        //RecordID: recID,
+        RecordID: RecordID,
+      };
+
+      const response = await dispatch(
+        postData({
+          accessID: "TR355",
+          action: "harddelete",
+          idata: idata,
+        }),
+      );
+
+      if (response.payload?.Status === "Y") {
+        toast.success(response.payload.Msg);
+        const data = await dispatch(companyTermsGet({recID }));
+        // dispatch(
+        //   slotListView({
+        //     accessID: "TR334",
+        //     screenName: "Slot",
+        //     filter: `CompanyID = ${recID}`,
+        //     any: "",
+        //   }),
+        // );
+        console.log("🚀 ~ screenChange ~ data:", data);
+        // if (data.payload.Status == "Y") {
+        //   const resData = data.payload.Data.rows.map((value) => {
+        //     return {
+        //       ...value,
+        //       TaskDetailRoleID: {
+        //         RecordID: value.TaskDetailRoleID,
+        //         Name: value.RoleName,
+        //       },
+        //     };
+        //   });
+        //   setRows(resData);
+        // } else {
+        //   setRows([]); // Ensures rows don't break if explorelistViewData is undefined or not an array
+        // }
+      } else {
+        toast.error(response.payload?.Msg || "Operation failed");
+      }
+    }
+  };
+
+  const handleCancelTermsClick = (RecordID) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [RecordID]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+
+    const editedRow = rows.find((row) => row.RecordID === RecordID);
+    if (editedRow.isNew) {
+      setTermsRows(rows.filter((row) => row.RecordID !== RecordID));
+    }
+  };
+
+ 
+  const processRowUpdateTerms = (newRow, oldRow) => {
+    const updatedRow = { ...newRow, isNew: false };
+    console.log(newRow, "newRow");
+    console.log(oldRow, "--oldRow");
+
+    setTermsRows((prevRows) =>
+      prevRows.map((row) =>
+        row.RecordID === newRow.RecordID ? updatedRow : row,
+      ),
+    );
+
+    console.log(updatedRow, "--updatedRow");
+
+    return updatedRow;
+  };
+
+ 
+  
+  const handleRowModesModelChangeTerms = (newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
+
+
+const formatDate = (date) => {
+  if (!date) return "";
+
+  const d = new Date(date);
+
+  if (isNaN(d.getTime())) {
+    // Handle DD-MM-YYYY manually
+    const parts = date.split("-");
+    if (parts.length === 3) {
+      return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+    return "";
+  }
+
+  return d.toISOString().split("T")[0]; // YYYY-MM-DD
+};
+
+  const handleSaveButtonClickTerms = async (action) => {
+  console.log(termsrows, "--termsrows");
+
+  const idata = termsrows.map((row, index) => {
+    const slotIDs =
+      Array.isArray(row.SlotName)
+        ? row.SlotName.map((v) => v.RecordID).join(",")
+        : row.SlotID || "";
+
+    const breakSlotIDs =
+      Array.isArray(row.BreakSlotName)
+        ? row.BreakSlotName.map((v) => v.RecordID).join(",")
+        : row.BreakSlotID || "";
+
+    // const standardID =
+    //   row.StandardName?.RecordID || row.StandardID || "";
+   const standardID =
+      Array.isArray(row.StandardName)
+        ? row.StandardName.map((v) => v.RecordID).join(",")
+        : row.StandardID || "";
+
+    return {
+      RecordID: row.isNew ? 0 : row.RecordID,
+      CompanyID: recID,
+      Code: row.Code,
+      TermsName: row.TermsName,
+      Comments: row.Comments,
+      FromDate: formatDate(row.FromDate),   // ✅ fixed
+      ToDate: formatDate(row.ToDate),       // ✅ fixed
+      SlotID: slotIDs,
+      BreakSlotID: breakSlotIDs,
+      StandardID: standardID,
+      IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
+
+    };
+  });
+
+  console.log(idata, "--print the idata");
+
+  try {
+    const response = await dispatch(
+      postData({
+        accessID: "TR355",
+        action: "insert",
+        idata: idata,
+      })
+    );
+
+    if (response?.payload?.Status === "Y") {
+      toast.success(response.payload.Msg);
+
+      const data = await dispatch(companyTermsGet({ recID }));
+
+      if (data?.payload?.Status === "Y") {
+        // const resData = data.payload.Data.rows.map((value) => ({
+        //   ...value,
+        // }));
+
+        // setTermsRows(resData);
+      } else {
+        setTermsRows([]);
+      }
+
+    } else {
+      toast.error(response?.payload?.Msg || "Save failed");
+    }
+
+  } catch (error) {
+    console.error("Save error:", error);
+    toast.error("Error occurred during save.");
+  }
+};
+
+//  function EditToolbarTerms(props) {
+//   const { setTermsRows, setRowModesModel } = props;
+
+//   const handleClick = () => {
+//     const id = nanoid();
+
+//     const nextSLNO =
+//       termsrows.length > 0
+//         ? Math.max(...termsrows.map((row) => Number(row.SLNO) || 0)) + 1
+//         : 1;
+
+//     setTermsRows((oldRows) => [
+//       ...oldRows,
+//       {
+//         RecordID: id,
+//         SLNO: nextSLNO,
+//         Code: "",
+//         TermsName: "",
+//         FromDate: "",
+//         ToDate: "",
+//         SlotID: "",
+//         SlotName: [],
+//         BreakSlotID: "",
+//         BreakSlotName: [],
+//         Comments: "",
+//         isNew: true,
+//       },
+//     ]);
+
+//     setRowModesModel((oldModel) => ({
+//       ...oldModel,
+//       [id]: { mode: GridRowModes.Edit, fieldToFocus: "Code" },
+//     }));
+//   };
+
+//   return (
+//     <GridToolbarContainer sx={{ marginBottom: "10px" }}>
+//       <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+//         Add Record
+//       </Button>
+//     </GridToolbarContainer>
+//   );
+// }
+
+function EditToolbarTerms(props) {
+  const { setTermsRows, setRowModesModel } = props;
+
+  const handleClick = () => {
+    const id = nanoid();
+
+    const nextSLNO =
+      termsrows.length > 0
+        ? Math.max(...termsrows.map((row) => Number(row.SLNO) || 0)) + 1
+        : 1;
+
+    const newRow = {
+      RecordID: id,
+      SLNO: nextSLNO,
+      Code: "",
+      TermsName: "",
+      FromDate: "",
+      ToDate: "",
+
+      StandardID: "",
+      StandardCode: "",
+      StandardName: [],
+
+      SlotID: "",
+      SlotCode: "",
+      SlotName: [],
+
+      BreakSlotID: "",
+      BreakSlotCode: "",
+      BreakSlotName: [],
+
+      Comments: "",
+      isNew: true,
+    };
+
+    setTermsRows((oldRows) => [...oldRows, newRow]);
+
+    setRowModesModel((oldModel) => ({
+      ...oldModel,
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "Code" },
+    }));
+  };
+
+  return (
+    <GridToolbarContainer sx={{ marginBottom: "10px" }}>
+      <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+        Add Record
+      </Button>
+    </GridToolbarContainer>
+  );
+}
 
   return (
     <Box>
@@ -1180,6 +1927,10 @@ const Editcompany = () => {
               {mode === "E" && show == "4" ? (
                 <Typography variant="h3">Slots</Typography>
               ) : null}
+                {mode === "E" && show == "5" ? (
+                <Typography variant="h3">Terms</Typography>
+              ) : null}
+              
             </Breadcrumbs>
           </Box>
 
@@ -1199,6 +1950,7 @@ const Editcompany = () => {
                   <MenuItem value={2}>Report Settings</MenuItem>
                   <MenuItem value={3}>Policy</MenuItem>
                   <MenuItem value={4}>Slot</MenuItem>
+                  <MenuItem value={5}>Terms</MenuItem>
                 </Select>
               </FormControl>
             ) : (
@@ -3597,6 +4349,210 @@ const Editcompany = () => {
                     color="secondary"
                     variant="contained"
                     onClick={handleSaveButtonClick}
+                  >
+                    Save
+                  </Button>
+
+                  <Button
+                    color="warning"
+                    variant="contained"
+                    onClick={() => {
+                      setScreen(0);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              </form>
+            )}
+          </Formik>
+        </Paper>
+      ) : (
+        false
+      )}
+
+        {show == "5" ? (
+        <Paper elevation={3} sx={{ margin: "10px" }}>
+          <Formik
+            initialValues={PolicyInitialValue}
+            onSubmit={(values, setSubmitting) => {
+              // setTimeout(() => {
+              //   Policysave(values);
+              // }, 100);
+            }}
+            // validationSchema={PolicyValidationSchema}
+            enableReinitialize={true}
+          >
+            {({
+              errors,
+              touched,
+              handleBlur,
+              handleChange,
+              isSubmitting,
+              values,
+              handleSubmit,
+              setFieldValue,
+            }) => (
+              <form onSubmit={handleSubmit}>
+                <Box
+                  display="grid"
+                  gap={formGap}
+                  padding={1}
+                  gridTemplateColumns="repeat(2 , minMax(0,1fr))"
+                  // gap="30px"
+                  sx={{
+                    "& > div": {
+                      gridColumn: isNonMobile ? undefined : "span 2",
+                    },
+                  }}
+                >
+                  <TextField
+                    name="code"
+                    type="text"
+                    id="code"
+                    label={<>Code</>}
+                    variant="standard"
+                    focused
+                    // required
+                    value={values.code}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.code && !!errors.code}
+                    helperText={touched.code && errors.code}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    InputProps={{
+                      inputProps: {
+                        readOnly: true,
+                      },
+                    }}
+                    autoFocus
+                  />
+                  {/* )} */}
+                  <TextField
+                    name="name"
+                    type="text"
+                    id="name"
+                    label={<>Name</>}
+                    variant="standard"
+                    focused
+                    value={values.name}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.name && !!errors.name}
+                    helperText={touched.name && errors.name}
+                    sx={{
+                      backgroundColor: "#ffffff", // Set the background to white
+                      "& .MuiFilledInput-root": {
+                        backgroundColor: "#f5f5f5 ", // Ensure the filled variant also has a white background
+                      },
+                    }}
+                    InputProps={{
+                      inputProps: {
+                        readOnly: true,
+                      },
+                    }}
+                  />
+                </Box>
+
+                <Box
+                  m="5px 0 0 0"
+                  height={dataGridHeight}
+                  sx={{
+                    "& .MuiDataGrid-root": {
+                      border: "none",
+                    },
+                    "& .MuiDataGrid-cell": {
+                      borderBottom: "none",
+                    },
+                    "& .name-column--cell": {
+                      color: colors.greenAccent[300],
+                    },
+                    "& .MuiDataGrid-columnHeaders": {
+                      backgroundColor: colors.blueAccent[800],
+                      borderBottom: "none",
+                    },
+                    "& .MuiDataGrid-virtualScroller": {
+                      backgroundColor: colors.primary[400],
+                    },
+                    "& .MuiDataGrid-footerContainer": {
+                      borderTop: "none",
+                      backgroundColor: colors.blueAccent[800],
+                    },
+                    "& .MuiCheckbox-root": {
+                      color: `${colors.greenAccent[200]} !important`,
+                    },
+                    "& .odd-row": {
+                      backgroundColor: "",
+                      color: "", // Color for odd rows
+                    },
+                    "& .even-row": {
+                      backgroundColor: "#D3D3D3",
+                      color: "", // Color for even rows
+                    },
+                  }}
+                >
+                  <DataGrid
+                    sx={{
+                      "& .MuiDataGrid-footerContainer": {
+                        height: dataGridHeaderFooterHeight,
+                        minHeight: dataGridHeaderFooterHeight,
+                      },
+                    }}
+                    rows={termsrows}
+                    columns={Termscolumns}
+                    loading={exploreLoading}
+                    rowModesModel={rowModesModel}
+                    getRowId={(row) => row.RecordID}
+                    editMode="row"
+                    disableRowSelectionOnClick
+                    rowHeight={dataGridRowHeight}
+                    headerHeight={dataGridHeaderFooterHeight}
+                    experimentalFeatures={{ newEditingApi: true }}
+                    onRowModesModelChange={handleRowModesModelChangeTerms}
+                    onRowEditStop={handleRowEditTermsStop}
+                    processRowUpdate={processRowUpdateTerms}
+                    onProcessRowUpdateError={(error) => {
+                      console.error(
+                        "Row update validation failed:",
+                        error.message,
+                      );
+
+                      toast.error(error.message);
+                    }}
+                    components={{
+                      Toolbar: EditToolbarTerms,
+                    }}
+                   componentsProps={{
+  toolbar: { setTermsRows, setRowModesModel },
+}}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    getRowClassName={(params) =>
+                      params.indexRelativeToCurrentPage % 2 === 0
+                        ? "odd-row"
+                        : "even-row"
+                    }
+                    pagination
+                    pageSize={pageSize}
+                    page={page}
+                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                    onPageChange={(newPage) => setPage(newPage)}
+                  />
+                </Box>
+                <Box
+                  display="flex"
+                  justifyContent="flex-end"
+                  padding={1}
+                  gap="20px"
+                >
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    onClick={handleSaveButtonClickTerms}
                   >
                     Save
                   </Button>
