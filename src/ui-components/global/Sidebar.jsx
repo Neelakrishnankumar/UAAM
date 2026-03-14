@@ -1111,10 +1111,14 @@ const Sidebars = () => {
   const Modules = JSON.parse(sessionStorage.getItem("Modules")) || [];
   // console.log(" ~ file: Sidebar.jsx:773 ~ Sidebars ~ Modules:", Modules);
   // console.log(" ~ file: Sidebar.jsx:772 ~ Sidebars ~ Groupaccess:", Groupaccess)
-console.log(sessionStorage.getItem("loginRecid"),"loginrecid");
+  console.log(sessionStorage.getItem("loginRecid"), "loginrecid");
   const handleClicks = (item) => {
     let newData = { ...menu, [item]: !menu[item] };
     setMenu(newData);
+  };
+    const handleLogout = () => {
+    sessionStorage.clear(); // clear session only
+    navigate("/");
   };
   const [menu, setMenu] = useState({});
   const handleMenu = (children, accessRow) => {
@@ -1323,10 +1327,12 @@ console.log(sessionStorage.getItem("loginRecid"),"loginrecid");
 
             <Tooltip title="Logout">
               <ListItemButton
-                onClick={() => {
-                  navigate("/");
-                  dispatch(logout());
-                }}
+                // onClick={() => {
+                //   navigate("/");
+                //   dispatch(logout());
+                // }}
+                onClick={() => { handleLogout() }}
+
               >
                 <ListItemIcon>
                   <LogoutOutlinedIcon color="error" />
