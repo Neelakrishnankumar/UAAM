@@ -59,6 +59,9 @@ const initialState = {
   PolicygetLoading: false,
   PolicyStatus: "",
   PolicyData: {},
+  companytermsgetLoading: false,
+  companytermsStatus: "",
+  companytermsData: [],
   CompReportgetLoading: false,
   CompReportStatus: "",
   CompReportData: {},
@@ -842,6 +845,35 @@ export const BankpostData = createAsyncThunk(
   }
 );
 
+// COMPANY_TERMS_GET
+export const companyTermsGet = createAsyncThunk(
+  "COMPANY_TERMS_GET/GET",
+  async ({recID }) => {
+    var url = store.getState().globalurl.CompanyTermsGet;
+    const data = {
+       CompanyID: recID,
+    };
+
+    console.log(
+      "🚀 ~ file: Formapireducer.js:225 ~ data:",
+      JSON.stringify(data)
+    );
+
+    const response = await axios.post(url, data, {
+      headers: {
+        Authorization:
+          "eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJzdWIiOiJCZXhAMTIzIiwibmFtZSI6IkJleCIsImFkbWluIjp0cnVlLCJleHAiOjE2Njk5ODQzNDl9.uxE3r3X4lqV_WKrRKRPXd-Jub9BnVcCXqCtLL4I0fpU",
+      },
+    });
+    console.log(
+      "🚀 ~ file: newFormApiReducer.js:27 ~ fetchData ~ response:",
+      response
+    );
+    return response.data;
+  }
+);
+
+
 // Company -- Policy Get
 export const PolicyFetchData = createAsyncThunk(
   "PolicyFetchData/get",
@@ -1435,6 +1467,28 @@ export const getApiSlice = createSlice({
         state.BankData = {};
         toast.error("Something Went Wrong");
       })
+
+      
+      //COMPANY_TERMS_GET
+       .addCase(companyTermsGet.pending, (state, action) => {
+        state.companytermsStatus = "idle";
+        state.companytermsgetLoading = true;
+        state.companytermsData = [];
+        state.msg = "Loading...";
+      })
+      .addCase(companyTermsGet.fulfilled, (state, action) => {
+        state.companytermsStatus = "success";
+        state.companytermsgetLoading = false;
+        state.companytermsData = action.payload.Data ? action.payload.Data : [];
+        // state.msg =  action.payload.Msg
+      })
+      .addCase(companyTermsGet.rejected, (state, action) => {
+        state.companytermsStatus = "Error";
+        state.companytermsgetLoading = false;
+        state.companytermsData = [];
+        toast.error("Something Went Wrong");
+      })
+
 //COMPANY_POLICY_GET
 
      .addCase(PolicyFetchData.pending, (state, action) => {
