@@ -19,6 +19,7 @@ import {
   Chip,
   Breadcrumbs,
   useTheme,
+  FormHelperText
 } from "@mui/material";
 import { tokens } from "../../../Theme";
 import {
@@ -196,6 +197,16 @@ const Editcompany = () => {
           phone: Yup.string()
             .required(data.Company.phone)
             .matches(/^[6-9]\d{9}$/, "Invalid Phone Number"),
+          // Type: Yup.string().required(data.Company.Type),
+//           Type: Yup.string().when([], {
+//   is: () => mode !== "E",
+//   then: (schema) => schema.required(data.Company.Type),
+//   otherwise: (schema) => schema.notRequired(),
+// }),
+           Type:
+      mode !== "E"
+        ? Yup.string().required(data.Company.Type)
+        : Yup.string().notRequired(),
         };
 
         // IE Code
@@ -287,10 +298,12 @@ console.log(companytermsData, "--companytermsData");
   console.log(slotRowData, "--slotRowData");
 
   const [rows, setRows] = React.useState(slotRowData);
+  
+  const [rowModesModel, setRowModesModel] = React.useState({});
 
   const [termsrows, setTermsRows] = React.useState(companytermsData);
+  const [isRowEditedTerms, setIsRowEditedTerms] = useState(false);
 
-  const [rowModesModel, setRowModesModel] = React.useState({});
 
   useEffect(() => {
     setRows(slotRowData || []);
@@ -449,7 +462,7 @@ console.log(companytermsData, "--companytermsData");
         }
       : null,
     Module: mode === "E" ? Data.Module : "",
-    Type: Data.Type 
+    Type: Data.Type || ""
     // == "S" ? "Startup" : Data.Type == "I" ? "Institute" : Data.Type == "C" ? "Construction" : "",
   };
 
@@ -482,7 +495,9 @@ console.log(companytermsData, "--companytermsData");
       NumberOfEmployee: values.noOfEmployees,
       NumberOfUsers: values.noofusers,
       Module: values.Module,
+      // Type: values.Type,
       Type: values.Type,
+      // == "Startup" ? "S" : values.Type == "Institute" ? "I" : values.Type == "Construction" ? "C" : "",
     };
     console.log(values.Module);
 
@@ -805,18 +820,29 @@ console.log(companytermsData, "--companytermsData");
       width: 150,
       align: "left",
       headerAlign: "center",
-      editable: true,
+      editable: false,
+        // sortable: false,
     },
     {
       field: "SlotName",
-      headerName: "Slot Name",
+        headerName: (
+        <span>
+          Slot Name <span style={{ color: "red" }}>*</span>
+        </span>
+      ),
+      // headerName: "Slot Name",
       width: 150,
       align: "left",
       headerAlign: "center",
       editable: true,
     },
     {
-      headerName: "From Time",
+      // headerName: "From Time",
+       headerName: (
+        <span>
+          From Time <span style={{ color: "red" }}>*</span>
+        </span>
+      ),
       field: "FromTime", // ✅ match exact API field
       width: 150,
        align: "left",
@@ -826,7 +852,12 @@ console.log(companytermsData, "--companytermsData");
       renderEditCell: (params) => <EditTimeCell {...params} />,
     },
     {
-      headerName: "To Time",
+      // headerName: "To Time",
+       headerName: (
+        <span>
+          To Time <span style={{ color: "red" }}>*</span>
+        </span>
+      ),
       field: "ToTime", // ✅ match exact API field
       width: 150,
        align: "left",
@@ -1020,9 +1051,29 @@ console.log(companytermsData, "--companytermsData");
       setRows(rows.filter((row) => row.RecordID !== RecordID));
     }
   };
-
+ const validateRowSlot = (row) => {
+  if (!row.SlotName) {
+    return "Slot Name is required";
+  }
+  if (!row.FromTime) {
+    return "From Time is required";
+  }
+  if (!row.ToTime) {
+    return "To Time is required";
+  }
+  return null;
+};
  
   const processRowUpdate = (newRow, oldRow) => {
+    console.log(newRow, "--procesrowupdateterms newrow");
+//validation
+  const error = validateRowSlot(newRow);
+  if (error) {
+    throw new Error(error);
+  }
+ 
+
+
     const updatedRow = { ...newRow, isNew: false };
     console.log(newRow, "newRow");
     console.log(oldRow, "--oldRow");
@@ -1089,10 +1140,19 @@ const handleRowModesModelChange = (newRowModesModel) => {
   };
 
   const handleSaveButtonClick = async (action) => {
-    const idata = rows.map((row, index) => {
 
-  
-      return {
+    for (let index = 0; index < rows.length; index++) {
+  const row = rows[index];
+  const error = validateRowSlot(row);
+
+  if (error) {
+    toast.error(`${error}`);
+    return; // ✅ stops entire save function
+  }
+}
+
+    const idata = rows.map((row, index) => {
+       return {
         RecordID: row.isNew ? 0 : row.RecordID,
         CompanyID: recID,
         Code: row.SlotCode,
@@ -1382,18 +1442,29 @@ const handleRowModesModelChange = (newRowModesModel) => {
       width: 150,
       align: "left",
       headerAlign: "center",
-      editable: true,
+      editable: false,
+      // sortable: false,
     },
     {
       field: "TermsName",
-      headerName: "Terms Name",
+        headerName: (
+        <span>
+          Terms Name <span style={{ color: "red" }}>*</span>
+        </span>
+      ),
+    
       width: 150,
       align: "left",
       headerAlign: "center",
       editable: true,
     },
     {
-      headerName: "From Date",
+    
+        headerName: (
+        <span>
+          From Date <span style={{ color: "red" }}>*</span>
+        </span>
+      ),
       field: "FromDate", // ✅ match exact API field
       width: 150,
        align: "left",
@@ -1405,7 +1476,12 @@ const handleRowModesModelChange = (newRowModesModel) => {
       },
     },
     {
-      headerName: "To Date",
+   
+       headerName: (
+        <span>
+          To Date <span style={{ color: "red" }}>*</span>
+        </span>
+      ),
       field: "ToDate", // ✅ match exact API field
       width: 150,
        align: "left",
@@ -1438,7 +1514,12 @@ const handleRowModesModelChange = (newRowModesModel) => {
     },
       {
       field: "StandardName",
-      headerName: "Standard",
+         headerName: (
+        <span>
+          Standard Name <span style={{ color: "red" }}>*</span>
+        </span>
+      ),
+    
       width: 250,
        align: "left",
       headerAlign: "center",
@@ -1477,7 +1558,12 @@ const handleRowModesModelChange = (newRowModesModel) => {
     },
      {
       field: "SlotName",
-      headerName: "Slot Name",
+      // headerName: "Slot Name",
+        headerName: (
+        <span>
+          Slot Name <span style={{ color: "red" }}>*</span>
+        </span>
+      ),
      width: 350,
       hide: false,
       editable: true,
@@ -1671,8 +1757,48 @@ const handleRowModesModelChange = (newRowModesModel) => {
     }
   };
 
- 
+ const validateRowTerms = (row) => {
+  if (!row.TermsName) {
+    return "Terms Name is required";
+  }
+
+  if (!row.FromDate) {
+    return "From Date is required";
+  }
+
+  if (!row.ToDate) {
+    return "To Date is required";
+  }
+
+  const isEmptyArrayOrValue = (val) => {
+    if (!val) return true;
+    if (Array.isArray(val)) return val.length === 0;
+    if (typeof val === "object") return !val.RecordID;
+    return false;
+  };
+
+  if (isEmptyArrayOrValue(row.StandardName)) {
+    return "Standard Name is required";
+  }
+
+  if (isEmptyArrayOrValue(row.SlotName)) {
+    return "Slot Name is required";
+  }
+
+  return null;
+};
   const processRowUpdateTerms = (newRow, oldRow) => {
+console.log(newRow, "--procesrowupdateterms newrow");
+
+//validation
+  const error = validateRowTerms(newRow);
+  if (error) {
+    throw new Error(error);
+  }
+//  setIsRowEditedTerms(true); // ✅ mark that editing happened
+ 
+
+
     const updatedRow = { ...newRow, isNew: false };
     console.log(newRow, "newRow");
     console.log(oldRow, "--oldRow");
@@ -1712,78 +1838,133 @@ const formatDate = (date) => {
   return d.toISOString().split("T")[0]; // YYYY-MM-DD
 };
 
-  const handleSaveButtonClickTerms = async (action) => {
-  console.log(termsrows, "--termsrows");
+//   const handleSaveButtonClickTerms = async (action) => {
+//   console.log(termsrows, "--termsrows");
 
-  const idata = termsrows.map((row, index) => {
-    const slotIDs =
-      Array.isArray(row.SlotName)
-        ? row.SlotName.map((v) => v.RecordID).join(",")
-        : row.SlotID || "";
+//    if (!row.TermsName) {
+//     return "Terms Name is required";
+//   }
 
-    const breakSlotIDs =
-      Array.isArray(row.BreakSlotName)
-        ? row.BreakSlotName.map((v) => v.RecordID).join(",")
-        : row.BreakSlotID || "";
+//   if (!row.FromDate) {
+//     return "From Date is required";
+//   }
 
-    // const standardID =
-    //   row.StandardName?.RecordID || row.StandardID || "";
-   const standardID =
-      Array.isArray(row.StandardName)
-        ? row.StandardName.map((v) => v.RecordID).join(",")
-        : row.StandardID || "";
+//   if (!row.ToDate) {
+//     return "To Date is required";
+//   }
 
-    return {
-      RecordID: row.isNew ? 0 : row.RecordID,
-      CompanyID: recID,
-      Code: row.Code,
-      TermsName: row.TermsName,
-      Comments: row.Comments,
-      FromDate: formatDate(row.FromDate),   // ✅ fixed
-      ToDate: formatDate(row.ToDate),       // ✅ fixed
-      SlotID: slotIDs,
-      BreakSlotID: breakSlotIDs,
-      StandardID: standardID,
-      IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
+//   const isEmptyArrayOrValue = (val) => {
+//     if (!val) return true;
+//     if (Array.isArray(val)) return val.length === 0;
+//     if (typeof val === "object") return !val.RecordID;
+//     return false;
+//   };
 
-    };
-  });
+//   if (isEmptyArrayOrValue(row.StandardName)) {
+//     return "Standard Name is required";
+//   }
 
-  console.log(idata, "--print the idata");
+//   if (isEmptyArrayOrValue(row.SlotName)) {
+//     return "Slot Name is required";
+//   }
+// //  for (let i = 0; i < termsrows.length; i++) {
+// //     const row = termsrows[i];
 
-  try {
-    const response = await dispatch(
-      postData({
-        accessID: "TR355",
-        action: "insert",
-        idata: idata,
-      })
-    );
+// //     if (!row.TermsName) {
+// //       toast.error(`Terms Name is required`);
+// //       return;
+// //     }
 
-    if (response?.payload?.Status === "Y") {
-      toast.success(response.payload.Msg);
+// //     if (!row.FromDate) {
+// //       toast.error(`From Date is required`);
+// //       return;
+// //     }
 
-      const data = await dispatch(companyTermsGet({ recID }));
+// //     if (!row.ToDate) {
+// //       toast.error(`To Date is required`);
+// //       return;
+// //     }
 
-      if (data?.payload?.Status === "Y") {
-        // const resData = data.payload.Data.rows.map((value) => ({
-        //   ...value,
-        // }));
+// //     if (!row.StandardName || row.StandardName.length === 0) {
+// //       toast.error(`Standard Name is required`);
+// //       return;
+// //     }
 
-        // setTermsRows(resData);
-      } else {
-        setTermsRows([]);
-      }
+// //     if (!row.SlotName || row.SlotName.length === 0) {
+// //       toast.error(`Slot Name is required`);
+// //       return;
+// //     }
+// //   }
 
-    } else {
-      toast.error(response?.payload?.Msg || "Save failed");
-    }
+//   const idata = termsrows.map((row, index) => {
+//     const slotIDs =
+//       Array.isArray(row.SlotName)
+//         ? row.SlotName.map((v) => v.RecordID).join(",")
+//         : row.SlotID || "";
 
-  } catch (error) {
-    console.error("Save error:", error);
-    toast.error("Error occurred during save.");
-  }
-};
+//     const breakSlotIDs =
+//       Array.isArray(row.BreakSlotName)
+//         ? row.BreakSlotName.map((v) => v.RecordID).join(",")
+//         : row.BreakSlotID || "";
+
+//     // const standardID =
+//     //   row.StandardName?.RecordID || row.StandardID || "";
+//    const standardID =
+//       Array.isArray(row.StandardName)
+//         ? row.StandardName.map((v) => v.RecordID).join(",")
+//         : row.StandardID || "";
+
+//     return {
+//       RecordID: row.isNew ? 0 : row.RecordID,
+//       CompanyID: recID,
+//       Code: row.Code,
+//       TermsName: row.TermsName,
+//       Comments: row.Comments,
+//       FromDate: formatDate(row.FromDate),   // ✅ fixed
+//       ToDate: formatDate(row.ToDate),       // ✅ fixed
+//       SlotID: slotIDs,
+//       BreakSlotID: breakSlotIDs,
+//       StandardID: standardID,
+//       IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
+
+//     };
+//   });
+
+//   console.log(idata, "--print the idata");
+
+//   try {
+//     const response = await dispatch(
+//       postData({
+//         accessID: "TR355",
+//         action: "insert",
+//         idata: idata,
+//       })
+//     );
+
+//     if (response?.payload?.Status === "Y") {
+//       toast.success(response.payload.Msg);
+
+//       const data = await dispatch(companyTermsGet({ recID }));
+
+//       if (data?.payload?.Status === "Y") {
+//         // const resData = data.payload.Data.rows.map((value) => ({
+//         //   ...value,
+//         // }));
+
+//         // setTermsRows(resData);
+//       } else {
+//         setTermsRows([]);
+//       }
+
+//     } else {
+//       toast.error(response?.payload?.Msg || "Save failed");
+//     }
+
+//   } catch (error) {
+//     console.error("Save error:", error);
+//     toast.error("Error occurred during save.");
+//   }
+// };
 
 //  function EditToolbarTerms(props) {
 //   const { setTermsRows, setRowModesModel } = props;
@@ -1828,6 +2009,108 @@ const formatDate = (date) => {
 //     </GridToolbarContainer>
 //   );
 // }
+
+
+const handleSaveButtonClickTerms = async (action) => {
+
+  console.log(termsrows, "--termsrows");
+
+  let errors = [];
+// console.log(isRowEditedTerms, "--isRowEditedTerms");
+
+  // ✅ Run validation only if NOT edited
+  // if (!isRowEditedTerms) {
+    // termsrows.forEach((row, index) => {
+    //   const error = validateRowTerms(row);
+
+    //   if (error) {
+    //      toast.error(errors);
+    //     return;
+    //     errors.push(`${error}`);
+    //   }
+    // });
+    for (let index = 0; index < termsrows.length; index++) {
+  const row = termsrows[index];
+  const error = validateRowTerms(row);
+
+  if (error) {
+    toast.error(`${error}`);
+    return; // ✅ stops entire save function
+  }
+}
+
+
+    // ❗ If any error exists, show ALL
+    // if (errors.length > 0) {
+    //   toast.error(errors.join("\n"));
+    //   return;
+    // }
+  // }
+
+  //   termsrows.forEach((row, index) => {
+//   const error = validateRowTerms(row);
+//   if (error) {
+//     errors.push(`Row ${index + 1}: ${error}`);
+//   }
+// });
+ 
+  const idata = termsrows.map((row) => {
+    const slotIDs = Array.isArray(row.SlotName)
+      ? row.SlotName.map((v) => v.RecordID).join(",")
+      : row.SlotID || "";
+
+    const breakSlotIDs = Array.isArray(row.BreakSlotName)
+      ? row.BreakSlotName.map((v) => v.RecordID).join(",")
+      : row.BreakSlotID || "";
+
+    const standardID = Array.isArray(row.StandardName)
+      ? row.StandardName.map((v) => v.RecordID).join(",")
+      : row.StandardID || "";
+
+    return {
+      RecordID: row.isNew ? 0 : row.RecordID,
+      CompanyID: recID,
+      Code: row.Code,
+      TermsName: row.TermsName,
+      Comments: row.Comments,
+      FromDate: formatDate(row.FromDate),
+      ToDate: formatDate(row.ToDate),
+      SlotID: slotIDs,
+      BreakSlotID: breakSlotIDs,
+      StandardID: standardID,
+      IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N",
+    };
+  });
+
+  console.log(idata, "--print the idata");
+
+  try {
+    const response = await dispatch(
+      postData({
+        accessID: "TR355",
+        action: "insert",
+        idata,
+      })
+    );
+
+    if (response?.payload?.Status === "Y") {
+      toast.success(response.payload.Msg);
+
+      const data = await dispatch(companyTermsGet({ recID }));
+
+      if (data?.payload?.Status === "Y") {
+        // setTermsRows(data.payload.Data.rows);
+      } else {
+        setTermsRows([]);
+      }
+    } else {
+      toast.error(response?.payload?.Msg || "Save failed");
+    }
+  } catch (error) {
+    console.error("Save error:", error);
+    toast.error("Error occurred during save.");
+  }
+};
 
 function EditToolbarTerms(props) {
   const { setTermsRows, setRowModesModel } = props;
@@ -2324,26 +2607,64 @@ function EditToolbarTerms(props) {
                       helperText={touched.iECode && errors.iECode}
                     />
 
-                    <FormControl
+                    {/* <FormControl
                       variant="standard"
                       fullWidth
                       // required 
                       focused>
-                      <InputLabel id="Type-label">Type</InputLabel>
+                      <InputLabel
+                       id="Type-label"
+                       
+                       >
+                      Type
+                       <span style={{ color: "red", fontSize: "20px" }}>
+                            *
+                          </span>
+                      </InputLabel>
                       <Select
                         labelId="Type-label"
                         id="Type"
                         name="Type"                        
                         value={values.Type}
                         onChange={handleChange}
-                        onBlur={handleBlur}                        
+                        onBlur={handleBlur}   
+                      error={!!touched.Type && !!errors.Type}
+                      helperText={touched.Type && errors.Type}                     
                       >
                         <MenuItem value="S">Startup</MenuItem>
                         <MenuItem value="I">Institute</MenuItem>
                         <MenuItem value="C">Construction</MenuItem>
                         
                       </Select>
-                    </FormControl>
+                    </FormControl> */}
+                   <FormControl
+                   disabled={mode === "E"}
+  variant="standard"
+  fullWidth
+  focused
+error={mode !== "E" && !!touched.Type && !!errors.Type}>
+  <InputLabel id="Type-label">
+    Type
+    <span style={{ color: "red", fontSize: "20px" }}>*</span>
+  </InputLabel>
+
+  <Select
+    labelId="Type-label"
+    id="Type"
+    name="Type"
+    value={values.Type}
+    onChange={handleChange}
+    onBlur={handleBlur}
+  >
+    <MenuItem value="S">Startup</MenuItem>
+    <MenuItem value="I">Institute</MenuItem>
+    <MenuItem value="C">Construction</MenuItem>
+  </Select>
+
+ {mode !== "E" &&touched.Type && errors.Type && (
+    <FormHelperText>{errors.Type}</FormHelperText>
+  )}
+</FormControl>
                     <FormControl variant="standard" fullWidth focused>
                       <InputLabel id="module-label">Module</InputLabel>
 
@@ -4515,10 +4836,7 @@ function EditToolbarTerms(props) {
                     onRowEditStop={handleRowEditTermsStop}
                     processRowUpdate={processRowUpdateTerms}
                     onProcessRowUpdateError={(error) => {
-                      console.error(
-                        "Row update validation failed:",
-                        error.message,
-                      );
+                      console.error("Row update validation failed:",error.message,);
 
                       toast.error(error.message);
                     }}
