@@ -824,7 +824,7 @@ const Login = () => {
                         value={values.password}
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        //  placeholder='Enter password'
+                        placeholder='Password'
                         error={!!touched.password && !!errors.password}
                         helperText={touched.password && errors.password}
                         InputProps={{

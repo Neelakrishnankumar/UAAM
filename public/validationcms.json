@@ -9,7 +9,9 @@
         "phone": "Please Enter the Phone",
         "license": "Please Enter the Subscription Code",
         "iECode": "Invalid I.E Code",
-        "rbiCode": "Invalid RBI Code"
+        "rbiCode": "Invalid RBI Code",
+        "Type": "Please Select the Type"
+        
     },
     "Location": {
         "name": "Please Enter the Name"
