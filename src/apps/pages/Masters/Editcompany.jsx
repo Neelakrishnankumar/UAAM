@@ -298,11 +298,10 @@ console.log(companytermsData, "--companytermsData");
   console.log(slotRowData, "--slotRowData");
 
   const [rows, setRows] = React.useState(slotRowData);
-  
   const [rowModesModel, setRowModesModel] = React.useState({});
 
   const [termsrows, setTermsRows] = React.useState(companytermsData);
-  const [isRowEditedTerms, setIsRowEditedTerms] = useState(false);
+  const [termsRowModesModel, setTermsRowModesModel] = useState({});
 
 
   useEffect(() => {
@@ -1639,7 +1638,7 @@ const handleRowModesModelChange = (newRowModesModel) => {
       width: 150,
       cellClassName: "actions",
      getActions: ({ id }) => {
-  const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+  const isInEditMode = termsRowModesModel[id]?.mode === GridRowModes.Edit;
 
   if (isInEditMode) {
     return [
@@ -1682,15 +1681,15 @@ const handleRowModesModelChange = (newRowModesModel) => {
   };
 
   const handleEditTermsClick = (RecordID) => () => {
-    setRowModesModel({
-      ...rowModesModel,
+    setTermsRowModesModel({
+      ...termsRowModesModel,
       [RecordID]: { mode: GridRowModes.Edit },
     });
   };
 
  const handleSaveTermsClick = (RecordID) => () => {
-    setRowModesModel({
-      ...rowModesModel,
+    setTermsRowModesModel({
+      ...termsRowModesModel,
       [RecordID]: { mode: GridRowModes.View },
     });
   };
@@ -1716,29 +1715,22 @@ const handleRowModesModelChange = (newRowModesModel) => {
       if (response.payload?.Status === "Y") {
         toast.success(response.payload.Msg);
         const data = await dispatch(companyTermsGet({recID }));
-        // dispatch(
-        //   slotListView({
-        //     accessID: "TR334",
-        //     screenName: "Slot",
-        //     filter: `CompanyID = ${recID}`,
-        //     any: "",
-        //   }),
-        // );
-        console.log("🚀 ~ screenChange ~ data:", data);
-        // if (data.payload.Status == "Y") {
-        //   const resData = data.payload.Data.rows.map((value) => {
-        //     return {
-        //       ...value,
-        //       TaskDetailRoleID: {
-        //         RecordID: value.TaskDetailRoleID,
-        //         Name: value.RoleName,
-        //       },
-        //     };
-        //   });
-        //   setRows(resData);
-        // } else {
-        //   setRows([]); // Ensures rows don't break if explorelistViewData is undefined or not an array
-        // }
+        console.log("🚀 ~ screenChangeTerms ~ data:", data);
+     
+         if (data.payload.Status === "Y") {
+          console.log(data.payload.Data, "--data.payload.Data");
+          
+    const resData = data.payload.Data.map((value) => ({
+      ...value,
+      // Break: value.Break === "Y", // ✅ Convert Y/N → boolean
+    }));
+
+    setTermsRows(resData);
+          } else {
+    setTermsRows([]);
+  }
+     
+
       } else {
         toast.error(response.payload?.Msg || "Operation failed");
       }
@@ -1746,8 +1738,8 @@ const handleRowModesModelChange = (newRowModesModel) => {
   };
 
   const handleCancelTermsClick = (RecordID) => () => {
-    setRowModesModel({
-      ...rowModesModel,
+    setTermsRowModesModel({
+      ...termsRowModesModel,
       [RecordID]: { mode: GridRowModes.View, ignoreModifications: true },
     });
 
@@ -1817,7 +1809,7 @@ console.log(newRow, "--procesrowupdateterms newrow");
  
   
   const handleRowModesModelChangeTerms = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
+    setTermsRowModesModel(newRowModesModel);
   };
 
 
@@ -2012,23 +2004,7 @@ const formatDate = (date) => {
 
 
 const handleSaveButtonClickTerms = async (action) => {
-
   console.log(termsrows, "--termsrows");
-
-  let errors = [];
-// console.log(isRowEditedTerms, "--isRowEditedTerms");
-
-  // ✅ Run validation only if NOT edited
-  // if (!isRowEditedTerms) {
-    // termsrows.forEach((row, index) => {
-    //   const error = validateRowTerms(row);
-
-    //   if (error) {
-    //      toast.error(errors);
-    //     return;
-    //     errors.push(`${error}`);
-    //   }
-    // });
     for (let index = 0; index < termsrows.length; index++) {
   const row = termsrows[index];
   const error = validateRowTerms(row);
@@ -2039,21 +2015,6 @@ const handleSaveButtonClickTerms = async (action) => {
   }
 }
 
-
-    // ❗ If any error exists, show ALL
-    // if (errors.length > 0) {
-    //   toast.error(errors.join("\n"));
-    //   return;
-    // }
-  // }
-
-  //   termsrows.forEach((row, index) => {
-//   const error = validateRowTerms(row);
-//   if (error) {
-//     errors.push(`Row ${index + 1}: ${error}`);
-//   }
-// });
- 
   const idata = termsrows.map((row) => {
     const slotIDs = Array.isArray(row.SlotName)
       ? row.SlotName.map((v) => v.RecordID).join(",")
@@ -2113,9 +2074,9 @@ const handleSaveButtonClickTerms = async (action) => {
 };
 
 function EditToolbarTerms(props) {
-  const { setTermsRows, setRowModesModel } = props;
+  const { setTermsRows, setTermsRowModesModel } = props;
 
-  const handleClick = () => {
+  const handleClickTerms = () => {
     const id = nanoid();
 
     const nextSLNO =
@@ -2149,7 +2110,7 @@ function EditToolbarTerms(props) {
 
     setTermsRows((oldRows) => [...oldRows, newRow]);
 
-    setRowModesModel((oldModel) => ({
+    setTermsRowModesModel((oldModel) => ({
       ...oldModel,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: "Code" },
     }));
@@ -2157,7 +2118,7 @@ function EditToolbarTerms(props) {
 
   return (
     <GridToolbarContainer sx={{ marginBottom: "10px" }}>
-      <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+      <Button color="primary" startIcon={<AddIcon />} onClick={handleClickTerms}>
         Add Record
       </Button>
     </GridToolbarContainer>
@@ -4825,7 +4786,7 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                     rows={termsrows}
                     columns={Termscolumns}
                     loading={exploreLoading}
-                    rowModesModel={rowModesModel}
+                    rowModesModel={termsRowModesModel}
                     getRowId={(row) => row.RecordID}
                     editMode="row"
                     disableRowSelectionOnClick
@@ -4844,7 +4805,7 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                       Toolbar: EditToolbarTerms,
                     }}
                    componentsProps={{
-  toolbar: { setTermsRows, setRowModesModel },
+  toolbar: { setTermsRows, setTermsRowModesModel },
 }}
                     rowsPerPageOptions={[5, 10, 20]}
                     getRowClassName={(params) =>
