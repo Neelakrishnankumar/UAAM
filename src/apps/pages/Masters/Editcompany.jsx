@@ -461,8 +461,9 @@ console.log(companytermsData, "--companytermsData");
         }
       : null,
     Module: mode === "E" ? Data.Module : "",
-    Type: Data.Type || ""
+    Type: Data.Type || "",
     // == "S" ? "Startup" : Data.Type == "I" ? "Institute" : Data.Type == "C" ? "Construction" : "",
+  noticeperiod: Data.NoticePeriod
   };
 
   /*************************SAVE FUCTION*********************/
@@ -497,6 +498,7 @@ console.log(companytermsData, "--companytermsData");
       // Type: values.Type,
       Type: values.Type,
       // == "Startup" ? "S" : values.Type == "Institute" ? "I" : values.Type == "Construction" ? "C" : "",
+    NoticePeriod: values.noticeperiod
     };
     console.log(values.Module);
 
@@ -1052,14 +1054,23 @@ console.log(companytermsData, "--companytermsData");
   };
  const validateRowSlot = (row) => {
   if (!row.SlotName) {
-    return "Slot Name is required";
+    return "Please Enter the Slot Name";
   }
   if (!row.FromTime) {
-    return "From Time is required";
+    return "Please Select the From Time";
   }
   if (!row.ToTime) {
-    return "To Time is required";
+    return "Please Select the To Time";
   }
+
+   // ✅ Time validation
+  const from = new Date(`1970-01-01T${row.FromTime}`);
+  const to = new Date(`1970-01-01T${row.ToTime}`);
+
+  if (to <= from) {
+    return "To Time must be greater than From Time";
+  }
+
   return null;
 };
  
@@ -2486,6 +2497,26 @@ function EditToolbarTerms(props) {
                       inputProps={{ readOnly: true }}
                       focused
                     />
+
+                      <TextField
+                      fullWidth
+                      variant="standard"
+                      type="number"
+                      label="Sort Order"
+                      value={values.sortOrder}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="sortOrder"
+                      error={!!touched.sortOrder && !!errors.sortOrder}
+                      helperText={touched.sortOrder && errors.sortOrder}
+                      sx={{
+                        gridColumn: "span 2",
+                        background: "",
+                        input: { textAlign: "right" },
+                      }}
+                      focused
+                      onWheel={(e) => e.target.blur()}
+                    />
                   </FormControl>
                   <FormControl sx={{ gridColumn: "span 2", gap: formGap }}>
                     <TextField
@@ -2772,6 +2803,30 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                       inputProps={{ maxLength: 4 }}
                     />
 
+  <TextField
+                      fullWidth
+                      variant="standard"
+                      type="text"
+                      label="Notice Period"
+                      // label={
+                      //   <>
+                      //     Notice Period
+                      //     <span style={{ color: "red", fontSize: "20px" }}>
+                      //       {" "}
+                      //       *{" "}
+                      //     </span>
+                      //   </>
+                      // }
+                      value={values.noticeperiod}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="noticeperiod"
+                      error={!!touched.noticeperiod && !!errors.noticeperiod}
+                      helperText={touched.noticeperiod && errors.noticeperiod}
+                      focused
+                      inputProps={{ maxLength: 15 }}
+                    />
+
                     <TextField
                       fullWidth
                       variant="standard"
@@ -2788,25 +2843,7 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                       focused
                       onWheel={(e) => e.target.blur()}
                     />
-                    <TextField
-                      fullWidth
-                      variant="standard"
-                      type="number"
-                      label="Sort Order"
-                      value={values.sortOrder}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      name="sortOrder"
-                      error={!!touched.sortOrder && !!errors.sortOrder}
-                      helperText={touched.sortOrder && errors.sortOrder}
-                      sx={{
-                        gridColumn: "span 2",
-                        background: "",
-                        input: { textAlign: "right" },
-                      }}
-                      focused
-                      onWheel={(e) => e.target.blur()}
-                    />
+                  
                     <Box>
                       <Field
                         //  size="small"
