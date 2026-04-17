@@ -1420,7 +1420,7 @@ const handleRowModesModelChange = (newRowModesModel) => {
         id="SlotBreak"
         value={value || []}
         onChange={handleChange}
-        url={`${lookuplistViewurl}?data={"Query":{"AccessID":"2156","ScreenName":"Slot Break","Filter":"","Any":""}}`}
+        url={`${lookuplistViewurl}?data={"Query":{"AccessID":"2156","ScreenName":"Slot Break","Filter":"CompanyID='${recID}'","Any":""}}`}
       />
     );
   }
@@ -2162,8 +2162,7 @@ function EditToolbarTerms(props) {
               aria-label="breadcrumb"
               separator={<NavigateNextIcon sx={{ color: "#0000D1" }} />}
             >
-              <Typography
-                variant="h3"
+              <Typography variant="h5" color="#0000D1"
                 onClick={() => navigate("/Apps/TR014/Company")}
               >
                 {mode === "E"
@@ -2171,22 +2170,22 @@ function EditToolbarTerms(props) {
                   : "Company(New)"}
               </Typography>
               {mode === "E" && show == "0" ? (
-                <Typography variant="h3">Company Details</Typography>
+                <Typography variant="h5" color="#0000D1">Company Details</Typography>
               ) : null}
               {mode === "E" && show == "1" ? (
-                <Typography variant="h3">Bank Details</Typography>
+                <Typography variant="h5" color="#0000D1">Bank Details</Typography>
               ) : null}
               {mode === "E" && show == "2" ? (
-                <Typography variant="h3">Report Settings</Typography>
+                <Typography  variant="h5" color="#0000D1">Report Settings</Typography>
               ) : null}
               {mode === "E" && show == "3" ? (
-                <Typography variant="h3">Policy</Typography>
+                <Typography variant="h5" color="#0000D1">Policy</Typography>
               ) : null}
               {mode === "E" && show == "4" ? (
-                <Typography variant="h3">Slots</Typography>
+                <Typography variant="h5" color="#0000D1">Slots</Typography>
               ) : null}
                 {mode === "E" && show == "5" ? (
-                <Typography variant="h3">Terms</Typography>
+                <Typography variant="h5" color="#0000D1">Terms</Typography>
               ) : null}
               
             </Breadcrumbs>
