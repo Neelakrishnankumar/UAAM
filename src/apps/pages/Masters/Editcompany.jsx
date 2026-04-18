@@ -2431,6 +2431,9 @@ const Editcompany = () => {
                         error={!!touched.rbiCode && !!errors.rbiCode}
                         helperText={touched.rbiCode && errors.rbiCode}
                         focused
+                        sx={{
+                          mt: 1
+                        }}
                       // inputProps={{ maxLength: 5 }}
                       />
                     </FormControl>
