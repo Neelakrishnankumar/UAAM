@@ -198,15 +198,15 @@ const Editcompany = () => {
             .required(data.Company.phone)
             .matches(/^[6-9]\d{9}$/, "Invalid Phone Number"),
           // Type: Yup.string().required(data.Company.Type),
-//           Type: Yup.string().when([], {
-//   is: () => mode !== "E",
-//   then: (schema) => schema.required(data.Company.Type),
-//   otherwise: (schema) => schema.notRequired(),
-// }),
-           Type:
-      mode !== "E"
-        ? Yup.string().required(data.Company.Type)
-        : Yup.string().notRequired(),
+          //           Type: Yup.string().when([], {
+          //   is: () => mode !== "E",
+          //   then: (schema) => schema.required(data.Company.Type),
+          //   otherwise: (schema) => schema.notRequired(),
+          // }),
+          Type:
+            mode !== "E"
+              ? Yup.string().required(data.Company.Type)
+              : Yup.string().notRequired(),
         };
 
         // IE Code
@@ -255,7 +255,7 @@ const Editcompany = () => {
   useEffect(() => {
     dispatch(getFetchData({ accessID, get: "get", recID }));
   }, [location.key]);
-  
+
   const [validationSchema2, setValidationSchema2] = useState(null);
 
   const { toggleSidebar, broken, rtl } = useProSidebar();
@@ -289,7 +289,7 @@ const Editcompany = () => {
 
   //TERMS_GET
   const companytermsData = useSelector((state) => state.formApi.companytermsData);
-console.log(companytermsData, "--companytermsData");
+  console.log(companytermsData, "--companytermsData");
 
 
   const rowData = location.state || {};
@@ -308,19 +308,19 @@ console.log(companytermsData, "--companytermsData");
     setRows(slotRowData || []);
   }, [slotRowData]);
 
-    useEffect(() => {
+  useEffect(() => {
     setTermsRows(companytermsData || []);
   }, [companytermsData]);
-  
-//   useEffect(() => {
-//     console.log(show, "--show");
-    
-//   if (show === "4") {
-//     setRows(slotRowData || []);
-//   } else if (show === "5") {
-//     setTermsRows(companytermsData || []);
-//   }
-// }, [show, slotRowData, companytermsData]);
+
+  //   useEffect(() => {
+  //     console.log(show, "--show");
+
+  //   if (show === "4") {
+  //     setRows(slotRowData || []);
+  //   } else if (show === "5") {
+  //     setTermsRows(companytermsData || []);
+  //   }
+  // }, [show, slotRowData, companytermsData]);
 
   const screenChange = async (event) => {
     setScreen(event.target.value);
@@ -377,38 +377,38 @@ console.log(companytermsData, "--companytermsData");
     //   }
     // }
     if (event.target.value == "4") {
-  if (recID && mode === "E") {
-    dispatch(PolicyFetchData({ get: "get", recID }));
+      if (recID && mode === "E") {
+        dispatch(PolicyFetchData({ get: "get", recID }));
 
-    const data = await dispatch(
-      slotListView({
-        accessID: "TR334",
-        screenName: "Slot",
-        filter: `CompanyID = ${recID}`,
-        any: "",
-      })
-    );
+        const data = await dispatch(
+          slotListView({
+            accessID: "TR334",
+            screenName: "Slot",
+            filter: `CompanyID = ${recID}`,
+            any: "",
+          })
+        );
 
-    if (data.payload.Status === "Y") {
-      const resData = data.payload.Data.rows.map((value) => {
-        return {
-          ...value,
-          Break: value.Break === "Y", // ✅ convert Y/N → true/false
-        };
-      });
+        if (data.payload.Status === "Y") {
+          const resData = data.payload.Data.rows.map((value) => {
+            return {
+              ...value,
+              Break: value.Break === "Y", // ✅ convert Y/N → true/false
+            };
+          });
 
-      setRows(resData);
-    } else {
-      setRows([]);
+          setRows(resData);
+        } else {
+          setRows([]);
+        }
+      } else {
+        dispatch(PolicyFetchData({ get: "", recID }));
+      }
     }
-  } else {
-    dispatch(PolicyFetchData({ get: "", recID }));
-  }
-}
     if (event.target.value == "5") {
       if (recID && mode === "E") {
-         dispatch(PolicyFetchData({ get: "get", recID }));
-        dispatch(companyTermsGet({recID }));
+        dispatch(PolicyFetchData({ get: "get", recID }));
+        dispatch(companyTermsGet({ recID }));
         // const data = await dispatch(
         //   slotListView({
         //     accessID: "TR355",
@@ -422,13 +422,13 @@ console.log(companytermsData, "--companytermsData");
         // setRows(slotRowData);
         console.log("🚀 ~ screenChange ~ data:", data);
       } else {
-         dispatch(PolicyFetchData({ get: "get", recID }));
-         dispatch(companyTermsGet({recID }));
+        dispatch(PolicyFetchData({ get: "get", recID }));
+        dispatch(companyTermsGet({ recID }));
       }
     }
   };
 
- 
+
 
   const initialValues = {
     code: Data.Code,
@@ -455,12 +455,13 @@ console.log(companytermsData, "--companytermsData");
     noofusers: Data.NumberOfUsers,
     country: Data.CnRecordID
       ? {
-          RecordID: Data.CnRecordID,
-          Code: Data.CountryCode,
-          Name: Data.CountryName,
-        }
+        RecordID: Data.CnRecordID,
+        Code: Data.CountryCode,
+        Name: Data.CountryName,
+      }
       : null,
-    Module: mode === "E" ? Data.Module : "",
+      Stock5sDataSource: Data.Stock5sDataSource || "",
+     Module: mode === "E" ? Data.Module : "",
     Type: Data.Type || ""
     // == "S" ? "Startup" : Data.Type == "I" ? "Institute" : Data.Type == "C" ? "Construction" : "",
   };
@@ -494,6 +495,7 @@ console.log(companytermsData, "--companytermsData");
       NumberOfEmployee: values.noOfEmployees,
       NumberOfUsers: values.noofusers,
       Module: values.Module,
+      Stock5sDataSource: values.Stock5sDataSource || "",
       // Type: values.Type,
       Type: values.Type,
       // == "Startup" ? "S" : values.Type == "Institute" ? "I" : values.Type == "Construction" ? "C" : "",
@@ -820,11 +822,11 @@ console.log(companytermsData, "--companytermsData");
       align: "left",
       headerAlign: "center",
       editable: false,
-        // sortable: false,
+      // sortable: false,
     },
     {
       field: "SlotName",
-        headerName: (
+      headerName: (
         <span>
           Slot Name <span style={{ color: "red" }}>*</span>
         </span>
@@ -837,14 +839,14 @@ console.log(companytermsData, "--companytermsData");
     },
     {
       // headerName: "From Time",
-       headerName: (
+      headerName: (
         <span>
           From Time <span style={{ color: "red" }}>*</span>
         </span>
       ),
       field: "FromTime", // ✅ match exact API field
       width: 150,
-       align: "left",
+      align: "left",
       headerAlign: "center",
       editable: true,
       renderCell: (params) => params.value || "",
@@ -852,14 +854,14 @@ console.log(companytermsData, "--companytermsData");
     },
     {
       // headerName: "To Time",
-       headerName: (
+      headerName: (
         <span>
           To Time <span style={{ color: "red" }}>*</span>
         </span>
       ),
       field: "ToTime", // ✅ match exact API field
       width: 150,
-       align: "left",
+      align: "left",
       headerAlign: "center",
       editable: true,
       renderCell: (params) => params.value || "",
@@ -869,53 +871,53 @@ console.log(companytermsData, "--companytermsData");
       field: "Comments",
       headerName: "Comments",
       width: 150,
-       align: "left",
+      align: "left",
       headerAlign: "center",
       editable: true,
       type: "text",
     },
-{
-  field: "Break",
-  headerName: "Break",
-  width: 120,
-  align: "center",
-  headerAlign: "center",
-  editable: true,
+    {
+      field: "Break",
+      headerName: "Break",
+      width: 120,
+      align: "center",
+      headerAlign: "center",
+      editable: true,
 
-  // Display checkbox in normal mode
-  renderCell: (params) => (
-    <Checkbox
-      // checked={Boolean(params.row.Break)}
-       checked={params.row.Break}
-      disabled
-    />
-  ),
+      // Display checkbox in normal mode
+      renderCell: (params) => (
+        <Checkbox
+          // checked={Boolean(params.row.Break)}
+          checked={params.row.Break}
+          disabled
+        />
+      ),
 
-  // Checkbox when row is in edit mode
- renderEditCell: (params) => {
-  const { id, field, value, api } = params;
+      // Checkbox when row is in edit mode
+      renderEditCell: (params) => {
+        const { id, field, value, api } = params;
 
-  const handleChange = (event) => {
-    const checked = event.target.checked;
+        const handleChange = (event) => {
+          const checked = event.target.checked;
 
-    api.setEditCellValue({
-      id,
-      field,
-      value: checked,
-    });
+          api.setEditCellValue({
+            id,
+            field,
+            value: checked,
+          });
 
-    api.stopCellEditMode({ id, field }); // refresh row
-  };
+          api.stopCellEditMode({ id, field }); // refresh row
+        };
 
-  return (
-    <Checkbox
-      checked={Boolean(value)}
-      onChange={handleChange}
-      color="primary"
-    />
-  );
-},
-},
+        return (
+          <Checkbox
+            checked={Boolean(value)}
+            onChange={handleChange}
+            color="primary"
+          />
+        );
+      },
+    },
 
     {
       field: "actions",
@@ -1022,17 +1024,17 @@ console.log(companytermsData, "--companytermsData");
         );
         console.log("🚀 ~ screenChange ~ data:", data);
 
-        
-      if (data.payload.Status === "Y") {
-    const resData = data.payload.Data.rows.map((value) => ({
-      ...value,
-      Break: value.Break === "Y", // ✅ Convert Y/N → boolean
-    }));
 
-    setRows(resData);
-          } else {
-    setRows([]);
-  }
+        if (data.payload.Status === "Y") {
+          const resData = data.payload.Data.rows.map((value) => ({
+            ...value,
+            Break: value.Break === "Y", // ✅ Convert Y/N → boolean
+          }));
+
+          setRows(resData);
+        } else {
+          setRows([]);
+        }
       } else {
         toast.error(response.payload?.Msg || "Operation failed");
       }
@@ -1050,27 +1052,27 @@ console.log(companytermsData, "--companytermsData");
       setRows(rows.filter((row) => row.RecordID !== RecordID));
     }
   };
- const validateRowSlot = (row) => {
-  if (!row.SlotName) {
-    return "Slot Name is required";
-  }
-  if (!row.FromTime) {
-    return "From Time is required";
-  }
-  if (!row.ToTime) {
-    return "To Time is required";
-  }
-  return null;
-};
- 
+  const validateRowSlot = (row) => {
+    if (!row.SlotName) {
+      return "Slot Name is required";
+    }
+    if (!row.FromTime) {
+      return "From Time is required";
+    }
+    if (!row.ToTime) {
+      return "To Time is required";
+    }
+    return null;
+  };
+
   const processRowUpdate = (newRow, oldRow) => {
     console.log(newRow, "--procesrowupdateterms newrow");
-//validation
-  const error = validateRowSlot(newRow);
-  if (error) {
-    throw new Error(error);
-  }
- 
+    //validation
+    const error = validateRowSlot(newRow);
+    if (error) {
+      throw new Error(error);
+    }
+
 
 
     const updatedRow = { ...newRow, isNew: false };
@@ -1090,7 +1092,7 @@ console.log(companytermsData, "--companytermsData");
 
 
 
-const handleRowModesModelChange = (newRowModesModel) => {
+  const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
 
@@ -1141,17 +1143,17 @@ const handleRowModesModelChange = (newRowModesModel) => {
   const handleSaveButtonClick = async (action) => {
 
     for (let index = 0; index < rows.length; index++) {
-  const row = rows[index];
-  const error = validateRowSlot(row);
+      const row = rows[index];
+      const error = validateRowSlot(row);
 
-  if (error) {
-    toast.error(`${error}`);
-    return; // ✅ stops entire save function
-  }
-}
+      if (error) {
+        toast.error(`${error}`);
+        return; // ✅ stops entire save function
+      }
+    }
 
     const idata = rows.map((row, index) => {
-       return {
+      return {
         RecordID: row.isNew ? 0 : row.RecordID,
         CompanyID: recID,
         Code: row.SlotCode,
@@ -1162,8 +1164,8 @@ const handleRowModesModelChange = (newRowModesModel) => {
         Break: row.Break ? "Y" : "N",
         SortOrder: 0,
         IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
-       
-      
+
+
 
       };
     });
@@ -1195,8 +1197,8 @@ const handleRowModesModelChange = (newRowModesModel) => {
           const resData = data.payload.Data.rows.map((value) => {
             return {
               ...value,
-                Break: value.Break === "Y"   // convert to boolean
-              
+              Break: value.Break === "Y"   // convert to boolean
+
             };
           });
           setRows(resData);
@@ -1232,7 +1234,7 @@ const handleRowModesModelChange = (newRowModesModel) => {
           Comments: "",
           Break: false,
           isNew: true,
-   
+
         },
       ]);
       setRowModesModel((oldModel) => ({
@@ -1256,8 +1258,8 @@ const handleRowModesModelChange = (newRowModesModel) => {
   }
 
 
-//==============================TERMS SECTION ================================================//  
-    function EditfromDateCell(props) {
+  //==============================TERMS SECTION ================================================//  
+  function EditfromDateCell(props) {
     const { id, field, value, api } = props;
 
     const formatToInputDate = (val) => {
@@ -1286,7 +1288,7 @@ const handleRowModesModelChange = (newRowModesModel) => {
     );
   }
 
-//STANDARD_LOOKUP
+  //STANDARD_LOOKUP
   // function STDEditAutocompleteCell(props) {
   //   console.log(props,"props")
   // // const { id, value, field, api, row } = props;
@@ -1330,63 +1332,63 @@ const handleRowModesModelChange = (newRowModesModel) => {
   //   />
   // );
   // }
-    function STDEditAutocompleteCell(props) {
-    console.log(props,"");
-  const { id, value, field, api, row } = props;
+  function STDEditAutocompleteCell(props) {
+    console.log(props, "");
+    const { id, value, field, api, row } = props;
 
-  const handleChange = async (event, newValue) => {
-    if (!newValue) return;
+    const handleChange = async (event, newValue) => {
+      if (!newValue) return;
 
-    await api.setEditCellValue({
-      id,
-      field,
-      value: newValue,
-    });
+      await api.setEditCellValue({
+        id,
+        field,
+        value: newValue,
+      });
 
-    api.stopCellEditMode({ id, field });
-  };
+      api.stopCellEditMode({ id, field });
+    };
 
-  return (
-    <STDMultiFormikOptimizedAutocomplete
-      name="StandardName"
-      // label="Slot Name"
-      id="StandardName"
-      value={value || []}
-      onChange={handleChange}
-      url={`${lookuplistViewurl}?data={"Query":{"AccessID":"2157","ScreenName":"Standard","Filter":"parentID='${recID}'","Any":""}}`}
-    />
-  );
+    return (
+      <STDMultiFormikOptimizedAutocomplete
+        name="StandardName"
+        // label="Slot Name"
+        id="StandardName"
+        value={value || []}
+        onChange={handleChange}
+        url={`${lookuplistViewurl}?data={"Query":{"AccessID":"2157","ScreenName":"Standard","Filter":"parentID='${recID}'","Any":""}}`}
+      />
+    );
   }
   //SLOT LOOKUP
   function SLOTEditAutocompleteCell(props) {
-    console.log(props,"");
-  const { id, value, field, api, row } = props;
+    console.log(props, "");
+    const { id, value, field, api, row } = props;
 
-  const handleChange = async (event, newValue) => {
-    if (!newValue) return;
+    const handleChange = async (event, newValue) => {
+      if (!newValue) return;
 
-    await api.setEditCellValue({
-      id,
-      field,
-      value: newValue,
-    });
+      await api.setEditCellValue({
+        id,
+        field,
+        value: newValue,
+      });
 
-    api.stopCellEditMode({ id, field });
-  };
+      api.stopCellEditMode({ id, field });
+    };
 
-  return (
-    <STDMultiFormikOptimizedAutocomplete
-      name="SlotName"
-      // label="Slot Name"
-      id="SlotName"
-      value={value || []}
-      onChange={handleChange}
-      url={`${lookuplistViewurl}?data={"Query":{"AccessID":"2148","ScreenName":"Slot Name","Filter":"CompanyID='${recID}'","Any":""}}`}
-    />
-  );
+    return (
+      <STDMultiFormikOptimizedAutocomplete
+        name="SlotName"
+        // label="Slot Name"
+        id="SlotName"
+        value={value || []}
+        onChange={handleChange}
+        url={`${lookuplistViewurl}?data={"Query":{"AccessID":"2148","ScreenName":"Slot Name","Filter":"CompanyID='${recID}'","Any":""}}`}
+      />
+    );
   }
 
-//BREAK_SLOT
+  //BREAK_SLOT
   function BREAKSLOTEditAutocompleteCell(props) {
     const { id, value, field, api, row } = props;
 
@@ -1415,7 +1417,7 @@ const handleRowModesModelChange = (newRowModesModel) => {
   }
 
   //TERMS COLUMNS
-    const Termscolumns = [
+  const Termscolumns = [
     {
       field: "SLNO",
       headerName: "SL#",
@@ -1424,7 +1426,7 @@ const handleRowModesModelChange = (newRowModesModel) => {
       headerAlign: "center",
       hide: false,
       sortable: false,
-     
+
     },
     {
       headerName: "RecordID",
@@ -1446,27 +1448,27 @@ const handleRowModesModelChange = (newRowModesModel) => {
     },
     {
       field: "TermsName",
-        headerName: (
+      headerName: (
         <span>
           Terms Name <span style={{ color: "red" }}>*</span>
         </span>
       ),
-    
+
       width: 150,
       align: "left",
       headerAlign: "center",
       editable: true,
     },
     {
-    
-        headerName: (
+
+      headerName: (
         <span>
           From Date <span style={{ color: "red" }}>*</span>
         </span>
       ),
       field: "FromDate", // ✅ match exact API field
       width: 150,
-       align: "left",
+      align: "left",
       headerAlign: "center",
       editable: true,
       renderCell: (params) => params.value || "",
@@ -1475,15 +1477,15 @@ const handleRowModesModelChange = (newRowModesModel) => {
       },
     },
     {
-   
-       headerName: (
+
+      headerName: (
         <span>
           To Date <span style={{ color: "red" }}>*</span>
         </span>
       ),
       field: "ToDate", // ✅ match exact API field
       width: 150,
-       align: "left",
+      align: "left",
       headerAlign: "center",
       editable: true,
       renderCell: (params) => params.value || "",
@@ -1492,47 +1494,47 @@ const handleRowModesModelChange = (newRowModesModel) => {
       },
     },
     // STD Lookup
-       {
+    {
       field: "StandardID",
       headerName: "StandardID",
       width: 150,
-       align: "left",
+      align: "left",
       headerAlign: "center",
       editable: false,
       hide: true,
-      
+
     },
-     {
+    {
       field: "StandardCode",
       headerName: "StandardCode",
       width: 150,
-       align: "left",
+      align: "left",
       headerAlign: "center",
       editable: false,
       hide: true,
     },
-      {
+    {
       field: "StandardName",
-         headerName: (
+      headerName: (
         <span>
           Standard Name <span style={{ color: "red" }}>*</span>
         </span>
       ),
-    
+
       width: 250,
-       align: "left",
+      align: "left",
       headerAlign: "center",
       editable: true,
-      
+
       sortable: false,   // ✅ add this
       renderCell: (params) => {
         console.log("StandardName params:", params);
         console.log("StandardName params value:", params.value);
-    if (Array.isArray(params.value)) {
-      return params.value.map((v) => v.Name).join(", ");
-    }
-    return params.value?.Name || "";
-  },
+        if (Array.isArray(params.value)) {
+          return params.value.map((v) => v.Name).join(", ");
+        }
+        return params.value?.Name || "";
+      },
       renderEditCell: (params) => {
         return <STDEditAutocompleteCell {...params} />;
       },
@@ -1541,91 +1543,91 @@ const handleRowModesModelChange = (newRowModesModel) => {
       field: "SlotID",
       headerName: "SlotID",
       width: 150,
-       align: "left",
+      align: "left",
       headerAlign: "center",
       editable: false,
       hide: true,
     },
-     {
+    {
       field: "SlotCode",
       headerName: "SlotCode",
       width: 150,
-       align: "left",
+      align: "left",
       headerAlign: "center",
       editable: false,
       hide: true,
     },
-     {
+    {
       field: "SlotName",
       // headerName: "Slot Name",
-        headerName: (
+      headerName: (
         <span>
           Slot Name <span style={{ color: "red" }}>*</span>
         </span>
       ),
-     width: 350,
+      width: 350,
       hide: false,
       editable: true,
       headerAlign: "center",
-     sortable: false,
+      sortable: false,
       //    renderCell: (params) => {
       //   return params.value?.Name || ""; // show only the name
       // },
       renderCell: (params) => {
         console.log("SlotName params:", params);
         console.log("SlotName params value:", params.value);
-    if (Array.isArray(params.value)) {
-      return params.value.map((v) => v.Name).join(", ");
-    }
-    return params.value?.Name || "";
-  },
+        if (Array.isArray(params.value)) {
+          return params.value.map((v) => v.Name).join(", ");
+        }
+        return params.value?.Name || "";
+      },
       renderEditCell: (params) => {
         return <SLOTEditAutocompleteCell {...params} />;
       },
-    
+
     },
-     {
+    {
       field: "BreakSlotID",
       headerName: "BreakSlotID",
       width: 150,
-       align: "left",
-      headerAlign: "center",
-      editable: false,
-      hide: true,
-    },
-     {
-      field: "BreakSlotCode",
-      headerName: "BreakSlotCode",
-      width: 150,
-       align: "left",
+      align: "left",
       headerAlign: "center",
       editable: false,
       hide: true,
     },
     {
-  field: "BreakSlotName",
-  headerName: "Break Slots",
-  width: 350,
-  align: "left",
-  headerAlign: "center",
-  editable: true,
-  renderCell: (params) => {
-    console.log("BreakSlotName params:", params);
-    if (Array.isArray(params.value)) {
-      return params.value.map((v) => v.Name).join(", ");
-    }
-    return params.value?.Name || "";
-  },
-  renderEditCell: (params) => {
-    return <BREAKSLOTEditAutocompleteCell {...params} />;
-  },
-},
+      field: "BreakSlotCode",
+      headerName: "BreakSlotCode",
+      width: 150,
+      align: "left",
+      headerAlign: "center",
+      editable: false,
+      hide: true,
+    },
+    {
+      field: "BreakSlotName",
+      headerName: "Break Slots",
+      width: 350,
+      align: "left",
+      headerAlign: "center",
+      editable: true,
+      renderCell: (params) => {
+        console.log("BreakSlotName params:", params);
+        if (Array.isArray(params.value)) {
+          return params.value.map((v) => v.Name).join(", ");
+        }
+        return params.value?.Name || "";
+      },
+      renderEditCell: (params) => {
+        return <BREAKSLOTEditAutocompleteCell {...params} />;
+      },
+    },
 
     {
       field: "Comments",
       headerName: "Comments",
       width: 150,
-       align: "left",
+      align: "left",
       headerAlign: "center",
       editable: true,
       type: "text",
@@ -1637,44 +1639,44 @@ const handleRowModesModelChange = (newRowModesModel) => {
       headerName: "Actions",
       width: 150,
       cellClassName: "actions",
-     getActions: ({ id }) => {
-  const isInEditMode = termsRowModesModel[id]?.mode === GridRowModes.Edit;
+      getActions: ({ id }) => {
+        const isInEditMode = termsRowModesModel[id]?.mode === GridRowModes.Edit;
 
-  if (isInEditMode) {
-    return [
-      <GridActionsCellItem
-        icon={<SaveIcon />}
-        label="Save"
-        sx={{ color: "primary.main" }}
-        onClick={handleSaveTermsClick(id)}
-      />,
-      <GridActionsCellItem
-        icon={<CancelIcon />}
-        label="Cancel"
-        onClick={handleCancelTermsClick(id)}
-        color="inherit"
-      />,
-    ];
-  }
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<SaveIcon />}
+              label="Save"
+              sx={{ color: "primary.main" }}
+              onClick={handleSaveTermsClick(id)}
+            />,
+            <GridActionsCellItem
+              icon={<CancelIcon />}
+              label="Cancel"
+              onClick={handleCancelTermsClick(id)}
+              color="inherit"
+            />,
+          ];
+        }
 
-  return [
-    <GridActionsCellItem
-      icon={<EditIcon />}
-      label="Edit"
-      onClick={handleEditTermsClick(id)}   // ✅ FIX
-      color="inherit"
-    />,
-    <GridActionsCellItem
-      icon={<DeleteIcon />}
-      label="Delete"
-      onClick={handleDeleteTermsClick(id)} // also add this
-      color="inherit"
-    />,
-  ];
-}
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Edit"
+            onClick={handleEditTermsClick(id)}   // ✅ FIX
+            color="inherit"
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={handleDeleteTermsClick(id)} // also add this
+            color="inherit"
+          />,
+        ];
+      }
     },
   ];
- const handleRowEditTermsStop = (params, event) => {
+  const handleRowEditTermsStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
     }
@@ -1687,15 +1689,15 @@ const handleRowModesModelChange = (newRowModesModel) => {
     });
   };
 
- const handleSaveTermsClick = (RecordID) => () => {
+  const handleSaveTermsClick = (RecordID) => () => {
     setTermsRowModesModel({
       ...termsRowModesModel,
       [RecordID]: { mode: GridRowModes.View },
     });
   };
-  
 
-   const handleDeleteTermsClick = (RecordID) => async () => {
+
+  const handleDeleteTermsClick = (RecordID) => async () => {
     setTermsRows(rows.filter((row) => row.RecordID !== RecordID));
 
     if (!isNaN(RecordID)) {
@@ -1714,22 +1716,22 @@ const handleRowModesModelChange = (newRowModesModel) => {
 
       if (response.payload?.Status === "Y") {
         toast.success(response.payload.Msg);
-        const data = await dispatch(companyTermsGet({recID }));
+        const data = await dispatch(companyTermsGet({ recID }));
         console.log("🚀 ~ screenChangeTerms ~ data:", data);
-     
-         if (data.payload.Status === "Y") {
-          console.log(data.payload.Data, "--data.payload.Data");
-          
-    const resData = data.payload.Data.map((value) => ({
-      ...value,
-      // Break: value.Break === "Y", // ✅ Convert Y/N → boolean
-    }));
 
-    setTermsRows(resData);
-          } else {
-    setTermsRows([]);
-  }
-     
+        if (data.payload.Status === "Y") {
+          console.log(data.payload.Data, "--data.payload.Data");
+
+          const resData = data.payload.Data.map((value) => ({
+            ...value,
+            // Break: value.Break === "Y", // ✅ Convert Y/N → boolean
+          }));
+
+          setTermsRows(resData);
+        } else {
+          setTermsRows([]);
+        }
+
 
       } else {
         toast.error(response.payload?.Msg || "Operation failed");
@@ -1749,46 +1751,46 @@ const handleRowModesModelChange = (newRowModesModel) => {
     }
   };
 
- const validateRowTerms = (row) => {
-  if (!row.TermsName) {
-    return "Terms Name is required";
-  }
+  const validateRowTerms = (row) => {
+    if (!row.TermsName) {
+      return "Terms Name is required";
+    }
 
-  if (!row.FromDate) {
-    return "From Date is required";
-  }
+    if (!row.FromDate) {
+      return "From Date is required";
+    }
 
-  if (!row.ToDate) {
-    return "To Date is required";
-  }
+    if (!row.ToDate) {
+      return "To Date is required";
+    }
 
-  const isEmptyArrayOrValue = (val) => {
-    if (!val) return true;
-    if (Array.isArray(val)) return val.length === 0;
-    if (typeof val === "object") return !val.RecordID;
-    return false;
+    const isEmptyArrayOrValue = (val) => {
+      if (!val) return true;
+      if (Array.isArray(val)) return val.length === 0;
+      if (typeof val === "object") return !val.RecordID;
+      return false;
+    };
+
+    if (isEmptyArrayOrValue(row.StandardName)) {
+      return "Standard Name is required";
+    }
+
+    if (isEmptyArrayOrValue(row.SlotName)) {
+      return "Slot Name is required";
+    }
+
+    return null;
   };
-
-  if (isEmptyArrayOrValue(row.StandardName)) {
-    return "Standard Name is required";
-  }
-
-  if (isEmptyArrayOrValue(row.SlotName)) {
-    return "Slot Name is required";
-  }
-
-  return null;
-};
   const processRowUpdateTerms = (newRow, oldRow) => {
-console.log(newRow, "--procesrowupdateterms newrow");
+    console.log(newRow, "--procesrowupdateterms newrow");
 
-//validation
-  const error = validateRowTerms(newRow);
-  if (error) {
-    throw new Error(error);
-  }
-//  setIsRowEditedTerms(true); // ✅ mark that editing happened
- 
+    //validation
+    const error = validateRowTerms(newRow);
+    if (error) {
+      throw new Error(error);
+    }
+    //  setIsRowEditedTerms(true); // ✅ mark that editing happened
+
 
 
     const updatedRow = { ...newRow, isNew: false };
@@ -1806,324 +1808,324 @@ console.log(newRow, "--procesrowupdateterms newrow");
     return updatedRow;
   };
 
- 
-  
+
+
   const handleRowModesModelChangeTerms = (newRowModesModel) => {
     setTermsRowModesModel(newRowModesModel);
   };
 
 
-const formatDate = (date) => {
-  if (!date) return "";
+  const formatDate = (date) => {
+    if (!date) return "";
 
-  const d = new Date(date);
+    const d = new Date(date);
 
-  if (isNaN(d.getTime())) {
-    // Handle DD-MM-YYYY manually
-    const parts = date.split("-");
-    if (parts.length === 3) {
-      return `${parts[2]}-${parts[1]}-${parts[0]}`;
-    }
-    return "";
-  }
-
-  return d.toISOString().split("T")[0]; // YYYY-MM-DD
-};
-
-//   const handleSaveButtonClickTerms = async (action) => {
-//   console.log(termsrows, "--termsrows");
-
-//    if (!row.TermsName) {
-//     return "Terms Name is required";
-//   }
-
-//   if (!row.FromDate) {
-//     return "From Date is required";
-//   }
-
-//   if (!row.ToDate) {
-//     return "To Date is required";
-//   }
-
-//   const isEmptyArrayOrValue = (val) => {
-//     if (!val) return true;
-//     if (Array.isArray(val)) return val.length === 0;
-//     if (typeof val === "object") return !val.RecordID;
-//     return false;
-//   };
-
-//   if (isEmptyArrayOrValue(row.StandardName)) {
-//     return "Standard Name is required";
-//   }
-
-//   if (isEmptyArrayOrValue(row.SlotName)) {
-//     return "Slot Name is required";
-//   }
-// //  for (let i = 0; i < termsrows.length; i++) {
-// //     const row = termsrows[i];
-
-// //     if (!row.TermsName) {
-// //       toast.error(`Terms Name is required`);
-// //       return;
-// //     }
-
-// //     if (!row.FromDate) {
-// //       toast.error(`From Date is required`);
-// //       return;
-// //     }
-
-// //     if (!row.ToDate) {
-// //       toast.error(`To Date is required`);
-// //       return;
-// //     }
-
-// //     if (!row.StandardName || row.StandardName.length === 0) {
-// //       toast.error(`Standard Name is required`);
-// //       return;
-// //     }
-
-// //     if (!row.SlotName || row.SlotName.length === 0) {
-// //       toast.error(`Slot Name is required`);
-// //       return;
-// //     }
-// //   }
-
-//   const idata = termsrows.map((row, index) => {
-//     const slotIDs =
-//       Array.isArray(row.SlotName)
-//         ? row.SlotName.map((v) => v.RecordID).join(",")
-//         : row.SlotID || "";
-
-//     const breakSlotIDs =
-//       Array.isArray(row.BreakSlotName)
-//         ? row.BreakSlotName.map((v) => v.RecordID).join(",")
-//         : row.BreakSlotID || "";
-
-//     // const standardID =
-//     //   row.StandardName?.RecordID || row.StandardID || "";
-//    const standardID =
-//       Array.isArray(row.StandardName)
-//         ? row.StandardName.map((v) => v.RecordID).join(",")
-//         : row.StandardID || "";
-
-//     return {
-//       RecordID: row.isNew ? 0 : row.RecordID,
-//       CompanyID: recID,
-//       Code: row.Code,
-//       TermsName: row.TermsName,
-//       Comments: row.Comments,
-//       FromDate: formatDate(row.FromDate),   // ✅ fixed
-//       ToDate: formatDate(row.ToDate),       // ✅ fixed
-//       SlotID: slotIDs,
-//       BreakSlotID: breakSlotIDs,
-//       StandardID: standardID,
-//       IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
-
-//     };
-//   });
-
-//   console.log(idata, "--print the idata");
-
-//   try {
-//     const response = await dispatch(
-//       postData({
-//         accessID: "TR355",
-//         action: "insert",
-//         idata: idata,
-//       })
-//     );
-
-//     if (response?.payload?.Status === "Y") {
-//       toast.success(response.payload.Msg);
-
-//       const data = await dispatch(companyTermsGet({ recID }));
-
-//       if (data?.payload?.Status === "Y") {
-//         // const resData = data.payload.Data.rows.map((value) => ({
-//         //   ...value,
-//         // }));
-
-//         // setTermsRows(resData);
-//       } else {
-//         setTermsRows([]);
-//       }
-
-//     } else {
-//       toast.error(response?.payload?.Msg || "Save failed");
-//     }
-
-//   } catch (error) {
-//     console.error("Save error:", error);
-//     toast.error("Error occurred during save.");
-//   }
-// };
-
-//  function EditToolbarTerms(props) {
-//   const { setTermsRows, setRowModesModel } = props;
-
-//   const handleClick = () => {
-//     const id = nanoid();
-
-//     const nextSLNO =
-//       termsrows.length > 0
-//         ? Math.max(...termsrows.map((row) => Number(row.SLNO) || 0)) + 1
-//         : 1;
-
-//     setTermsRows((oldRows) => [
-//       ...oldRows,
-//       {
-//         RecordID: id,
-//         SLNO: nextSLNO,
-//         Code: "",
-//         TermsName: "",
-//         FromDate: "",
-//         ToDate: "",
-//         SlotID: "",
-//         SlotName: [],
-//         BreakSlotID: "",
-//         BreakSlotName: [],
-//         Comments: "",
-//         isNew: true,
-//       },
-//     ]);
-
-//     setRowModesModel((oldModel) => ({
-//       ...oldModel,
-//       [id]: { mode: GridRowModes.Edit, fieldToFocus: "Code" },
-//     }));
-//   };
-
-//   return (
-//     <GridToolbarContainer sx={{ marginBottom: "10px" }}>
-//       <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-//         Add Record
-//       </Button>
-//     </GridToolbarContainer>
-//   );
-// }
-
-
-const handleSaveButtonClickTerms = async (action) => {
-  console.log(termsrows, "--termsrows");
-    for (let index = 0; index < termsrows.length; index++) {
-  const row = termsrows[index];
-  const error = validateRowTerms(row);
-
-  if (error) {
-    toast.error(`${error}`);
-    return; // ✅ stops entire save function
-  }
-}
-
-  const idata = termsrows.map((row) => {
-    const slotIDs = Array.isArray(row.SlotName)
-      ? row.SlotName.map((v) => v.RecordID).join(",")
-      : row.SlotID || "";
-
-    const breakSlotIDs = Array.isArray(row.BreakSlotName)
-      ? row.BreakSlotName.map((v) => v.RecordID).join(",")
-      : row.BreakSlotID || "";
-
-    const standardID = Array.isArray(row.StandardName)
-      ? row.StandardName.map((v) => v.RecordID).join(",")
-      : row.StandardID || "";
-
-    return {
-      RecordID: row.isNew ? 0 : row.RecordID,
-      CompanyID: recID,
-      Code: row.Code,
-      TermsName: row.TermsName,
-      Comments: row.Comments,
-      FromDate: formatDate(row.FromDate),
-      ToDate: formatDate(row.ToDate),
-      SlotID: slotIDs,
-      BreakSlotID: breakSlotIDs,
-      StandardID: standardID,
-      IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N",
-    };
-  });
-
-  console.log(idata, "--print the idata");
-
-  try {
-    const response = await dispatch(
-      postData({
-        accessID: "TR355",
-        action: "insert",
-        idata,
-      })
-    );
-
-    if (response?.payload?.Status === "Y") {
-      toast.success(response.payload.Msg);
-
-      const data = await dispatch(companyTermsGet({ recID }));
-
-      if (data?.payload?.Status === "Y") {
-        // setTermsRows(data.payload.Data.rows);
-      } else {
-        setTermsRows([]);
+    if (isNaN(d.getTime())) {
+      // Handle DD-MM-YYYY manually
+      const parts = date.split("-");
+      if (parts.length === 3) {
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
       }
-    } else {
-      toast.error(response?.payload?.Msg || "Save failed");
+      return "";
     }
-  } catch (error) {
-    console.error("Save error:", error);
-    toast.error("Error occurred during save.");
-  }
-};
 
-function EditToolbarTerms(props) {
-  const { setTermsRows, setTermsRowModesModel } = props;
-
-  const handleClickTerms = () => {
-    const id = nanoid();
-
-    const nextSLNO =
-      termsrows.length > 0
-        ? Math.max(...termsrows.map((row) => Number(row.SLNO) || 0)) + 1
-        : 1;
-
-    const newRow = {
-      RecordID: id,
-      SLNO: nextSLNO,
-      Code: "",
-      TermsName: "",
-      FromDate: "",
-      ToDate: "",
-
-      StandardID: "",
-      StandardCode: "",
-      StandardName: [],
-
-      SlotID: "",
-      SlotCode: "",
-      SlotName: [],
-
-      BreakSlotID: "",
-      BreakSlotCode: "",
-      BreakSlotName: [],
-
-      Comments: "",
-      isNew: true,
-    };
-
-    setTermsRows((oldRows) => [...oldRows, newRow]);
-
-    setTermsRowModesModel((oldModel) => ({
-      ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "Code" },
-    }));
+    return d.toISOString().split("T")[0]; // YYYY-MM-DD
   };
 
-  return (
-    <GridToolbarContainer sx={{ marginBottom: "10px" }}>
-      <Button color="primary" startIcon={<AddIcon />} onClick={handleClickTerms}>
-        Add Record
-      </Button>
-    </GridToolbarContainer>
-  );
-}
+  //   const handleSaveButtonClickTerms = async (action) => {
+  //   console.log(termsrows, "--termsrows");
+
+  //    if (!row.TermsName) {
+  //     return "Terms Name is required";
+  //   }
+
+  //   if (!row.FromDate) {
+  //     return "From Date is required";
+  //   }
+
+  //   if (!row.ToDate) {
+  //     return "To Date is required";
+  //   }
+
+  //   const isEmptyArrayOrValue = (val) => {
+  //     if (!val) return true;
+  //     if (Array.isArray(val)) return val.length === 0;
+  //     if (typeof val === "object") return !val.RecordID;
+  //     return false;
+  //   };
+
+  //   if (isEmptyArrayOrValue(row.StandardName)) {
+  //     return "Standard Name is required";
+  //   }
+
+  //   if (isEmptyArrayOrValue(row.SlotName)) {
+  //     return "Slot Name is required";
+  //   }
+  // //  for (let i = 0; i < termsrows.length; i++) {
+  // //     const row = termsrows[i];
+
+  // //     if (!row.TermsName) {
+  // //       toast.error(`Terms Name is required`);
+  // //       return;
+  // //     }
+
+  // //     if (!row.FromDate) {
+  // //       toast.error(`From Date is required`);
+  // //       return;
+  // //     }
+
+  // //     if (!row.ToDate) {
+  // //       toast.error(`To Date is required`);
+  // //       return;
+  // //     }
+
+  // //     if (!row.StandardName || row.StandardName.length === 0) {
+  // //       toast.error(`Standard Name is required`);
+  // //       return;
+  // //     }
+
+  // //     if (!row.SlotName || row.SlotName.length === 0) {
+  // //       toast.error(`Slot Name is required`);
+  // //       return;
+  // //     }
+  // //   }
+
+  //   const idata = termsrows.map((row, index) => {
+  //     const slotIDs =
+  //       Array.isArray(row.SlotName)
+  //         ? row.SlotName.map((v) => v.RecordID).join(",")
+  //         : row.SlotID || "";
+
+  //     const breakSlotIDs =
+  //       Array.isArray(row.BreakSlotName)
+  //         ? row.BreakSlotName.map((v) => v.RecordID).join(",")
+  //         : row.BreakSlotID || "";
+
+  //     // const standardID =
+  //     //   row.StandardName?.RecordID || row.StandardID || "";
+  //    const standardID =
+  //       Array.isArray(row.StandardName)
+  //         ? row.StandardName.map((v) => v.RecordID).join(",")
+  //         : row.StandardID || "";
+
+  //     return {
+  //       RecordID: row.isNew ? 0 : row.RecordID,
+  //       CompanyID: recID,
+  //       Code: row.Code,
+  //       TermsName: row.TermsName,
+  //       Comments: row.Comments,
+  //       FromDate: formatDate(row.FromDate),   // ✅ fixed
+  //       ToDate: formatDate(row.ToDate),       // ✅ fixed
+  //       SlotID: slotIDs,
+  //       BreakSlotID: breakSlotIDs,
+  //       StandardID: standardID,
+  //       IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
+
+  //     };
+  //   });
+
+  //   console.log(idata, "--print the idata");
+
+  //   try {
+  //     const response = await dispatch(
+  //       postData({
+  //         accessID: "TR355",
+  //         action: "insert",
+  //         idata: idata,
+  //       })
+  //     );
+
+  //     if (response?.payload?.Status === "Y") {
+  //       toast.success(response.payload.Msg);
+
+  //       const data = await dispatch(companyTermsGet({ recID }));
+
+  //       if (data?.payload?.Status === "Y") {
+  //         // const resData = data.payload.Data.rows.map((value) => ({
+  //         //   ...value,
+  //         // }));
+
+  //         // setTermsRows(resData);
+  //       } else {
+  //         setTermsRows([]);
+  //       }
+
+  //     } else {
+  //       toast.error(response?.payload?.Msg || "Save failed");
+  //     }
+
+  //   } catch (error) {
+  //     console.error("Save error:", error);
+  //     toast.error("Error occurred during save.");
+  //   }
+  // };
+
+  //  function EditToolbarTerms(props) {
+  //   const { setTermsRows, setRowModesModel } = props;
+
+  //   const handleClick = () => {
+  //     const id = nanoid();
+
+  //     const nextSLNO =
+  //       termsrows.length > 0
+  //         ? Math.max(...termsrows.map((row) => Number(row.SLNO) || 0)) + 1
+  //         : 1;
+
+  //     setTermsRows((oldRows) => [
+  //       ...oldRows,
+  //       {
+  //         RecordID: id,
+  //         SLNO: nextSLNO,
+  //         Code: "",
+  //         TermsName: "",
+  //         FromDate: "",
+  //         ToDate: "",
+  //         SlotID: "",
+  //         SlotName: [],
+  //         BreakSlotID: "",
+  //         BreakSlotName: [],
+  //         Comments: "",
+  //         isNew: true,
+  //       },
+  //     ]);
+
+  //     setRowModesModel((oldModel) => ({
+  //       ...oldModel,
+  //       [id]: { mode: GridRowModes.Edit, fieldToFocus: "Code" },
+  //     }));
+  //   };
+
+  //   return (
+  //     <GridToolbarContainer sx={{ marginBottom: "10px" }}>
+  //       <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+  //         Add Record
+  //       </Button>
+  //     </GridToolbarContainer>
+  //   );
+  // }
+
+
+  const handleSaveButtonClickTerms = async (action) => {
+    console.log(termsrows, "--termsrows");
+    for (let index = 0; index < termsrows.length; index++) {
+      const row = termsrows[index];
+      const error = validateRowTerms(row);
+
+      if (error) {
+        toast.error(`${error}`);
+        return; // ✅ stops entire save function
+      }
+    }
+
+    const idata = termsrows.map((row) => {
+      const slotIDs = Array.isArray(row.SlotName)
+        ? row.SlotName.map((v) => v.RecordID).join(",")
+        : row.SlotID || "";
+
+      const breakSlotIDs = Array.isArray(row.BreakSlotName)
+        ? row.BreakSlotName.map((v) => v.RecordID).join(",")
+        : row.BreakSlotID || "";
+
+      const standardID = Array.isArray(row.StandardName)
+        ? row.StandardName.map((v) => v.RecordID).join(",")
+        : row.StandardID || "";
+
+      return {
+        RecordID: row.isNew ? 0 : row.RecordID,
+        CompanyID: recID,
+        Code: row.Code,
+        TermsName: row.TermsName,
+        Comments: row.Comments,
+        FromDate: formatDate(row.FromDate),
+        ToDate: formatDate(row.ToDate),
+        SlotID: slotIDs,
+        BreakSlotID: breakSlotIDs,
+        StandardID: standardID,
+        IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N",
+      };
+    });
+
+    console.log(idata, "--print the idata");
+
+    try {
+      const response = await dispatch(
+        postData({
+          accessID: "TR355",
+          action: "insert",
+          idata,
+        })
+      );
+
+      if (response?.payload?.Status === "Y") {
+        toast.success(response.payload.Msg);
+
+        const data = await dispatch(companyTermsGet({ recID }));
+
+        if (data?.payload?.Status === "Y") {
+          // setTermsRows(data.payload.Data.rows);
+        } else {
+          setTermsRows([]);
+        }
+      } else {
+        toast.error(response?.payload?.Msg || "Save failed");
+      }
+    } catch (error) {
+      console.error("Save error:", error);
+      toast.error("Error occurred during save.");
+    }
+  };
+
+  function EditToolbarTerms(props) {
+    const { setTermsRows, setTermsRowModesModel } = props;
+
+    const handleClickTerms = () => {
+      const id = nanoid();
+
+      const nextSLNO =
+        termsrows.length > 0
+          ? Math.max(...termsrows.map((row) => Number(row.SLNO) || 0)) + 1
+          : 1;
+
+      const newRow = {
+        RecordID: id,
+        SLNO: nextSLNO,
+        Code: "",
+        TermsName: "",
+        FromDate: "",
+        ToDate: "",
+
+        StandardID: "",
+        StandardCode: "",
+        StandardName: [],
+
+        SlotID: "",
+        SlotCode: "",
+        SlotName: [],
+
+        BreakSlotID: "",
+        BreakSlotCode: "",
+        BreakSlotName: [],
+
+        Comments: "",
+        isNew: true,
+      };
+
+      setTermsRows((oldRows) => [...oldRows, newRow]);
+
+      setTermsRowModesModel((oldModel) => ({
+        ...oldModel,
+        [id]: { mode: GridRowModes.Edit, fieldToFocus: "Code" },
+      }));
+    };
+
+    return (
+      <GridToolbarContainer sx={{ marginBottom: "10px" }}>
+        <Button color="primary" startIcon={<AddIcon />} onClick={handleClickTerms}>
+          Add Record
+        </Button>
+      </GridToolbarContainer>
+    );
+  }
 
   return (
     <Box>
@@ -2174,10 +2176,10 @@ function EditToolbarTerms(props) {
               {mode === "E" && show == "4" ? (
                 <Typography variant="h3">Slots</Typography>
               ) : null}
-                {mode === "E" && show == "5" ? (
+              {mode === "E" && show == "5" ? (
                 <Typography variant="h3">Terms</Typography>
               ) : null}
-              
+
             </Breadcrumbs>
           </Box>
 
@@ -2365,9 +2367,8 @@ function EditToolbarTerms(props) {
                             setFieldValue("country", newValue);
                           }}
                           // log
-                          url={`${
-                            store.getState().globalurl.listViewurl
-                          }?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
+                          url={`${store.getState().globalurl.listViewurl
+                            }?data={"Query":{"AccessID":"2003","ScreenName":"Country","Filter":"","Any":"","CompId":"4"}}`}
                         />
 
                         {/* {touched.country && errors.country && (
@@ -2388,7 +2389,7 @@ function EditToolbarTerms(props) {
                         error={!!touched.rbiCode && !!errors.rbiCode}
                         helperText={touched.rbiCode && errors.rbiCode}
                         focused
-                        // inputProps={{ maxLength: 5 }}
+                      // inputProps={{ maxLength: 5 }}
                       />
                     </FormControl>
                     <TextField
@@ -2598,34 +2599,34 @@ function EditToolbarTerms(props) {
                         
                       </Select>
                     </FormControl> */}
-                   <FormControl
-                   disabled={mode === "E"}
-  variant="standard"
-  fullWidth
-  focused
-error={mode !== "E" && !!touched.Type && !!errors.Type}>
-  <InputLabel id="Type-label">
-    Type
-    <span style={{ color: "red", fontSize: "20px" }}>*</span>
-  </InputLabel>
+                    <FormControl
+                      disabled={mode === "E"}
+                      variant="standard"
+                      fullWidth
+                      focused
+                      error={mode !== "E" && !!touched.Type && !!errors.Type}>
+                      <InputLabel id="Type-label">
+                        Type
+                        <span style={{ color: "red", fontSize: "20px" }}>*</span>
+                      </InputLabel>
 
-  <Select
-    labelId="Type-label"
-    id="Type"
-    name="Type"
-    value={values.Type}
-    onChange={handleChange}
-    onBlur={handleBlur}
-  >
-    <MenuItem value="S">Startup</MenuItem>
-    <MenuItem value="I">Institute</MenuItem>
-    <MenuItem value="C">Construction</MenuItem>
-  </Select>
+                      <Select
+                        labelId="Type-label"
+                        id="Type"
+                        name="Type"
+                        value={values.Type}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      >
+                        <MenuItem value="S">Startup</MenuItem>
+                        <MenuItem value="I">Institute</MenuItem>
+                        <MenuItem value="C">Construction</MenuItem>
+                      </Select>
 
- {mode !== "E" &&touched.Type && errors.Type && (
-    <FormHelperText>{errors.Type}</FormHelperText>
-  )}
-</FormControl>
+                      {mode !== "E" && touched.Type && errors.Type && (
+                        <FormHelperText>{errors.Type}</FormHelperText>
+                      )}
+                    </FormControl>
                     <FormControl variant="standard" fullWidth focused>
                       <InputLabel id="module-label">Module</InputLabel>
 
@@ -2655,6 +2656,22 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                         <MenuItem value="Request">Request</MenuItem>
                         <MenuItem value="Assessment">Assessment</MenuItem>
                         <MenuItem value="Myprofile">Myprofile</MenuItem>
+                      </Select>
+                    </FormControl>
+                    <FormControl variant="standard" fullWidth focused>
+                      <InputLabel id="start5s-label">Stock 5S Data Source</InputLabel>
+
+                      <Select
+                        labelId="start5s-label"
+                        id="Stock5sDataSource"
+                        name="Stock5sDataSource"
+                        value={values.Stock5sDataSource || ""}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      >
+                        <MenuItem value="M">Module</MenuItem>
+                        <MenuItem value="E">Excel</MenuItem>
+                        <MenuItem value="A">API</MenuItem>
                       </Select>
                     </FormControl>
 
@@ -2982,8 +2999,8 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                         readOnly: true,
                       },
                     }}
-                    // required
-                    //autoFocus={CompanyAutoCode == "Y"}
+                  // required
+                  //autoFocus={CompanyAutoCode == "Y"}
                   />
                   <TextField
                     name="bankname"
@@ -3423,8 +3440,8 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                         readOnly: true,
                       },
                     }}
-                    // required
-                    //autoFocus={CompanyAutoCode == "Y"}
+                  // required
+                  //autoFocus={CompanyAutoCode == "Y"}
                   />
                 </Box>
                 <Box
@@ -3476,13 +3493,13 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                         onClick={() => {
                           CompReportgetdata.CmHeader || headerImage
                             ? window.open(
+                              headerImage
+                                ? store.getState().globalurl.imageUrl +
                                 headerImage
-                                  ? store.getState().globalurl.imageUrl +
-                                      headerImage
-                                  : store.getState().globalurl.imageUrl +
-                                      CompReportgetdata.CmHeader,
-                                "_blank",
-                              )
+                                : store.getState().globalurl.imageUrl +
+                                CompReportgetdata.CmHeader,
+                              "_blank",
+                            )
                             : toast.error("Please Upload File");
                         }}
                       >
@@ -3491,17 +3508,17 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                     </Box>
                     <Box>
                       {headerPreview ||
-                      headerImage ||
-                      CompReportgetdata.CmHeader ? (
+                        headerImage ||
+                        CompReportgetdata.CmHeader ? (
                         <img
                           src={
                             headerPreview
                               ? headerPreview
                               : headerImage
                                 ? store.getState().globalurl.imageUrl +
-                                  headerImage
+                                headerImage
                                 : store.getState().globalurl.imageUrl +
-                                  CompReportgetdata.CmHeader
+                                CompReportgetdata.CmHeader
                           }
                           width={175}
                           height={175}
@@ -3561,13 +3578,13 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                         onClick={() => {
                           CompReportgetdata.CmFooter || footerImage
                             ? window.open(
+                              footerImage
+                                ? store.getState().globalurl.imageUrl +
                                 footerImage
-                                  ? store.getState().globalurl.imageUrl +
-                                      footerImage
-                                  : store.getState().globalurl.imageUrl +
-                                      CompReportgetdata.CmFooter,
-                                "_blank",
-                              )
+                                : store.getState().globalurl.imageUrl +
+                                CompReportgetdata.CmFooter,
+                              "_blank",
+                            )
                             : toast.error("Please Upload File");
                         }}
                       >
@@ -3576,17 +3593,17 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                     </Box>
                     <Box>
                       {footerPreview ||
-                      footerImage ||
-                      CompReportgetdata.CmFooter ? (
+                        footerImage ||
+                        CompReportgetdata.CmFooter ? (
                         <img
                           src={
                             footerPreview
                               ? footerPreview
                               : footerImage
                                 ? store.getState().globalurl.imageUrl +
-                                  footerImage
+                                footerImage
                                 : store.getState().globalurl.imageUrl +
-                                  CompReportgetdata.CmFooter
+                                CompReportgetdata.CmFooter
                           }
                           width={175}
                           height={175}
@@ -3646,13 +3663,13 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                         onClick={() => {
                           CompReportgetdata.Signature || esignImage
                             ? window.open(
+                              esignImage
+                                ? store.getState().globalurl.imageUrl +
                                 esignImage
-                                  ? store.getState().globalurl.imageUrl +
-                                      esignImage
-                                  : store.getState().globalurl.imageUrl +
-                                      CompReportgetdata.Signature,
-                                "_blank",
-                              )
+                                : store.getState().globalurl.imageUrl +
+                                CompReportgetdata.Signature,
+                              "_blank",
+                            )
                             : toast.error("Please Upload File");
                         }}
                       >
@@ -3661,17 +3678,17 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                     </Box>
                     <Box>
                       {eSignPreview ||
-                      esignImage ||
-                      CompReportgetdata.Signature ? (
+                        esignImage ||
+                        CompReportgetdata.Signature ? (
                         <img
                           src={
                             eSignPreview
                               ? eSignPreview
                               : esignImage
                                 ? store.getState().globalurl.imageUrl +
-                                  esignImage
+                                esignImage
                                 : store.getState().globalurl.imageUrl +
-                                  CompReportgetdata.Signature
+                                CompReportgetdata.Signature
                           }
                           width={175}
                           height={175}
@@ -3732,13 +3749,13 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                         onClick={() => {
                           CompReportgetdata.QrCode || qrCodeImage
                             ? window.open(
+                              qrCodeImage
+                                ? store.getState().globalurl.imageUrl +
                                 qrCodeImage
-                                  ? store.getState().globalurl.imageUrl +
-                                      qrCodeImage
-                                  : store.getState().globalurl.imageUrl +
-                                      CompReportgetdata.QrCode,
-                                "_blank",
-                              )
+                                : store.getState().globalurl.imageUrl +
+                                CompReportgetdata.QrCode,
+                              "_blank",
+                            )
                             : toast.error("Please Upload File");
                         }}
                       >
@@ -3747,17 +3764,17 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                     </Box>
                     <Box>
                       {qrCodePreview ||
-                      qrCodeImage ||
-                      CompReportgetdata.QrCode ? (
+                        qrCodeImage ||
+                        CompReportgetdata.QrCode ? (
                         <img
                           src={
                             qrCodePreview
                               ? qrCodePreview
                               : qrCodeImage
                                 ? store.getState().globalurl.imageUrl +
-                                  qrCodeImage
+                                qrCodeImage
                                 : store.getState().globalurl.imageUrl +
-                                  CompReportgetdata.QrCode
+                                CompReportgetdata.QrCode
                           }
                           width={175}
                           height={175}
@@ -4651,7 +4668,7 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
         false
       )}
 
-        {show == "5" ? (
+      {show == "5" ? (
         <Paper elevation={3} sx={{ margin: "10px" }}>
           <Formik
             initialValues={PolicyInitialValue}
@@ -4797,16 +4814,16 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                     onRowEditStop={handleRowEditTermsStop}
                     processRowUpdate={processRowUpdateTerms}
                     onProcessRowUpdateError={(error) => {
-                      console.error("Row update validation failed:",error.message,);
+                      console.error("Row update validation failed:", error.message,);
 
                       toast.error(error.message);
                     }}
                     components={{
                       Toolbar: EditToolbarTerms,
                     }}
-                   componentsProps={{
-  toolbar: { setTermsRows, setTermsRowModesModel },
-}}
+                    componentsProps={{
+                      toolbar: { setTermsRows, setTermsRowModesModel },
+                    }}
                     rowsPerPageOptions={[5, 10, 20]}
                     getRowClassName={(params) =>
                       params.indexRelativeToCurrentPage % 2 === 0
