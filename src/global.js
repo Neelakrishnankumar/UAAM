@@ -198,7 +198,8 @@ const initialState = {
   CompanyPolicyUpdate: "",
   CompanyReportSettingGet: "",
   CompanyReportSettingUpdate: "",
-  CompanyTermsGet: ""
+  CompanyTermsGet: "",
+  CompanyAddurl:""
 };
 
 export const getUrlSlice = createSlice({
@@ -284,6 +285,7 @@ export const getUrlSlice = createSlice({
       state.productwiseChartUrl =
         APIurl + "NewChartProductWiseSalesController.php";
       state.ProductInterfaceUrl = APIurl + "tr221_get.php";
+      state.CompanyAddurl = APIurl + "tr014V1_post.php";
       state.materialrateUrl = APIurl + "MaterialRateAnalysisController.php";
       state.consumptionUrl = APIurl + "RequirementConsumptionController.php";
       state.locationManualUrl = APIurl + "ManualSaleLocationController.php";
