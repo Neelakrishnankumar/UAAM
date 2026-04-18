@@ -462,8 +462,9 @@ const Editcompany = () => {
       : null,
       Stock5sDataSource: Data.Stock5sDataSource || "",
      Module: mode === "E" ? Data.Module : "",
-    Type: Data.Type || ""
+    Type: Data.Type || "",
     // == "S" ? "Startup" : Data.Type == "I" ? "Institute" : Data.Type == "C" ? "Construction" : "",
+    noticeperiod: Data.NoticePeriod
   };
 
   /*************************SAVE FUCTION*********************/
@@ -499,6 +500,7 @@ const Editcompany = () => {
       // Type: values.Type,
       Type: values.Type,
       // == "Startup" ? "S" : values.Type == "Institute" ? "I" : values.Type == "Construction" ? "C" : "",
+    NoticePeriod: values.noticeperiod
     };
     console.log(values.Module);
 
@@ -1052,19 +1054,28 @@ const Editcompany = () => {
       setRows(rows.filter((row) => row.RecordID !== RecordID));
     }
   };
-  const validateRowSlot = (row) => {
-    if (!row.SlotName) {
-      return "Slot Name is required";
-    }
-    if (!row.FromTime) {
-      return "From Time is required";
-    }
-    if (!row.ToTime) {
-      return "To Time is required";
-    }
-    return null;
-  };
+ const validateRowSlot = (row) => {
+  if (!row.SlotName) {
+    return "Please Enter the Slot Name";
+  }
+  if (!row.FromTime) {
+    return "Please Select the From Time";
+  }
+  if (!row.ToTime) {
+    return "Please Select the To Time";
+  }
 
+   // ✅ Time validation
+  const from = new Date(`1970-01-01T${row.FromTime}`);
+  const to = new Date(`1970-01-01T${row.ToTime}`);
+
+  if (to <= from) {
+    return "To Time must be greater than From Time";
+  }
+
+  return null;
+};
+ 
   const processRowUpdate = (newRow, oldRow) => {
     console.log(newRow, "--procesrowupdateterms newrow");
     //validation
@@ -1411,7 +1422,7 @@ const Editcompany = () => {
         id="SlotBreak"
         value={value || []}
         onChange={handleChange}
-        url={`${lookuplistViewurl}?data={"Query":{"AccessID":"2156","ScreenName":"Slot Break","Filter":"","Any":""}}`}
+        url={`${lookuplistViewurl}?data={"Query":{"AccessID":"2156","ScreenName":"Slot Break","Filter":"CompanyID='${recID}'","Any":""}}`}
       />
     );
   }
@@ -2153,8 +2164,7 @@ const Editcompany = () => {
               aria-label="breadcrumb"
               separator={<NavigateNextIcon sx={{ color: "#0000D1" }} />}
             >
-              <Typography
-                variant="h3"
+              <Typography variant="h5" color="#0000D1"
                 onClick={() => navigate("/Apps/TR014/Company")}
               >
                 {mode === "E"
@@ -2162,22 +2172,22 @@ const Editcompany = () => {
                   : "Company(New)"}
               </Typography>
               {mode === "E" && show == "0" ? (
-                <Typography variant="h3">Company Details</Typography>
+                <Typography variant="h5" color="#0000D1">Company Details</Typography>
               ) : null}
               {mode === "E" && show == "1" ? (
-                <Typography variant="h3">Bank Details</Typography>
+                <Typography variant="h5" color="#0000D1">Bank Details</Typography>
               ) : null}
               {mode === "E" && show == "2" ? (
-                <Typography variant="h3">Report Settings</Typography>
+                <Typography  variant="h5" color="#0000D1">Report Settings</Typography>
               ) : null}
               {mode === "E" && show == "3" ? (
-                <Typography variant="h3">Policy</Typography>
+                <Typography variant="h5" color="#0000D1">Policy</Typography>
               ) : null}
               {mode === "E" && show == "4" ? (
-                <Typography variant="h3">Slots</Typography>
+                <Typography variant="h5" color="#0000D1">Slots</Typography>
               ) : null}
-              {mode === "E" && show == "5" ? (
-                <Typography variant="h3">Terms</Typography>
+                {mode === "E" && show == "5" ? (
+                <Typography variant="h5" color="#0000D1">Terms</Typography>
               ) : null}
 
             </Breadcrumbs>
@@ -2487,6 +2497,26 @@ const Editcompany = () => {
                       inputProps={{ readOnly: true }}
                       focused
                     />
+
+                      <TextField
+                      fullWidth
+                      variant="standard"
+                      type="number"
+                      label="Sort Order"
+                      value={values.sortOrder}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="sortOrder"
+                      error={!!touched.sortOrder && !!errors.sortOrder}
+                      helperText={touched.sortOrder && errors.sortOrder}
+                      sx={{
+                        gridColumn: "span 2",
+                        background: "",
+                        input: { textAlign: "right" },
+                      }}
+                      focused
+                      onWheel={(e) => e.target.blur()}
+                    />
                   </FormControl>
                   <FormControl sx={{ gridColumn: "span 2", gap: formGap }}>
                     <TextField
@@ -2789,6 +2819,30 @@ const Editcompany = () => {
                       inputProps={{ maxLength: 4 }}
                     />
 
+  <TextField
+                      fullWidth
+                      variant="standard"
+                      type="text"
+                      label="Notice Period"
+                      // label={
+                      //   <>
+                      //     Notice Period
+                      //     <span style={{ color: "red", fontSize: "20px" }}>
+                      //       {" "}
+                      //       *{" "}
+                      //     </span>
+                      //   </>
+                      // }
+                      value={values.noticeperiod}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      name="noticeperiod"
+                      error={!!touched.noticeperiod && !!errors.noticeperiod}
+                      helperText={touched.noticeperiod && errors.noticeperiod}
+                      focused
+                      inputProps={{ maxLength: 15 }}
+                    />
+
                     <TextField
                       fullWidth
                       variant="standard"
@@ -2805,25 +2859,7 @@ const Editcompany = () => {
                       focused
                       onWheel={(e) => e.target.blur()}
                     />
-                    <TextField
-                      fullWidth
-                      variant="standard"
-                      type="number"
-                      label="Sort Order"
-                      value={values.sortOrder}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      name="sortOrder"
-                      error={!!touched.sortOrder && !!errors.sortOrder}
-                      helperText={touched.sortOrder && errors.sortOrder}
-                      sx={{
-                        gridColumn: "span 2",
-                        background: "",
-                        input: { textAlign: "right" },
-                      }}
-                      focused
-                      onWheel={(e) => e.target.blur()}
-                    />
+                  
                     <Box>
                       <Field
                         //  size="small"
