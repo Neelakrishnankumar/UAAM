@@ -124,6 +124,8 @@ const Editcompany = () => {
   const location = useLocation();
   const params = useParams();
   const YearFlag = sessionStorage.getItem("YearFlag");
+  console.log(YearFlag, "--YearFlag in EditCompany");
+  
   const Year = sessionStorage.getItem("year");
   const Finyear = sessionStorage.getItem("YearRecorid");
   const CompanyID = sessionStorage.getItem("compID");
@@ -815,14 +817,29 @@ console.log(companytermsData, "--companytermsData");
       hide: true,
     },
 
-    {
-      field: "SlotCode",
+    // {
+    //   field: "SlotCode",
+    //   headerName: "Slot Code",
+    //   width: 150,
+    //   align: "left",
+    //   headerAlign: "center",
+    //   editable: false,
+    // },
+     {
       headerName: "Slot Code",
+      field: "SlotCode",
       width: 150,
-      align: "left",
+      hide: false,
+      editable: true,
       headerAlign: "center",
-      editable: false,
-        // sortable: false,
+      renderCell: (params) => {
+        // show "Auto Code" only for new rows OR empty code
+        if (!params.value || params.row.isNew) {
+          return "Auto Code";
+        }
+
+        return params.value;
+      }
     },
     {
       field: "SlotName",
@@ -1445,16 +1462,31 @@ const handleRowModesModelChange = (newRowModesModel) => {
       headerAlign: "center",
       hide: true,
     },
-
-    {
-      field: "Code",
+ {
       headerName: "Code",
+      field: "Code",
       width: 150,
-      align: "left",
+      hide: false,
+      editable: true,
       headerAlign: "center",
-      editable: false,
-      // sortable: false,
+      renderCell: (params) => {
+        // show "Auto Code" only for new rows OR empty code
+        if (!params.value || params.row.isNew) {
+          return "Auto Code";
+        }
+
+        return params.value;
+      }
     },
+    // {
+    //   field: "Code",
+    //   headerName: "Code",
+    //   width: 150,
+    //   align: "left",
+    //   headerAlign: "center",
+    //   editable: false,
+    //   // sortable: false,
+    // },
     {
       field: "TermsName",
         headerName: (
@@ -1754,8 +1786,8 @@ const handleRowModesModelChange = (newRowModesModel) => {
       [RecordID]: { mode: GridRowModes.View, ignoreModifications: true },
     });
 
-    const editedRow = rows.find((row) => row.RecordID === RecordID);
-    if (editedRow.isNew) {
+    const editedRowTerms= rows.find((row) => row.RecordID === RecordID);
+    if (editedRowTerms.isNew) {
       setTermsRows(rows.filter((row) => row.RecordID !== RecordID));
     }
   };
@@ -4615,25 +4647,29 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                         minHeight: dataGridHeaderFooterHeight,
                       },
                     }}
+                    rowHeight={dataGridRowHeight}
+                    headerHeight={dataGridHeaderFooterHeight}
                     rows={rows}
                     columns={columns}
                     loading={exploreLoading}
-                    rowModesModel={rowModesModel}
-                    getRowId={(row) => row.RecordID}
                     editMode="row"
-                    disableRowSelectionOnClick
-                    rowHeight={dataGridRowHeight}
-                    headerHeight={dataGridHeaderFooterHeight}
-                    experimentalFeatures={{ newEditingApi: true }}
+                    disableSelectionOnClick
+                    rowModesModel={rowModesModel}
                     onRowModesModelChange={handleRowModesModelChange}
                     onRowEditStop={handleRowEditStop}
                     processRowUpdate={processRowUpdate}
+                    getRowId={(row) => row.RecordID}
+                    isCellEditable={(params) => {
+                      if (params.field === "SlotCode") return false;
+                      return true;
+                    }}
+                    disableRowSelectionOnClick
+                    experimentalFeatures={{ newEditingApi: true }}
                     onProcessRowUpdateError={(error) => {
                       console.error(
                         "Row update validation failed:",
                         error.message,
                       );
-
                       toast.error(error.message);
                     }}
                     components={{
@@ -4819,22 +4855,26 @@ error={mode !== "E" && !!touched.Type && !!errors.Type}>
                         minHeight: dataGridHeaderFooterHeight,
                       },
                     }}
+                    rowHeight={dataGridRowHeight}
+                    headerHeight={dataGridHeaderFooterHeight}
                     rows={termsrows}
                     columns={Termscolumns}
                     loading={exploreLoading}
-                    rowModesModel={termsRowModesModel}
-                    getRowId={(row) => row.RecordID}
                     editMode="row"
-                    disableRowSelectionOnClick
-                    rowHeight={dataGridRowHeight}
-                    headerHeight={dataGridHeaderFooterHeight}
-                    experimentalFeatures={{ newEditingApi: true }}
+                    disableSelectionOnClick
+                    rowModesModel={termsRowModesModel}
                     onRowModesModelChange={handleRowModesModelChangeTerms}
                     onRowEditStop={handleRowEditTermsStop}
                     processRowUpdate={processRowUpdateTerms}
+                    getRowId={(row) => row.RecordID}
+                    isCellEditable={(params) => {
+                      if (params.field === "Code") return false;
+                      return true;
+                    }}
+                    disableRowSelectionOnClick
+                    experimentalFeatures={{ newEditingApi: true }}
                     onProcessRowUpdateError={(error) => {
                       console.error("Row update validation failed:",error.message,);
-
                       toast.error(error.message);
                     }}
                     components={{
