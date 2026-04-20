@@ -1232,7 +1232,8 @@ const Editcompany = () => {
 
     const idata = rows.map((row, index) => {
       return {
-        RecordID: row.isNew ? 0 : row.RecordID,
+        // RecordID: row.isNew ? 0 : row.RecordID,
+        RecordID: !isNaN(parseInt(row.RecordID, 10)) ? row.RecordID : 0,
         CompanyID: recID,
         Code: row.SlotCode,
         SlotName: row.SlotName,
@@ -1241,8 +1242,8 @@ const Editcompany = () => {
         ToTime: formatTo12Hour(row.ToTime),
         Break: row.Break ? "Y" : "N",
         SortOrder: 0,
-        IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
-
+        // IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
+ IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
 
 
       };
@@ -2134,7 +2135,8 @@ const Editcompany = () => {
         : row.StandardID || "";
 
       return {
-        RecordID: row.isNew ? 0 : row.RecordID,
+        // RecordID: row.isNew ? 0 : row.RecordID,
+        RecordID: !isNaN(parseInt(row.RecordID, 10)) ? row.RecordID : 0,
         CompanyID: recID,
         Code: row.Code,
         TermsName: row.TermsName,
