@@ -3161,7 +3161,7 @@ const Editcompany = () => {
                     }}
                     autoFocus
                   />
-                  <TextField
+                  {/* <TextField
                     name="Accounttype"
                     type="text"
                     id="Accounttype"
@@ -3188,8 +3188,39 @@ const Editcompany = () => {
                       },
                     }}
                     autoFocus
-                  />
+                  />  */}
+
                   <TextField
+                    select   // ✅ makes it dropdown
+                    name="Accounttype"
+                    type="text"
+                    id="Accounttype"
+                    label={
+                      <>
+                        Account Type
+                        <span style={{ color: "red", fontSize: "20px" }}>
+                          *
+                        </span>
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.Accounttype}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.Accounttype && !!errors.Accounttype}
+                    helperText={touched.Accounttype && errors.Accounttype}
+                    sx={{
+                      backgroundColor: "#ffffff",
+                    }}
+                    fullWidth
+                  >
+                    <MenuItem value="">Select Account Type</MenuItem>
+                    <MenuItem value="Savings">Savings</MenuItem>
+                    <MenuItem value="Current">Current</MenuItem>
+                  </TextField>
+
+                  <TextField 
                     name="branchname"
                     label={
                       <>
