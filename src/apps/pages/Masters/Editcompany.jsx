@@ -397,6 +397,7 @@ const Editcompany = () => {
             return {
               ...value,
               Break: value.Break === "Y", // ✅ convert Y/N → true/false
+              isNew:false,
             };
           });
 
@@ -1098,6 +1099,7 @@ const Editcompany = () => {
           const resData = data.payload.Data.rows.map((value) => ({
             ...value,
             Break: value.Break === "Y", // ✅ Convert Y/N → boolean
+            isNew: false, // ✅ Mark all fetched rows as existing (not new)
           }));
 
           setRows(resData);
@@ -1231,8 +1233,12 @@ const Editcompany = () => {
     }
 
     const idata = rows.map((row, index) => {
+      const isNewRow = isNaN(Number(row.RecordID));
+
       return {
-        RecordID: row.isNew ? 0 : row.RecordID,
+        // RecordID: row.isNew ? 0 : row.RecordID,
+        // RecordID: !isNaN(parseInt(row.RecordID, 10)) ? row.RecordID : 0,
+        RecordID: isNewRow ? 0 : row.RecordID,
         CompanyID: recID,
         Code: row.SlotCode,
         SlotName: row.SlotName,
@@ -1241,10 +1247,9 @@ const Editcompany = () => {
         ToTime: formatTo12Hour(row.ToTime),
         Break: row.Break ? "Y" : "N",
         SortOrder: 0,
-        IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
-
-
-
+        // IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
+        //  IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
+        IsEditable: isNewRow ? "N" : "Y",
       };
     });
     console.log(idata, "--print the idata");
@@ -1275,7 +1280,8 @@ const Editcompany = () => {
           const resData = data.payload.Data.rows.map((value) => {
             return {
               ...value,
-              Break: value.Break === "Y"   // convert to boolean
+              Break: value.Break === "Y",  // convert to boolean
+              isNew: false, // mark all rows as existing after save
 
             };
           });
@@ -1794,15 +1800,15 @@ const Editcompany = () => {
     // setTermsRows(rows.filter((row) => row.RecordID !== RecordID));
 
     setTermsRows((prev) =>
-  prev.filter((row) => row.RecordID !== RecordID)
-);
+      prev.filter((row) => row.RecordID !== RecordID)
+    );
 
-// cleanup edit mode
-  setTermsRowModesModel((prev) => {
-    const updated = { ...prev };
-    delete updated[RecordID];
-    return updated;
-  });
+    // cleanup edit mode
+    setTermsRowModesModel((prev) => {
+      const updated = { ...prev };
+      delete updated[RecordID];
+      return updated;
+    });
     if (!isNaN(RecordID)) {
       const idata = {
         //RecordID: recID,
@@ -2133,8 +2139,12 @@ const Editcompany = () => {
         ? row.StandardName.map((v) => v.RecordID).join(",")
         : row.StandardID || "";
 
+      const isNewRow = isNaN(Number(row.RecordID));
       return {
-        RecordID: row.isNew ? 0 : row.RecordID,
+
+        // RecordID: row.isNew ? 0 : row.RecordID,
+        // RecordID: !isNaN(parseInt(row.RecordID, 10)) ? row.RecordID : 0,
+        RecordID: isNewRow ? 0 : row.RecordID,
         CompanyID: recID,
         Code: row.Code,
         TermsName: row.TermsName,
@@ -2144,7 +2154,8 @@ const Editcompany = () => {
         SlotID: slotIDs,
         BreakSlotID: breakSlotIDs,
         StandardID: standardID,
-        IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N",
+        // IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N",
+        IsEditable: isNewRow ? "N" : "Y",
       };
     });
 
@@ -3220,7 +3231,7 @@ const Editcompany = () => {
                     <MenuItem value="Current">Current</MenuItem>
                   </TextField>
 
-                  <TextField 
+                  <TextField
                     name="branchname"
                     label={
                       <>
