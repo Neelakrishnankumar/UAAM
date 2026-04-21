@@ -460,8 +460,8 @@ const Editcompany = () => {
         Name: Data.CountryName,
       }
       : null,
-      Stock5sDataSource: Data.Stock5sDataSource || "",
-     Module: mode === "E" ? Data.Module : "",
+    Stock5sDataSource: Data.Stock5sDataSource || "",
+    Module: mode === "E" ? Data.Module : "",
     Type: Data.Type || "",
     // == "S" ? "Startup" : Data.Type == "I" ? "Institute" : Data.Type == "C" ? "Construction" : "",
     noticeperiod: Data.NoticePeriod
@@ -500,7 +500,7 @@ const Editcompany = () => {
       // Type: values.Type,
       Type: values.Type,
       // == "Startup" ? "S" : values.Type == "Institute" ? "I" : values.Type == "Construction" ? "C" : "",
-    NoticePeriod: values.noticeperiod
+      NoticePeriod: values.noticeperiod
     };
     console.log(values.Module);
 
@@ -1054,28 +1054,28 @@ const Editcompany = () => {
       setRows(rows.filter((row) => row.RecordID !== RecordID));
     }
   };
- const validateRowSlot = (row) => {
-  if (!row.SlotName) {
-    return "Please Enter the Slot Name";
-  }
-  if (!row.FromTime) {
-    return "Please Select the From Time";
-  }
-  if (!row.ToTime) {
-    return "Please Select the To Time";
-  }
+  const validateRowSlot = (row) => {
+    if (!row.SlotName) {
+      return "Please Enter the Slot Name";
+    }
+    if (!row.FromTime) {
+      return "Please Select the From Time";
+    }
+    if (!row.ToTime) {
+      return "Please Select the To Time";
+    }
 
-   // ✅ Time validation
-  const from = new Date(`1970-01-01T${row.FromTime}`);
-  const to = new Date(`1970-01-01T${row.ToTime}`);
+    // ✅ Time validation
+    const from = new Date(`1970-01-01T${row.FromTime}`);
+    const to = new Date(`1970-01-01T${row.ToTime}`);
 
-  if (to <= from) {
-    return "To Time must be greater than From Time";
-  }
+    if (to <= from) {
+      return "To Time must be greater than From Time";
+    }
 
-  return null;
-};
- 
+    return null;
+  };
+
   const processRowUpdate = (newRow, oldRow) => {
     console.log(newRow, "--procesrowupdateterms newrow");
     //validation
@@ -2178,7 +2178,7 @@ const Editcompany = () => {
                 <Typography variant="h5" color="#0000D1">Bank Details</Typography>
               ) : null}
               {mode === "E" && show == "2" ? (
-                <Typography  variant="h5" color="#0000D1">Report Settings</Typography>
+                <Typography variant="h5" color="#0000D1">Report Settings</Typography>
               ) : null}
               {mode === "E" && show == "3" ? (
                 <Typography variant="h5" color="#0000D1">Policy</Typography>
@@ -2186,7 +2186,7 @@ const Editcompany = () => {
               {mode === "E" && show == "4" ? (
                 <Typography variant="h5" color="#0000D1">Slots</Typography>
               ) : null}
-                {mode === "E" && show == "5" ? (
+              {mode === "E" && show == "5" ? (
                 <Typography variant="h5" color="#0000D1">Terms</Typography>
               ) : null}
 
@@ -2498,7 +2498,7 @@ const Editcompany = () => {
                       focused
                     />
 
-                      <TextField
+                    <TextField
                       fullWidth
                       variant="standard"
                       type="number"
@@ -2819,7 +2819,7 @@ const Editcompany = () => {
                       inputProps={{ maxLength: 4 }}
                     />
 
-  <TextField
+                    <TextField
                       fullWidth
                       variant="standard"
                       type="text"
@@ -2859,7 +2859,7 @@ const Editcompany = () => {
                       focused
                       onWheel={(e) => e.target.blur()}
                     />
-                  
+
                     <Box>
                       <Field
                         //  size="small"
@@ -3066,7 +3066,7 @@ const Editcompany = () => {
                     }}
                     autoFocus
                   />
-                  <TextField
+                  {/* <TextField
                     name="Accounttype"
                     type="text"
                     id="Accounttype"
@@ -3093,8 +3093,39 @@ const Editcompany = () => {
                       },
                     }}
                     autoFocus
-                  />
+                  />  */}
+
                   <TextField
+                    select   // ✅ makes it dropdown
+                    name="Accounttype"
+                    type="text"
+                    id="Accounttype"
+                    label={
+                      <>
+                        Account Type
+                        <span style={{ color: "red", fontSize: "20px" }}>
+                          *
+                        </span>
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.Accounttype}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.Accounttype && !!errors.Accounttype}
+                    helperText={touched.Accounttype && errors.Accounttype}
+                    sx={{
+                      backgroundColor: "#ffffff",
+                    }}
+                    fullWidth
+                  >
+                    <MenuItem value="">Select Account Type</MenuItem>
+                    <MenuItem value="Savings">Savings</MenuItem>
+                    <MenuItem value="Current">Current</MenuItem>
+                  </TextField>
+
+                  <TextField 
                     name="branchname"
                     label={
                       <>
