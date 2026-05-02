@@ -919,7 +919,7 @@ const Editcompany = () => {
       align: "left",
       headerAlign: "center",
       editable: true,
-      renderCell: (params) => params.value || "",
+      renderCell: (params) => formatTo12Hour(params.value),
       renderEditCell: (params) => <EditTimeCell {...params} />,
     },
     {
@@ -934,7 +934,7 @@ const Editcompany = () => {
       align: "left",
       headerAlign: "center",
       editable: true,
-      renderCell: (params) => params.value || "",
+      renderCell: (params) => formatTo12Hour(params.value),
       renderEditCell: (params) => <EditTimeCell {...params} />,
     },
     {
@@ -1198,6 +1198,56 @@ const Editcompany = () => {
       />
     );
   }
+
+      function EditTimeCell(props) {
+        const { id, field, value, api } = props;
+ 
+        const convertTo24Hour = (time12h) => {
+            if (!time12h) return "";
+ 
+            const [time, modifier] = time12h.split(" ");
+            let [hours, minutes] = time.split(":");
+ 
+            if (modifier === "PM" && hours !== "12") {
+                hours = String(parseInt(hours, 10) + 12);
+            }
+            if (modifier === "AM" && hours === "12") {
+                hours = "00";
+            }
+ 
+            return `${hours.padStart(2, "0")}:${minutes}`;
+        };
+ 
+        const convertTo12Hour = (time24) => {
+            if (!time24) return "";
+ 
+            const [hour, minute] = time24.split(":");
+            let h = parseInt(hour);
+            const ampm = h >= 12 ? "PM" : "AM";
+ 
+            h = h % 12 || 12;
+ 
+            return `${h}:${minute} ${ampm}`;
+        };
+ 
+        const handleChange = (event) => {
+            const val24 = event.target.value; // 16:30
+            const val12 = convertTo12Hour(val24); // 4:30 PM
+ 
+            api.setEditCellValue({ id, field, value: val12 });
+        };
+ 
+        return (
+            <TextField
+                type="time"
+                fullWidth
+                size="small"
+                value={convertTo24Hour(value)} // show correct time in picker
+                onChange={handleChange}
+            />
+        );
+    }
+ 
 
   const formatTo12Hour = (time) => {
     if (!time) return "";
@@ -2668,27 +2718,7 @@ const Editcompany = () => {
                       focused
                       inputProps={{ maxLength: 45 }}
                     />
-                    {/* <TextField
-                      fullWidth
-                      variant="standard"
-                      type="text"
-                      label="I.E.Code"
-                      // required
-                      // onInvalid={(e) => {
-                      //   e.target.setCustomValidity("Please fill the I.E.Code");
-                      // }}
-                      // onInput={(e) => {
-                      //   e.target.setCustomValidity("");
-                      // }}
-                      value={values.iECode}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      name="iECode"
-                      error={!!touched.iECode && !!errors.iECode}
-                      helperText={touched.iECode && errors.iECode}
-                      focused
-                    // inputProps={{ maxLength: 10 }}
-                    /> */}
+                   
                     <TextField
                       fullWidth
                       variant="standard"
@@ -2705,41 +2735,12 @@ const Editcompany = () => {
                       helperText={touched.iECode && errors.iECode}
                     />
 
-                    {/* <FormControl
-                      variant="standard"
-                      fullWidth
-                      // required 
-                      focused>
-                      <InputLabel
-                       id="Type-label"
-                       
-                       >
-                      Type
-                       <span style={{ color: "red", fontSize: "20px" }}>
-                            *
-                          </span>
-                      </InputLabel>
-                      <Select
-                        labelId="Type-label"
-                        id="Type"
-                        name="Type"                        
-                        value={values.Type}
-                        onChange={handleChange}
-                        onBlur={handleBlur}   
-                      error={!!touched.Type && !!errors.Type}
-                      helperText={touched.Type && errors.Type}                     
-                      >
-                        <MenuItem value="S">Startup</MenuItem>
-                        <MenuItem value="I">Institute</MenuItem>
-                        <MenuItem value="C">Construction</MenuItem>
-                        
-                      </Select>
-                    </FormControl> */}
+                  
                     <FormControl
                       disabled={mode === "E"}
                       variant="standard"
                       fullWidth
-                      focused
+                      focused                      
                       error={mode !== "E" && !!touched.Type && !!errors.Type}>
                       <InputLabel id="Type-label">
                         Type
@@ -2809,57 +2810,7 @@ const Editcompany = () => {
                         <MenuItem value="E">Excel</MenuItem>
                         <MenuItem value="A">API</MenuItem>
                       </Select>
-                    </FormControl>
-
-                    {/* <FormControl variant="standard" fullWidth focused>
-                      <InputLabel id="module-label">Module</InputLabel>
-
-                      <Select
-                        labelId="module-label"
-                        id="Module"
-                        name="Module"
-                        multiple
-                        value={values.Module?.split(",") || []} // convert string to array safely
-                        onChange={(e) => {
-                          // Convert selected array back to comma-separated string
-                          handleChange({
-                            target: {
-                              name: "Module",
-                              value: e.target.value.join(","),
-                            },
-                          });
-                        }}
-                        onBlur={handleBlur}
-                        renderValue={(selected) => (
-                          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                            {selected.map((value) => (
-                              <Chip
-                                key={value}
-                                label={value}
-                                onDelete={() => {
-                                  // Remove value inside the field
-                                  const newSelected = (values.Module || "")
-                                    .split(",")
-                                    .filter((item) => item !== value)
-                                    .join(",");
-                                  handleChange({
-                                    target: { name: "Module", value: newSelected },
-                                  });
-                                }}
-                              />
-                            ))}
-                          </Box>
-                        )}
-                      >
-                        <MenuItem value="All">All</MenuItem>
-                        <MenuItem value="Task">Task</MenuItem>
-                        <MenuItem value="Project">Project</MenuItem>
-                        <MenuItem value="Attendance">Attendance</MenuItem>
-                        <MenuItem value="Request">Request</MenuItem>
-                        <MenuItem value="Assessment">Assessment</MenuItem>
-                        <MenuItem value="Myprofile">Myprofile</MenuItem>
-                      </Select>
-                    </FormControl> */}
+                    </FormControl>                 
                     <TextField
                       fullWidth
                       variant="standard"
@@ -2889,7 +2840,6 @@ const Editcompany = () => {
                       focused
                       inputProps={{ maxLength: 15 }}
                     />
-
                     <TextField
                       fullWidth
                       variant="standard"
@@ -2924,7 +2874,6 @@ const Editcompany = () => {
                       }}
                       inputProps={{ maxLength: 4 }}
                     />
-
                     <TextField
                       fullWidth
                       variant="standard"
@@ -2948,7 +2897,6 @@ const Editcompany = () => {
                       focused
                       inputProps={{ maxLength: 15 }}
                     />
-
                     <TextField
                       fullWidth
                       variant="standard"
