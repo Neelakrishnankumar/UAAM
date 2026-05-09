@@ -2448,7 +2448,7 @@ const Editcompany = () => {
                       inputProps={{ maxLength: 500 }}
                       multiline
                     />
-                    <FormControl
+                    {/* <FormControl
                       sx={{
                         gridColumn: "span 2",
                         display: "flex",
@@ -2460,7 +2460,7 @@ const Editcompany = () => {
                           flexDirection: "row",
                           alignItems: "center",
                         }}
-                      >
+                      > */}
                         <CheckinAutocomplete
                           label={
                             <>
@@ -2489,7 +2489,7 @@ const Editcompany = () => {
                             {errors.country}
                           </div>
                         )} */}
-                      </FormControl>
+                      {/* </FormControl> */}
                       <TextField
                         fullWidth
                         variant="standard"
@@ -2502,12 +2502,12 @@ const Editcompany = () => {
                         error={!!touched.rbiCode && !!errors.rbiCode}
                         helperText={touched.rbiCode && errors.rbiCode}
                         focused
-                        sx={{
-                          mt: 1
-                        }}
+                        // sx={{
+                        //   mt: 1
+                        // }}
                       // inputProps={{ maxLength: 5 }}
                       />
-                    </FormControl>
+                    {/* </FormControl> */}
                     <TextField
                       fullWidth
                       variant="standard"

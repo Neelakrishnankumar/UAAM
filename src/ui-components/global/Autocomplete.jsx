@@ -503,7 +503,7 @@ export const CheckinAutocomplete = ({
 
   return (
     <Autocomplete
-      size="small"
+      // size="small"
       fullWidth
       limitTags={1}
       options={options}
