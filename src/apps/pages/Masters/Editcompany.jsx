@@ -125,7 +125,7 @@ const Editcompany = () => {
   const params = useParams();
   const YearFlag = sessionStorage.getItem("YearFlag");
   console.log(YearFlag, "--YearFlag in EditCompany");
-  
+
   const Year = sessionStorage.getItem("year");
   const Finyear = sessionStorage.getItem("YearRecorid");
   const CompanyID = sessionStorage.getItem("compID");
@@ -302,7 +302,8 @@ const Editcompany = () => {
   const [rows, setRows] = React.useState(slotRowData);
   const [rowModesModel, setRowModesModel] = React.useState({});
 
-  const [termsrows, setTermsRows] = React.useState(companytermsData);
+  // const [termsrows, setTermsRows] = React.useState(companytermsData);
+  const [termsrows, setTermsRows] = useState({});
   const [termsRowModesModel, setTermsRowModesModel] = useState({});
 
 
@@ -396,6 +397,7 @@ const Editcompany = () => {
             return {
               ...value,
               Break: value.Break === "Y", // ✅ convert Y/N → true/false
+              isNew:false,
             };
           });
 
@@ -462,8 +464,8 @@ const Editcompany = () => {
         Name: Data.CountryName,
       }
       : null,
-      Stock5sDataSource: Data.Stock5sDataSource || "",
-     Module: mode === "E" ? Data.Module : "",
+    Stock5sDataSource: Data.Stock5sDataSource || "",
+    Module: mode === "E" ? Data.Module : "",
     Type: Data.Type || "",
     // == "S" ? "Startup" : Data.Type == "I" ? "Institute" : Data.Type == "C" ? "Construction" : "",
     noticeperiod: Data.NoticePeriod
@@ -502,7 +504,7 @@ const Editcompany = () => {
       // Type: values.Type,
       Type: values.Type,
       // == "Startup" ? "S" : values.Type == "Institute" ? "I" : values.Type == "Construction" ? "C" : "",
-    NoticePeriod: values.noticeperiod
+      NoticePeriod: values.noticeperiod
     };
     console.log(values.Module);
 
@@ -698,7 +700,32 @@ const Editcompany = () => {
     });
   };
 
+
+  const validateImageFile = (file) => {
+    const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+
+    if (!file) return { valid: false, message: "No file selected" };
+
+    if (!allowedTypes.includes(file.type)) {
+      return { valid: false, message: "Only PNG, JPEG and JPG images are allowed" };
+    }
+
+    if (file.size > maxSize) {
+      return { valid: false, message: "File size must be less than 2MB" };
+    }
+
+    return { valid: true };
+  };
+
   const getFileHeaderChange1 = async (event) => {
+    const file = event.target.files[0];
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      toast.error(validation.message);
+      event.target.value = "";
+      return;
+    }
     setheaderImage(event.target.files[0]);
     setHeaderPreview(URL.createObjectURL(event.target.files[0]));
 
@@ -720,6 +747,14 @@ const Editcompany = () => {
   };
 
   const getFileFooterChange = async (event) => {
+    const file = event.target.files[0];
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      toast.error(validation.message);
+      event.target.value = "";
+      return;
+    }
+
     setfooterImage(event.target.files[0]);
     setFooterPreview(URL.createObjectURL(event.target.files[0]));
     console.log(event.target.files[0]);
@@ -743,6 +778,14 @@ const Editcompany = () => {
   };
 
   const getFileESignChange = async (event) => {
+    const file = event.target.files[0];
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      toast.error(validation.message);
+      event.target.value = "";
+      return;
+    }
+
     setesignImage(event.target.files[0]);
 
     seteSignPreview(URL.createObjectURL(event.target.files[0]));
@@ -766,6 +809,14 @@ const Editcompany = () => {
   };
 
   const getFileQRCodeChange = async (event) => {
+    const file = event.target.files[0];
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      toast.error(validation.message);
+      event.target.value = "";
+      return;
+    }
+
     setqrCodeImage(event.target.files[0]);
 
     console.log(event.target.files[0]);
@@ -827,7 +878,7 @@ const Editcompany = () => {
     //   headerAlign: "center",
     //   editable: false,
     // },
-     {
+    {
       headerName: "Slot Code",
       field: "SlotCode",
       width: 150,
@@ -1048,6 +1099,7 @@ const Editcompany = () => {
           const resData = data.payload.Data.rows.map((value) => ({
             ...value,
             Break: value.Break === "Y", // ✅ Convert Y/N → boolean
+            isNew: false, // ✅ Mark all fetched rows as existing (not new)
           }));
 
           setRows(resData);
@@ -1071,28 +1123,28 @@ const Editcompany = () => {
       setRows(rows.filter((row) => row.RecordID !== RecordID));
     }
   };
- const validateRowSlot = (row) => {
-  if (!row.SlotName) {
-    return "Please Enter the Slot Name";
-  }
-  if (!row.FromTime) {
-    return "Please Select the From Time";
-  }
-  if (!row.ToTime) {
-    return "Please Select the To Time";
-  }
+  const validateRowSlot = (row) => {
+    if (!row.SlotName) {
+      return "Please Enter the Slot Name";
+    }
+    if (!row.FromTime) {
+      return "Please Select the From Time";
+    }
+    if (!row.ToTime) {
+      return "Please Select the To Time";
+    }
 
-   // ✅ Time validation
-  const from = new Date(`1970-01-01T${row.FromTime}`);
-  const to = new Date(`1970-01-01T${row.ToTime}`);
+    // ✅ Time validation
+    const from = new Date(`1970-01-01T${row.FromTime}`);
+    const to = new Date(`1970-01-01T${row.ToTime}`);
 
-  if (to <= from) {
-    return "To Time must be greater than From Time";
-  }
+    if (to <= from) {
+      return "To Time must be greater than From Time";
+    }
 
-  return null;
-};
- 
+    return null;
+  };
+
   const processRowUpdate = (newRow, oldRow) => {
     console.log(newRow, "--procesrowupdateterms newrow");
     //validation
@@ -1231,7 +1283,8 @@ const Editcompany = () => {
           const resData = data.payload.Data.rows.map((value) => {
             return {
               ...value,
-              Break: value.Break === "Y"   // convert to boolean
+              Break: value.Break === "Y",  // convert to boolean
+              isNew: false, // mark all rows as existing after save
 
             };
           });
@@ -1470,7 +1523,7 @@ const Editcompany = () => {
       headerAlign: "center",
       hide: true,
     },
- {
+    {
       headerName: "Code",
       field: "Code",
       width: 150,
@@ -1747,8 +1800,18 @@ const Editcompany = () => {
 
 
   const handleDeleteTermsClick = (RecordID) => async () => {
-    setTermsRows(rows.filter((row) => row.RecordID !== RecordID));
+    // setTermsRows(rows.filter((row) => row.RecordID !== RecordID));
 
+    setTermsRows((prev) =>
+      prev.filter((row) => row.RecordID !== RecordID)
+    );
+
+    // cleanup edit mode
+    setTermsRowModesModel((prev) => {
+      const updated = { ...prev };
+      delete updated[RecordID];
+      return updated;
+    });
     if (!isNaN(RecordID)) {
       const idata = {
         //RecordID: recID,
@@ -1794,7 +1857,7 @@ const Editcompany = () => {
       [RecordID]: { mode: GridRowModes.View, ignoreModifications: true },
     });
 
-    const editedRowTerms= rows.find((row) => row.RecordID === RecordID);
+    const editedRowTerms = rows.find((row) => row.RecordID === RecordID);
     if (editedRowTerms.isNew) {
       setTermsRows(rows.filter((row) => row.RecordID !== RecordID));
     }
@@ -2079,8 +2142,12 @@ const Editcompany = () => {
         ? row.StandardName.map((v) => v.RecordID).join(",")
         : row.StandardID || "";
 
+      const isNewRow = isNaN(Number(row.RecordID));
       return {
-        RecordID: row.isNew ? 0 : row.RecordID,
+
+        // RecordID: row.isNew ? 0 : row.RecordID,
+        // RecordID: !isNaN(parseInt(row.RecordID, 10)) ? row.RecordID : 0,
+        RecordID: isNewRow ? 0 : row.RecordID,
         CompanyID: recID,
         Code: row.Code,
         TermsName: row.TermsName,
@@ -2090,7 +2157,8 @@ const Editcompany = () => {
         SlotID: slotIDs,
         BreakSlotID: breakSlotIDs,
         StandardID: standardID,
-        IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N",
+        // IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N",
+        IsEditable: isNewRow ? "N" : "Y",
       };
     });
 
@@ -2216,7 +2284,7 @@ const Editcompany = () => {
                 <Typography variant="h5" color="#0000D1">Bank Details</Typography>
               ) : null}
               {mode === "E" && show == "2" ? (
-                <Typography  variant="h5" color="#0000D1">Report Settings</Typography>
+                <Typography variant="h5" color="#0000D1">Report Settings</Typography>
               ) : null}
               {mode === "E" && show == "3" ? (
                 <Typography variant="h5" color="#0000D1">Policy</Typography>
@@ -2224,7 +2292,7 @@ const Editcompany = () => {
               {mode === "E" && show == "4" ? (
                 <Typography variant="h5" color="#0000D1">Slots</Typography>
               ) : null}
-                {mode === "E" && show == "5" ? (
+              {mode === "E" && show == "5" ? (
                 <Typography variant="h5" color="#0000D1">Terms</Typography>
               ) : null}
 
@@ -2246,8 +2314,8 @@ const Editcompany = () => {
                   <MenuItem value={1}>Bank Details</MenuItem>
                   <MenuItem value={2}>Report Settings</MenuItem>
                   <MenuItem value={3}>Policy</MenuItem>
-                  <MenuItem value={4}>Slot</MenuItem>
-                  <MenuItem value={5}>Terms</MenuItem>
+                  {/* <MenuItem value={4}>Slot</MenuItem>
+                  <MenuItem value={5}>Terms</MenuItem> */}
                 </Select>
               </FormControl>
             ) : (
@@ -2539,7 +2607,7 @@ const Editcompany = () => {
                       focused
                     />
 
-                      <TextField
+                    <TextField
                       fullWidth
                       variant="standard"
                       type="number"
@@ -2860,7 +2928,7 @@ const Editcompany = () => {
                       inputProps={{ maxLength: 4 }}
                     />
 
-  <TextField
+                    <TextField
                       fullWidth
                       variant="standard"
                       type="text"
@@ -2900,7 +2968,7 @@ const Editcompany = () => {
                       focused
                       onWheel={(e) => e.target.blur()}
                     />
-                  
+
                     <Box>
                       <Field
                         //  size="small"
@@ -3107,7 +3175,7 @@ const Editcompany = () => {
                     }}
                     autoFocus
                   />
-                  <TextField
+                  {/* <TextField
                     name="Accounttype"
                     type="text"
                     id="Accounttype"
@@ -3134,7 +3202,38 @@ const Editcompany = () => {
                       },
                     }}
                     autoFocus
-                  />
+                  />  */}
+
+                  <TextField
+                    select   // ✅ makes it dropdown
+                    name="Accounttype"
+                    type="text"
+                    id="Accounttype"
+                    label={
+                      <>
+                        Account Type
+                        <span style={{ color: "red", fontSize: "20px" }}>
+                          *
+                        </span>
+                      </>
+                    }
+                    variant="standard"
+                    focused
+                    value={values.Accounttype}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.Accounttype && !!errors.Accounttype}
+                    helperText={touched.Accounttype && errors.Accounttype}
+                    sx={{
+                      backgroundColor: "#ffffff",
+                    }}
+                    fullWidth
+                  >
+                    <MenuItem value="">Select Account Type</MenuItem>
+                    <MenuItem value="Savings">Savings</MenuItem>
+                    <MenuItem value="Current">Current</MenuItem>
+                  </TextField>
+
                   <TextField
                     name="branchname"
                     label={
@@ -3556,7 +3655,8 @@ const Editcompany = () => {
                         >
                           <input
                             hidden
-                            accept="all/*"
+                            // accept="all/*"
+                            accept="image/png, image/jpeg, image/jpg"
                             type="file"
                             onChange={getFileHeaderChange1}
                           />
@@ -3641,7 +3741,8 @@ const Editcompany = () => {
                         >
                           <input
                             hidden
-                            accept="all/*"
+                            // accept="all/*"
+                            accept="image/png, image/jpeg, image/jpg"
                             type="file"
                             onChange={getFileFooterChange}
                           />
@@ -3726,7 +3827,8 @@ const Editcompany = () => {
                         >
                           <input
                             hidden
-                            accept="all/*"
+                            // accept="all/*"
+                            accept="image/png, image/jpeg, image/jpg"
                             type="file"
                             onChange={getFileESignChange}
                           />
@@ -3812,7 +3914,8 @@ const Editcompany = () => {
                         >
                           <input
                             hidden
-                            accept="all/*"
+                            // accept="all/*"
+                            accept="image/png, image/jpeg, image/jpg"
                             type="file"
                             onChange={getFileQRCodeChange}
                           />
@@ -4892,7 +4995,7 @@ const Editcompany = () => {
                     onRowModesModelChange={handleRowModesModelChangeTerms}
                     onRowEditStop={handleRowEditTermsStop}
                     processRowUpdate={processRowUpdateTerms}
-                    getRowId={(row) => row.RecordID}
+                    getRowId={(row) => row.RecordID || row.id}
                     isCellEditable={(params) => {
                       if (params.field === "Code") return false;
                       return true;
@@ -4900,7 +5003,7 @@ const Editcompany = () => {
                     disableRowSelectionOnClick
                     experimentalFeatures={{ newEditingApi: true }}
                     onProcessRowUpdateError={(error) => {
-                      console.error("Row update validation failed:",error.message,);
+                      console.error("Row update validation failed:", error.message,);
                       toast.error(error.message);
                     }}
                     components={{
