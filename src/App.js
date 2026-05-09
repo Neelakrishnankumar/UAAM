@@ -9,6 +9,7 @@ import MyDocument from "./apps/pages/pdf/pdf";
 import Trialcompany from "./apps/pages/CompanyTrail/Trailcompany";
 import NotificationPage from "./ui-components/Notification";
 import UnderMaintenance from "./apps/pages/UnderMaintanance";
+import EditadmissionForm from "./apps/pages/Empolyee/EditadmissionForm";
 
 const App = () => {
   const location = useLocation();
@@ -24,7 +25,8 @@ const App = () => {
         <Route path="/Apps/*" element={<Apps />} />
         <Route path="/trial-company" element={<Trialcompany />} />
         <Route path="/trial-comapny" element={<Trialcompany />} />
-           <Route path="/trial-company/notification" element={<NotificationPage/>} /> 
+        <Route path="/trial-company/notification" element={<NotificationPage/>} /> 
+        <Route path="/AdmissionForm" element={<EditadmissionForm />} />
       </Routes>
     </React.Fragment>
   );
