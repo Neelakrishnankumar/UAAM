@@ -1233,12 +1233,16 @@ const Editcompany = () => {
     }
 
     const idata = rows.map((row, index) => {
-      const isNewRow = isNaN(Number(row.RecordID));
+      console.log(row, "--row in a save");
+      console.log(parseInt(row.RecordID, 10), "--row in a save strung");
+
+      const parsedID = parseInt(row.RecordID, 10);
+
 
       return {
+        RecordID: !isNaN(parsedID) ? parsedID : -1,
         // RecordID: row.isNew ? 0 : row.RecordID,
-        // RecordID: !isNaN(parseInt(row.RecordID, 10)) ? row.RecordID : 0,
-        RecordID: isNewRow ? 0 : row.RecordID,
+        // RecordID: !isNaN(parseInt(row.RecordID, 10)) ? row.RecordID: -1,
         CompanyID: recID,
         Code: row.SlotCode,
         SlotName: row.SlotName,
@@ -1247,9 +1251,8 @@ const Editcompany = () => {
         ToTime: formatTo12Hour(row.ToTime),
         Break: row.Break ? "Y" : "N",
         SortOrder: 0,
+        IsEditable: !isNaN(parsedID) ? "Y" : "N",
         // IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
-        //  IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
-        IsEditable: isNewRow ? "N" : "Y",
       };
     });
     console.log(idata, "--print the idata");
@@ -2311,8 +2314,8 @@ const Editcompany = () => {
                   <MenuItem value={1}>Bank Details</MenuItem>
                   <MenuItem value={2}>Report Settings</MenuItem>
                   <MenuItem value={3}>Policy</MenuItem>
-                  <MenuItem value={4}>Slot</MenuItem>
-                  <MenuItem value={5}>Terms</MenuItem>
+                  {/* <MenuItem value={4}>Slot</MenuItem>
+                  <MenuItem value={5}>Terms</MenuItem> */}
                 </Select>
               </FormControl>
             ) : (
