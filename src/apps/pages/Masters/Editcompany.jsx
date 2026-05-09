@@ -2949,7 +2949,14 @@ const Editcompany = () => {
                       error={!!touched.noticeperiod && !!errors.noticeperiod}
                       helperText={touched.noticeperiod && errors.noticeperiod}
                       focused
-                      inputProps={{ maxLength: 15 }}
+                      // inputProps={{ maxLength: 15 }}
+                      InputProps={{
+                        
+                        inputProps:{
+                          maxLength: 15,
+                          style:{ textAlign : "right"}
+                        }
+                      }}
                     />
 
                     <TextField
