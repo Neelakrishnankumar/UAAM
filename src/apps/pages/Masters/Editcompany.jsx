@@ -452,6 +452,7 @@ const Editcompany = () => {
     Lut: Data.Lut,
     sortOrder: Data.SortOrder,
     license: Data.License,
+    subattapplicable: Data.SubjectAttendanceApplicable === "Y" ? true : false,
     disable: Data.Disable === "Y" ? true : false,
     stockClose: Data.Process === "Y" ? true : false,
     useregular: Data.Regularslno === "Y" ? true : false,
@@ -494,6 +495,7 @@ const Editcompany = () => {
       Lut: values.Lut,
       SortOrder: values.sortOrder || 0,
       License: values.license,
+      SubjectAttendanceApplicable: values.subattapplicable === true ? "Y" : "N",
       Disable: values.disable === true ? "Y" : "N",
       Process: values.stockClose === true ? "Y" : "N",
       Regularslno: values.useregular === true ? "Y" : "N",
@@ -2989,6 +2991,18 @@ const Editcompany = () => {
                       />
 
                       <FormLabel focused={false}>Disable</FormLabel>
+                         <Field
+                        //  size="small"
+                        type="checkbox"
+                        name="subattapplicable"
+                        id="subattapplicable"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        as={Checkbox}
+                        label="subattapplicable"
+                      />
+
+                      <FormLabel focused={false}>Subject Attendance applicable</FormLabel>
                     </Box>
                   </FormControl>
                 </Box>

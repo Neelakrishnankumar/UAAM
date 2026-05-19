@@ -710,12 +710,12 @@ const Listview = () => {
               variant="outlined"
               sx={{ marginLeft: "50px" }}
             />
- <Chip
+ {/* <Chip
               icon={<PermContactCalendarIcon  color="primary" />}
               label="Admission"
               variant="outlined"
               sx={{ marginLeft: "50px" }}
-            />
+            /> */}
 
           </Box>
         ) : accessID == "TR009" ? (

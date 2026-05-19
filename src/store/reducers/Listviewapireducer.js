@@ -1998,7 +1998,7 @@ export const fetchListview =
                             </IconButton>
                           </Tooltip>
                         </Link>
-
+{/* 
                           {params.row.Type === "I" && (
 <Link
                           to={`/AdmissionForm`}
@@ -2012,7 +2012,7 @@ export const fetchListview =
                             </IconButton>
                           </Tooltip>
                         </Link>
-                          )} 
+                          )}  */}
                       </>
                     ) : (
                       false
