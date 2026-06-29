@@ -80,8 +80,8 @@ const Editbin = () => {
   const rowData = location.state || {};
   console.log(rowData, "--rowData");
   var secondaryCurrentPage = parseInt(
-      sessionStorage.getItem("secondaryCurrentPage")
-    );
+    sessionStorage.getItem("secondaryCurrentPage")
+  );
   const [pageSize, setPageSize] = React.useState(10);
   const [page, setPage] = React.useState(secondaryCurrentPage);
   const [errorMsgData, setErrorMsgData] = useState(null);
@@ -117,7 +117,7 @@ const Editbin = () => {
   //     .matches(/[a-zA-Z\s/,.-]+$/, "Please enter alphabets only"),
   // });
   const colors = tokens(theme.palette.mode);
- const handlePagechange = (pageno) => {
+  const handlePagechange = (pageno) => {
     setPage(pageno);
     sessionStorage.setItem("secondaryCurrentPage", pageno);
   };
@@ -234,19 +234,19 @@ const Editbin = () => {
     );
 
     if (VISIBLE_FIELDS.includes("slno")) {
-      
+
       const slnoColumn = {
-          field: "slno",
-          headerName: "SL#",
-          width: 50,
-          sortable: false,
-          filterable: false,
-          valueGetter: (params) =>
-            page * pageSize +
-            params.api.getRowIndexRelativeToVisibleRows(params.id) +
-            1,
-        };
-        visibleColumns = [slnoColumn, ...visibleColumns];
+        field: "slno",
+        headerName: "SL#",
+        width: 50,
+        sortable: false,
+        filterable: false,
+        valueGetter: (params) =>
+          page * pageSize +
+          params.api.getRowIndexRelativeToVisibleRows(params.id) +
+          1,
+      };
+      visibleColumns = [slnoColumn, ...visibleColumns];
     }
 
     return visibleColumns;
@@ -840,7 +840,15 @@ const Editbin = () => {
                         focused
                         value={values.shelvescode}
                         onBlur={handleBlur}
-                        onChange={handleChange}
+                        // onChange={handleChange}
+                        onChange={(e) => {
+                          const val = e.target.value;
+
+                          // only letters + numbers
+                          if (/^[a-zA-Z0-9]*$/.test(val)) {
+                            handleChange(e);
+                          }
+                        }}
                         error={!!touched.shelvescode && !!errors.shelvescode}
                         helperText={touched.shelvescode && errors.shelvescode}
                         // onInvalid={(e) => {
@@ -860,14 +868,22 @@ const Editbin = () => {
                         id="shelvesname"
                         label={
                           <>
-                            shelves Name<span style={{ color: "red", fontSize: "20px" }}> * </span>
+                            Shelves Name<span style={{ color: "red", fontSize: "20px" }}> * </span>
                           </>
                         }
                         variant="standard"
                         focused
                         value={values.shelvesname}
                         onBlur={handleBlur}
-                        onChange={handleChange}
+                        // onChange={handleChange}
+                        onChange={(e) => {
+                          const val = e.target.value;
+
+                          // only letters + numbers
+                          if (/^[a-zA-Z0-9]*$/.test(val)) {
+                            handleChange(e);
+                          }
+                        }}
                         error={!!touched.shelvesname && !!errors.shelvesname}
                         helperText={touched.shelvesname && errors.shelvesname}
                         // onInvalid={(e) => {

@@ -512,7 +512,7 @@ const Editsubscription = () => {
                       // value={subfromdate}
                       value={values.subscriptionStartDate}
                       onBlur={handleBlur}
-                      onChange={handleChange}
+                      // onChange={handleChange}
                       error={
                         !!touched.subscriptionStartDate &&
                         !!errors.subscriptionStartDate
@@ -520,6 +520,30 @@ const Editsubscription = () => {
                       helperText={
                         touched.subscriptionStartDate && errors.subscriptionStartDate
                       }
+  //                       inputProps={{
+  //   max: "9999-12-31",
+  //   min: "1000-01-01",
+  // }}
+  // onKeyDown={(e) => e.preventDefault()} // Prevent manual typing
+    onChange={(e) => {
+    let value = e.target.value;
+
+    // Split yyyy-mm-dd
+    const parts = value.split("-");
+
+    // Restrict year to 4 digits
+    if (parts[0] && parts[0].length > 4) {
+      parts[0] = parts[0].slice(0, 4);
+      value = parts.join("-");
+    }
+
+    e.target.value = value;
+    handleChange(e);
+  }}
+  inputProps={{
+    max: "9999-12-31",
+    pattern: "\\d{4}-\\d{2}-\\d{2}",
+  }}
                       // onInvalid={(e) => {
                       //   e.target.setCustomValidity(
                       //     "Please fill the Subscription Start Date"
@@ -602,7 +626,26 @@ const Editsubscription = () => {
                       focused
                       value={values.retainDate}
                       onBlur={handleBlur}
-                      onChange={handleChange}
+                      // onChange={handleChange}
+                                            onChange={(e) => {
+    let value = e.target.value;
+
+    // Split yyyy-mm-dd
+    const parts = value.split("-");
+
+    // Restrict year to 4 digits
+    if (parts[0] && parts[0].length > 4) {
+      parts[0] = parts[0].slice(0, 4);
+      value = parts.join("-");
+    }
+
+    e.target.value = value;
+    handleChange(e);
+  }}
+  inputProps={{
+    max: "9999-12-31",
+    pattern: "\\d{4}-\\d{2}-\\d{2}",
+  }}
                       error={!!touched.retainDate && !!errors.retainDate}
                       helperText={touched.retainDate && errors.retainDate}
                       autoFocus
@@ -694,7 +737,26 @@ const Editsubscription = () => {
                       focused
                       value={values.notificationDate}
                       onBlur={handleBlur}
-                      onChange={handleChange}
+                      // onChange={handleChange}
+                        onChange={(e) => {
+    let value = e.target.value;
+
+    // Split yyyy-mm-dd
+    const parts = value.split("-");
+
+    // Restrict year to 4 digits
+    if (parts[0] && parts[0].length > 4) {
+      parts[0] = parts[0].slice(0, 4);
+      value = parts.join("-");
+    }
+
+    e.target.value = value;
+    handleChange(e);
+  }}
+  inputProps={{
+    max: "9999-12-31",
+    pattern: "\\d{4}-\\d{2}-\\d{2}",
+  }}
                       error={
                         !!touched.notificationDate && !!errors.notificationDate
                       }

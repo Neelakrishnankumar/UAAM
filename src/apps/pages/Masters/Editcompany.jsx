@@ -452,6 +452,7 @@ const Editcompany = () => {
     Lut: Data.Lut,
     sortOrder: Data.SortOrder,
     license: Data.License,
+    subattapplicable: Data.SubjectAttendanceApplicable === "Y" ? true : false,
     disable: Data.Disable === "Y" ? true : false,
     stockClose: Data.Process === "Y" ? true : false,
     useregular: Data.Regularslno === "Y" ? true : false,
@@ -494,6 +495,7 @@ const Editcompany = () => {
       Lut: values.Lut,
       SortOrder: values.sortOrder || 0,
       License: values.license,
+      SubjectAttendanceApplicable: values.subattapplicable === true ? "Y" : "N",
       Disable: values.disable === true ? "Y" : "N",
       Process: values.stockClose === true ? "Y" : "N",
       Regularslno: values.useregular === true ? "Y" : "N",
@@ -1283,12 +1285,16 @@ const Editcompany = () => {
     }
 
     const idata = rows.map((row, index) => {
-      const isNewRow = isNaN(Number(row.RecordID));
+      console.log(row, "--row in a save");
+      console.log(parseInt(row.RecordID, 10), "--row in a save strung");
+
+      const parsedID = parseInt(row.RecordID, 10);
+
 
       return {
+        RecordID: !isNaN(parsedID) ? parsedID : -1,
         // RecordID: row.isNew ? 0 : row.RecordID,
-        // RecordID: !isNaN(parseInt(row.RecordID, 10)) ? row.RecordID : 0,
-        RecordID: isNewRow ? 0 : row.RecordID,
+        // RecordID: !isNaN(parseInt(row.RecordID, 10)) ? row.RecordID: -1,
         CompanyID: recID,
         Code: row.SlotCode,
         SlotName: row.SlotName,
@@ -1297,9 +1303,8 @@ const Editcompany = () => {
         ToTime: formatTo12Hour(row.ToTime),
         Break: row.Break ? "Y" : "N",
         SortOrder: 0,
+        IsEditable: !isNaN(parsedID) ? "Y" : "N",
         // IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
-        //  IsEditable: !isNaN(parseInt(row.RecordID, 10)) ? "Y" : "N"
-        IsEditable: isNewRow ? "N" : "Y",
       };
     });
     console.log(idata, "--print the idata");
@@ -2498,7 +2503,7 @@ const Editcompany = () => {
                       inputProps={{ maxLength: 500 }}
                       multiline
                     />
-                    <FormControl
+                    {/* <FormControl
                       sx={{
                         gridColumn: "span 2",
                         display: "flex",
@@ -2510,7 +2515,7 @@ const Editcompany = () => {
                           flexDirection: "row",
                           alignItems: "center",
                         }}
-                      >
+                      > */}
                         <CheckinAutocomplete
                           label={
                             <>
@@ -2539,7 +2544,7 @@ const Editcompany = () => {
                             {errors.country}
                           </div>
                         )} */}
-                      </FormControl>
+                      {/* </FormControl> */}
                       <TextField
                         fullWidth
                         variant="standard"
@@ -2552,12 +2557,12 @@ const Editcompany = () => {
                         error={!!touched.rbiCode && !!errors.rbiCode}
                         helperText={touched.rbiCode && errors.rbiCode}
                         focused
-                        sx={{
-                          mt: 1
-                        }}
+                        // sx={{
+                        //   mt: 1
+                        // }}
                       // inputProps={{ maxLength: 5 }}
                       />
-                    </FormControl>
+                    {/* </FormControl> */}
                     <TextField
                       fullWidth
                       variant="standard"
@@ -2895,7 +2900,14 @@ const Editcompany = () => {
                       error={!!touched.noticeperiod && !!errors.noticeperiod}
                       helperText={touched.noticeperiod && errors.noticeperiod}
                       focused
-                      inputProps={{ maxLength: 15 }}
+                      // inputProps={{ maxLength: 15 }}
+                      InputProps={{
+                        
+                        inputProps:{
+                          maxLength: 15,
+                          style:{ textAlign : "right"}
+                        }
+                      }}
                     />
                     <TextField
                       fullWidth
@@ -2927,6 +2939,18 @@ const Editcompany = () => {
                       />
 
                       <FormLabel focused={false}>Disable</FormLabel>
+                         <Field
+                        //  size="small"
+                        type="checkbox"
+                        name="subattapplicable"
+                        id="subattapplicable"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        as={Checkbox}
+                        label="subattapplicable"
+                      />
+
+                      <FormLabel focused={false}>Subject Attendance applicable</FormLabel>
                     </Box>
                   </FormControl>
                 </Box>

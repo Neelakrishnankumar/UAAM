@@ -37,6 +37,7 @@ import OpenInBrowserOutlinedIcon from "@mui/icons-material/OpenInBrowserOutlined
 import Swal from "sweetalert2";
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import PinDropIcon from '@mui/icons-material/PinDrop';
+import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import LoginIcon from '@mui/icons-material/Login';
 import FolderDeleteIcon from '@mui/icons-material/FolderDelete';
@@ -1997,6 +1998,21 @@ export const fetchListview =
                             </IconButton>
                           </Tooltip>
                         </Link>
+{/* 
+                          {params.row.Type === "I" && (
+<Link
+                          to={`/AdmissionForm`}
+                          state={{
+                            CompanyRecID: params.row.RecordID,
+                          }}
+                        >
+                          <Tooltip title="Admission">
+                            <IconButton color="info" size="small">
+                              <PermContactCalendarIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Link>
+                          )}  */}
                       </>
                     ) : (
                       false
