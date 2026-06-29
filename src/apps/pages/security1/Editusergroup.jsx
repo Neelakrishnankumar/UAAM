@@ -97,6 +97,7 @@ const Editusergroup = () => {
   const isLoading = useSelector((state) => state.formApi.postLoading);
   const getLoading = useSelector((state) => state.formApi.getLoading);
   const rowData = useSelector((state) => state.exploreApi.explorerowData);
+    console.log(rowData,"rowData....");
   const exploreLoading = useSelector((state) => state.exploreApi.loading);
   // const YearRecorid = sessionStorage.getItem("YearRecorid");
   const Finyear = sessionStorage.getItem("YearRecorid");

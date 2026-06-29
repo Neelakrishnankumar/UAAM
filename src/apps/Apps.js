@@ -108,6 +108,7 @@ import EditemployeePayroll from "./pages/Empolyee/EditemployeePayroll";
 import Logopage from "../assets/logopage";
 import Editsubscription from "./pages/Masters/Editsubscription";
 import EditProductSubScription from "./pages/Masters/EditProductSubScription";
+import EditGroup from "./pages/Masters/EditGroup";
 // import CheckboxesTags from "./pages/Autocomplete";
 
 
@@ -571,6 +572,10 @@ function App() {
                   <Route
                     path="/:accessID/:screenName/EditProducts/:id/:Mode"
                     element={<EditProductSubScription />}
+                  />
+                  <Route
+                    path="/:accessID/:screenName/EditGroup/:id/:Mode"
+                    element={<EditGroup />}
                   />
                 </Routes>
               </main>

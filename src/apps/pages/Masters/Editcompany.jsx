@@ -2361,8 +2361,8 @@ const Editcompany = () => {
                   <MenuItem value={1}>Bank Details</MenuItem>
                   <MenuItem value={2}>Report Settings</MenuItem>
                   <MenuItem value={3}>Policy</MenuItem>
-                  <MenuItem value={4}>Slot</MenuItem>
-                  <MenuItem value={5}>Terms</MenuItem>
+                  {/* <MenuItem value={4}>Slot</MenuItem>
+                  <MenuItem value={5}>Terms</MenuItem> */}
                 </Select>
               </FormControl>
             ) : (

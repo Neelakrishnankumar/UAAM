@@ -32,7 +32,8 @@ const initialState = {
   exploreColumnDataID:[],
   isLookupOpen:false,
   slotRowData: [],
-  slotcolumnData: []
+  slotcolumnData: [],
+  Groupget:[]
 
 };
 
@@ -50,6 +51,24 @@ export const userGroupExplore= createAsyncThunk("explore/listview",
     });
     console.log(
       "🚀 ~ file: newFormApiReducer.js:27 ~ fetchData ~ response:",
+      response
+    );
+    return response.data;
+  }
+);
+export const GroupExplore= createAsyncThunk("explore",
+  async ({Type}) => {
+    var url = store.getState().globalurl.CompanyGroupGet;
+    var data = { Type };
+    console.log("get" + JSON.stringify(data));
+    const response = await axios.post(url, data, {
+      headers: {
+        Authorization:
+          "eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ.eyJzdWIiOiJCZXhAMTIzIiwibmFtZSI6IkJleCIsImFkbWluIjp0cnVlLCJleHAiOjE2Njk5ODQzNDl9.uxE3r3X4lqV_WKrRKRPXd-Jub9BnVcCXqCtLL4I0fpU",
+      },
+    });
+    console.log(
+      " ~ file: newFormApiReducer.js:27 ~ fetchData ~ response:",
       response
     );
     return response.data;
@@ -270,6 +289,8 @@ export const getApiSlice = createSlice({
         state.Status = "Error";
         state.loading = false;
       })
+      //GROUP        
+      
       .addCase(packingListView.pending, (state, action) => {
         state.exploreColumnDataID=[]
         state.exploreRowDataID=[]
@@ -284,6 +305,21 @@ export const getApiSlice = createSlice({
 
       })
       .addCase(packingListView.rejected, (state, action) => {
+        state.Status = "Error";
+        state.loading = false;
+      })
+       .addCase(GroupExplore.pending, (state, action) => {
+        state.Groupget=[]
+        state.Status = "idle";
+        state.loading = true;
+      })
+      .addCase(GroupExplore.fulfilled, (state, action) => {
+        state.Status = "success";
+        state.loading = false;
+        state.Groupget=action.payload.Data
+
+      })
+      .addCase(GroupExplore.rejected, (state, action) => {
         state.Status = "Error";
         state.loading = false;
       })

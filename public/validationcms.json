@@ -16,6 +16,10 @@
     "Location": {
         "name": "Please Enter the Name"
     },
+    "Group": {
+        "name": "Please enter the Name",
+        "Company": "Please select the Company"
+    },
     "Gate": {
         "name": "Please Enter the Name"
     },

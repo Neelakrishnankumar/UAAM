@@ -199,7 +199,8 @@ const initialState = {
   CompanyReportSettingGet: "",
   CompanyReportSettingUpdate: "",
   CompanyTermsGet: "",
-  CompanyAddurl:""
+  CompanyAddurl:"",
+  CompanyGroupGet:""
 };
 
 export const getUrlSlice = createSlice({
@@ -302,6 +303,7 @@ export const getUrlSlice = createSlice({
       state.CompanyReportSettingUpdate = APIurl + "CompanyReportSettingUpdate.php";
       state.UserActivityUrl = APIurl + "UserActivityController.php";
       state.CompanyTermsGet = APIurl + "TermsGetController.php";
+      state.CompanyGroupGet = APIurl + "CompanyGroupGetController.php";
 
     },
   },
